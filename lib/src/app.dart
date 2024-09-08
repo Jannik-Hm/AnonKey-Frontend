@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'SplashScreen/splash_screen_view.dart';
 import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
@@ -73,7 +75,26 @@ class MyApp extends StatelessWidget {
                     return const SampleItemDetailsView();
                   case SampleItemListView.routeName:
                   default:
-                    return const SampleItemListView();
+                  return FutureBuilder<bool>(
+                    future: _isFirstView(),
+                    builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // Während wir auf das Future warten, können wir einen Ladebildschirm anzeigen
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        // Wenn es einen Fehler gibt, kannst du hier etwas anzeigen
+                        return const Center(child: Text('Error occurred'));
+                      } else if (snapshot.hasData) {
+                        // Wenn das Future abgeschlossen ist, zeigen wir das entsprechende Widget
+                        if (snapshot.data!) {
+                          return const SplashScreenView();
+                        } else {
+                          return const SampleItemListView();
+                        }
+                      }
+                      return Container(); // Fallback falls kein Daten- oder Fehlerzustand vorliegt
+                    },
+                  );
                 }
               },
             );
@@ -81,5 +102,9 @@ class MyApp extends StatelessWidget {
         );
       },
     );
+  }
+  Future<bool> _isFirstView() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isFirst') ?? true;
   }
 }
