@@ -75,26 +75,28 @@ class MyApp extends StatelessWidget {
                     return const SampleItemDetailsView();
                   case SampleItemListView.routeName:
                   default:
-                  return FutureBuilder<bool>(
-                    future: _isFirstView(),
-                    builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        // Während wir auf das Future warten, können wir einen Ladebildschirm anzeigen
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasError) {
-                        // Wenn es einen Fehler gibt, kannst du hier etwas anzeigen
-                        return const Center(child: Text('Error occurred'));
-                      } else if (snapshot.hasData) {
-                        // Wenn das Future abgeschlossen ist, zeigen wir das entsprechende Widget
-                        if (snapshot.data!) {
-                          return const SplashScreenView();
-                        } else {
-                          return const SampleItemListView();
+                    return FutureBuilder<bool>(
+                      future: _isFirstView(),
+                      builder:
+                          (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          // Während wir auf das Future warten, können wir einen Ladebildschirm anzeigen
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          // Wenn es einen Fehler gibt, kannst du hier etwas anzeigen
+                          return const Center(child: Text('Error occurred'));
+                        } else if (snapshot.hasData) {
+                          // Wenn das Future abgeschlossen ist, zeigen wir das entsprechende Widget
+                          if (snapshot.data!) {
+                            return const SplashScreenView();
+                          } else {
+                            return const SampleItemListView();
+                          }
                         }
-                      }
-                      return Container(); // Fallback falls kein Daten- oder Fehlerzustand vorliegt
-                    },
-                  );
+                        return Container(); // Fallback falls kein Daten- oder Fehlerzustand vorliegt
+                      },
+                    );
                 }
               },
             );
@@ -103,6 +105,7 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+
   Future<bool> _isFirstView() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool('isFirst') ?? true;
