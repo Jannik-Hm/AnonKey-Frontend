@@ -20,13 +20,12 @@ class LoginController extends State<LoginView> {
             child: const Image(
                 image: AssetImage('images/logo.png'), width: 200, height: 200),
           ),
-          const Padding(padding: EdgeInsets.only(top: 20.0)),
           LoginInput(
               controller: username, label: 'Username', obscureText: false),
-          const Padding(padding: EdgeInsets.only(top: 20.0)),
+          const SizedBox(height: 16),
           LoginInput(
               controller: password, label: 'Password', obscureText: true),
-          Text(password.text),
+          const SizedBox(height: 16),
           TextButton(
             style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
