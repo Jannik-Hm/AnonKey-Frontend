@@ -10,6 +10,11 @@ class LoginController extends State<LoginView> {
   final password = TextEditingController();
 
   final _loginFormKey = GlobalKey<FormState>();
+  final _userInput = UniqueKey();
+
+  final _urlFocus = FocusNode();
+  final _usernameFocus = FocusNode();
+  final _passwordFocus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -30,20 +35,26 @@ class LoginController extends State<LoginView> {
                         height: 200),
                   ),
                   LoginInput(
+                    focus: _urlFocus,
                     controller: url,
                     label: 'URL',
                     obscureText: false,
                     validator: ValidationBuilder().url().build(),
+                    onEnterPressed: () => _usernameFocus.requestFocus(),
                   ),
                   const SizedBox(height: 16),
                   LoginInput(
+                    focus: _usernameFocus,
+                    key: _userInput,
                     controller: username,
                     label: 'Username',
                     obscureText: false,
                     validator: ValidationBuilder().required().build(),
+                    onEnterPressed: () => _passwordFocus.requestFocus(),
                   ),
                   const SizedBox(height: 16),
                   LoginInput(
+                    focus: _passwordFocus,
                     controller: password,
                     label: 'Password',
                     obscureText: true,
