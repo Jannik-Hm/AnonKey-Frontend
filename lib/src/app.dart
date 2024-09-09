@@ -1,9 +1,10 @@
+import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'SplashScreen/splash_screen_view.dart';
+import 'SplashScreen/login_view.dart';
 import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
@@ -89,7 +90,7 @@ class MyApp extends StatelessWidget {
                         } else if (snapshot.hasData) {
                           // Wenn das Future abgeschlossen ist, zeigen wir das entsprechende Widget
                           if (snapshot.data!) {
-                            return const SplashScreenView();
+                            return const LoginView();
                           } else {
                             return const SampleItemListView();
                           }
