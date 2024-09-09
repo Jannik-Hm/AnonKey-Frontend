@@ -1,6 +1,7 @@
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
+import './../Credentials/list-entry/credential_entry.dart';
 
 import './login_input.dart';
 
@@ -29,7 +30,7 @@ class LoginController extends State<LoginView> {
                   Container(
                     margin: const EdgeInsets.only(bottom: 50),
                     child: const Image(
-                        image: AssetImage('images/logo.png'),
+                        image: AssetImage('assets/images/Logo.png'),
                         width: 200,
                         height: 200),
                   ),
@@ -67,7 +68,8 @@ class LoginController extends State<LoginView> {
                   foregroundColor: Theme.of(context).colorScheme.onPrimary),
               onPressed: () => _showDialog(),
               child: const Text('Fly me to the moon'),
-            )
+            ),
+            CredentialEntry(url: "https://google.de", username: "jannik", password: "test", title: "Google"),
           ],
         ),
       ),
