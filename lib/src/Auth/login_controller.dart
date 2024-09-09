@@ -24,28 +24,34 @@ class LoginController extends State<LoginView> {
               controller: username, label: 'Username', obscureText: false),
           const SizedBox(height: 16),
           LoginInput(
-              controller: password, label: 'Password', obscureText: true),
+            controller: password,
+            label: 'Password',
+            obscureText: true,
+            onEnterPressed: () => _showDialog(),
+          ),
           const SizedBox(height: 16),
           TextButton(
             style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Theme.of(context).colorScheme.onPrimary),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    // Retrieve the text the that user has entered by using the
-                    // TextEditingController.
-                    content: Text("${username.text} ${password.text}"),
-                  );
-                },
-              );
-            },
+            onPressed: () => _showDialog(),
             child: const Text('Fly me to the moon'),
           )
         ],
       )),
+    );
+  }
+
+  _showDialog() {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          // Retrieve the text the that user has entered by using the
+          // TextEditingController.
+          content: Text("${username.text} ${password.text}"),
+        );
+      },
     );
   }
 }

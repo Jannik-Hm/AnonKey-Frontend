@@ -4,12 +4,15 @@ class LoginInput extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final bool obscureText;
+  final VoidCallback? onEnterPressed;
 
-  const LoginInput(
-      {super.key,
-      required this.controller,
-      required this.label,
-      required this.obscureText});
+  const LoginInput({
+    super.key,
+    required this.controller,
+    required this.label,
+    required this.obscureText,
+    this.onEnterPressed,
+  });
 
   @override
   State<StatefulWidget> createState() => _LoginInput();
@@ -27,6 +30,11 @@ class _LoginInput extends State<LoginInput> {
       child: FractionallySizedBox(
         widthFactor: 0.5,
         child: TextFormField(
+          onFieldSubmitted: (value) {
+            if (widget.onEnterPressed != null) {
+              widget.onEnterPressed!();
+            }
+          },
           controller: widget.controller,
           obscureText: widget.obscureText,
           decoration: InputDecoration(
