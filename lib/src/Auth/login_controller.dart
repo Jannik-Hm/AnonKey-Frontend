@@ -65,9 +65,7 @@ class LoginController extends State<LoginView> {
               style: TextButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Theme.of(context).colorScheme.onPrimary),
-              onPressed: () {
-                _showDialog();
-              },
+              onPressed: () => _showDialog(),
               child: const Text('Fly me to the moon'),
             )
           ],
