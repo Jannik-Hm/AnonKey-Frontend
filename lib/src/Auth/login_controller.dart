@@ -1,65 +1,56 @@
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:flutter/material.dart';
 
-class LoginController extends State<LoginView>{
-
+class LoginController extends State<LoginView> {
   final username = TextEditingController();
   final password = TextEditingController();
 
-@override
-  Widget build(BuildContext build){
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('Login View'),
+          const Image(
+              image: AssetImage('images/logo.png'), width: 200, height: 200),
           FractionallySizedBox(
-            widthFactor: 0.5,
-            child: TextFormField(
-              controller: username,
-              decoration: InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'Username'
-
-              ),
-            )
-          ),
+              widthFactor: 0.5,
+              child: TextFormField(
+                controller: username,
+                decoration: const InputDecoration(
+                    border: UnderlineInputBorder(), labelText: 'Username'),
+              )),
           FractionallySizedBox(
-            widthFactor: 0.5,
-            child: TextFormField(
-              obscureText: true,
-              controller: password,
-              decoration: InputDecoration(
-                border: UnderlineInputBorder(),
-                labelText: 'Password'
-              ),
-            )
-          ),
+              widthFactor: 0.5,
+              child: TextFormField(
+                obscureText: true,
+                controller: password,
+                decoration: const InputDecoration(
+                    border: UnderlineInputBorder(), labelText: 'Password'),
+              )),
           Text(password.text),
-          TextButton( 
+          TextButton(
             style: TextButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary
-              ),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary),
             onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                // Retrieve the text the that user has entered by using the
-                // TextEditingController.
-                content: Text("${username.text} ${password.text}"),
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    // Retrieve the text the that user has entered by using the
+                    // TextEditingController.
+                    content: Text("${username.text} ${password.text}"),
+                  );
+                },
               );
             },
-          );
-        }, 
-        child: const Text('Fly me to the moon'),
-        )
+            child: const Text('Fly me to the moon'),
+          )
         ],
       )),
     );
   }
 }
-
