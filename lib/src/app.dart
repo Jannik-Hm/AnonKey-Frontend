@@ -1,6 +1,8 @@
+import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'sample_feature/sample_item_details_view.dart';
 import 'sample_feature/sample_item_list_view.dart';
@@ -32,6 +34,8 @@ class MyApp extends StatelessWidget {
           // background.
           restorationScopeId: 'app',
 
+          debugShowCheckedModeBanner: false,
+
           // Provide the generated AppLocalizations to the MaterialApp. This
           // allows descendant Widgets to display the correct translations
           // depending on the user's locale.
@@ -56,8 +60,24 @@ class MyApp extends StatelessWidget {
           // Define a light and dark color theme. Then, read the user's
           // preferred ThemeMode (light, dark, or system default) from the
           // SettingsController to display the correct theme.
-          theme: ThemeData(),
-          darkTheme: ThemeData.dark(),
+          theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue.shade400,
+            surface: Colors.grey.shade50,
+            secondary: Colors.grey.shade100,
+            onSecondary: Colors.black,
+            tertiary: Colors.grey.shade300,
+            onTertiary: Colors.black,
+          )),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue.shade800,
+              surface: Colors.grey.shade900,
+              onSurface: Colors.white,
+              tertiary: Colors.grey.shade800,
+              onTertiary: Colors.grey.shade300,
+            ),
+          ),
           themeMode: settingsController.themeMode,
 
           // Define a function to handle named routes in order to support
@@ -73,7 +93,28 @@ class MyApp extends StatelessWidget {
                     return const SampleItemDetailsView();
                   case SampleItemListView.routeName:
                   default:
-                    return const SampleItemListView();
+                    return FutureBuilder<bool>(
+                      future: _isFirstView(),
+                      builder:
+                          (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          // Während wir auf das Future warten, können wir einen Ladebildschirm anzeigen
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          // Wenn es einen Fehler gibt, kannst du hier etwas anzeigen
+                          return const Center(child: Text('Error occurred'));
+                        } else if (snapshot.hasData) {
+                          // Wenn das Future abgeschlossen ist, zeigen wir das entsprechende Widget
+                          if (snapshot.data!) {
+                            return const LoginView();
+                          } else {
+                            return const SampleItemListView();
+                          }
+                        }
+                        return Container(); // Fallback falls kein Daten- oder Fehlerzustand vorliegt
+                      },
+                    );
                 }
               },
             );
@@ -81,5 +122,10 @@ class MyApp extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<bool> _isFirstView() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isFirst') ?? true;
   }
 }
