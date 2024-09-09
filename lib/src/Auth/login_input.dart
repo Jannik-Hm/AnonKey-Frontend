@@ -8,14 +8,13 @@ class LoginInput extends StatefulWidget {
   final VoidCallback? onEnterPressed;
   final StringValidationCallback? validator;
 
-  const LoginInput({
-    super.key,
-    required this.controller,
-    required this.label,
-    required this.obscureText,
-    this.onEnterPressed,
-    this.validator
-  });
+  const LoginInput(
+      {super.key,
+      required this.controller,
+      required this.label,
+      required this.obscureText,
+      this.onEnterPressed,
+      this.validator});
 
   @override
   State<StatefulWidget> createState() => _LoginInput();
@@ -25,7 +24,8 @@ class _LoginInput extends State<LoginInput> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
+      padding:
+          const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(25)),
         color: Theme.of(context).colorScheme.secondary,

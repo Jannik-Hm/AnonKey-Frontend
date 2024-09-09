@@ -24,7 +24,10 @@ class LoginController extends State<LoginView> {
                 child: Column(children: [
                   Container(
                     margin: const EdgeInsets.only(bottom: 50),
-                    child: const Image(image: AssetImage('images/logo.png'), width: 200, height: 200),
+                    child: const Image(
+                        image: AssetImage('images/logo.png'),
+                        width: 200,
+                        height: 200),
                   ),
                   LoginInput(
                     controller: url,
@@ -50,7 +53,9 @@ class LoginController extends State<LoginView> {
                   Text(password.text),
                 ])),
             TextButton(
-              style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary, foregroundColor: Theme.of(context).colorScheme.onPrimary),
+              style: TextButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary),
               onPressed: () {
                 if (_loginFormKey.currentState!.validate()) {
                   //ScaffoldMessenger.of(context).showSnackBar(
@@ -66,7 +71,6 @@ class LoginController extends State<LoginView> {
                     },
                   );
                 }
-                ;
               },
               child: const Text('Fly me to the moon'),
             )
