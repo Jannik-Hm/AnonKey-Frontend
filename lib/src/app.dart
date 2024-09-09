@@ -52,14 +52,29 @@ class MyApp extends StatelessWidget {
           //
           // The appTitle is defined in .arb files found in the localization
           // directory.
-          onGenerateTitle: (BuildContext context) =>
-              AppLocalizations.of(context)!.appTitle,
+          onGenerateTitle: (BuildContext context) => AppLocalizations.of(context)!.appTitle,
 
           // Define a light and dark color theme. Then, read the user's
           // preferred ThemeMode (light, dark, or system default) from the
           // SettingsController to display the correct theme.
-          theme: ThemeData(),
-          darkTheme: ThemeData.dark(),
+          theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue.shade400,
+            surface: Colors.grey.shade50,
+            secondary: Colors.grey.shade100,
+            onSecondary: Colors.black,
+            tertiary: Colors.grey.shade300,
+            onTertiary: Colors.black,
+          )),
+          darkTheme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue.shade800,
+              surface: Colors.grey.shade900,
+              onSurface: Colors.white,
+              tertiary: Colors.grey.shade800,
+              onTertiary: Colors.grey.shade300,
+            ),
+          ),
           themeMode: settingsController.themeMode,
 
           // Define a function to handle named routes in order to support
@@ -77,10 +92,8 @@ class MyApp extends StatelessWidget {
                   default:
                     return FutureBuilder<bool>(
                       future: _isFirstView(),
-                      builder:
-                          (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
+                      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
                           // Während wir auf das Future warten, können wir einen Ladebildschirm anzeigen
                           return const CircularProgressIndicator();
                         } else if (snapshot.hasError) {

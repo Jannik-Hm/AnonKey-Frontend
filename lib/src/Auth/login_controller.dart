@@ -3,15 +3,6 @@ import 'package:flutter/material.dart';
 
 class LoginController extends State<LoginView>{
 
-  final myController = TextEditingController();
-
- @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myController.dispose();
-    super.dispose();
-  }
-
   final username = TextEditingController();
   final password = TextEditingController();
 
@@ -31,12 +22,14 @@ class LoginController extends State<LoginView>{
               decoration: InputDecoration(
                 border: UnderlineInputBorder(),
                 labelText: 'Username'
+
               ),
             )
           ),
           FractionallySizedBox(
             widthFactor: 0.5,
             child: TextFormField(
+              obscureText: true,
               controller: password,
               decoration: InputDecoration(
                 border: UnderlineInputBorder(),
@@ -45,13 +38,12 @@ class LoginController extends State<LoginView>{
             )
           ),
           Text(password.text),
-
-        ],
-      )),
-      floatingActionButton: FloatingActionButton(
-        // When the user presses the button, show an alert dialog containing
-        // the text that the user has entered into the text field.
-        onPressed: () {
+          TextButton( 
+            style: TextButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary
+              ),
+            onPressed: () {
           showDialog(
             context: context,
             builder: (context) {
@@ -62,10 +54,11 @@ class LoginController extends State<LoginView>{
               );
             },
           );
-        },
-        tooltip: 'Show me the value!',
-        child: const Icon(Icons.text_fields),
-      ),
+        }, 
+        child: const Text('Fly me to the moon'),
+        )
+        ],
+      )),
     );
   }
 }
