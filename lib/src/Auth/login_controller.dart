@@ -10,7 +10,6 @@ class LoginController extends State<LoginView> {
   final password = TextEditingController();
 
   final _loginFormKey = GlobalKey<FormState>();
-  final _userInput = UniqueKey();
 
   final _urlFocus = FocusNode();
   final _usernameFocus = FocusNode();
@@ -45,7 +44,6 @@ class LoginController extends State<LoginView> {
                   const SizedBox(height: 16),
                   LoginInput(
                     focus: _usernameFocus,
-                    key: _userInput,
                     controller: username,
                     label: 'Username',
                     obscureText: false,
@@ -68,20 +66,7 @@ class LoginController extends State<LoginView> {
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Theme.of(context).colorScheme.onPrimary),
               onPressed: () {
-                if (_loginFormKey.currentState!.validate()) {
-                  //ScaffoldMessenger.of(context).showSnackBar(
-                  //  const SnackBar(content: Text('Processing Data')));
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        // Retrieve the text the that user has entered by using the
-                        // TextEditingController.
-                        content: Text("${username.text} ${password.text}"),
-                      );
-                    },
-                  );
-                }
+                _showDialog();
               },
               child: const Text('Fly me to the moon'),
             )
