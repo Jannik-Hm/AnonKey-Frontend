@@ -15,15 +15,22 @@ class LoginController extends State<LoginView> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Image(
-              image: AssetImage('images/logo.png'), width: 200, height: 200),
-          Padding(padding: EdgeInsets.only(top: 20.0)),
-          login_input(controller: username, label: 'Username', obscureText: false),
-          Padding(padding: EdgeInsets.only(top: 20.0)),
-          login_input(controller: password, label: 'Password', obscureText: true),
+          Container(
+            margin: const EdgeInsets.only(bottom: 50),
+            child: const Image(
+                image: AssetImage('images/logo.png'), width: 200, height: 200),
+          ),
+          const Padding(padding: EdgeInsets.only(top: 20.0)),
+          LoginInput(
+              controller: username, label: 'Username', obscureText: false),
+          const Padding(padding: EdgeInsets.only(top: 20.0)),
+          LoginInput(
+              controller: password, label: 'Password', obscureText: true),
           Text(password.text),
           TextButton(
-            style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary, foregroundColor: Theme.of(context).colorScheme.onPrimary),
+            style: TextButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary),
             onPressed: () {
               showDialog(
                 context: context,
