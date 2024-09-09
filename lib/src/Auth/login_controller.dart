@@ -1,6 +1,8 @@
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:flutter/material.dart';
 
+import './login_input.dart';
+
 class LoginController extends State<LoginView> {
   final username = TextEditingController();
   final password = TextEditingController();
@@ -15,26 +17,13 @@ class LoginController extends State<LoginView> {
         children: [
           const Image(
               image: AssetImage('images/logo.png'), width: 200, height: 200),
-          FractionallySizedBox(
-              widthFactor: 0.5,
-              child: TextFormField(
-                controller: username,
-                decoration: const InputDecoration(
-                    border: UnderlineInputBorder(), labelText: 'Username'),
-              )),
-          FractionallySizedBox(
-              widthFactor: 0.5,
-              child: TextFormField(
-                obscureText: true,
-                controller: password,
-                decoration: const InputDecoration(
-                    border: UnderlineInputBorder(), labelText: 'Password'),
-              )),
+          Padding(padding: EdgeInsets.only(top: 20.0)),
+          login_input(controller: username, label: 'Username', obscureText: false),
+          Padding(padding: EdgeInsets.only(top: 20.0)),
+          login_input(controller: password, label: 'Password', obscureText: true),
           Text(password.text),
           TextButton(
-            style: TextButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Theme.of(context).colorScheme.onPrimary),
+            style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary, foregroundColor: Theme.of(context).colorScheme.onPrimary),
             onPressed: () {
               showDialog(
                 context: context,
