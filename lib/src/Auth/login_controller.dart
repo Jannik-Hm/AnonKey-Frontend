@@ -15,42 +15,81 @@ class LoginController extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            margin: const EdgeInsets.only(bottom: 50),
-            child: const Image(
-                image: AssetImage('images/logo.png'), width: 200, height: 200),
-          ),
-          const Padding(padding: EdgeInsets.only(top: 20.0)),
-          LoginInput(
-              controller: username, label: 'Username', obscureText: false),
-          const Padding(padding: EdgeInsets.only(top: 20.0)),
-          LoginInput(
-              controller: password, label: 'Password', obscureText: true),
-          Text(password.text),
-          TextButton(
-            style: TextButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Theme.of(context).colorScheme.onPrimary),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    // Retrieve the text the that user has entered by using the
-                    // TextEditingController.
-                    content: Text("${username.text} ${password.text}"),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Form(
+                key: _loginFormKey,
+                child: Column(children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 50),
+                    child: const Image(image: AssetImage('images/logo.png'), width: 200, height: 200),
+                  ),
+                  LoginInput(
+                    controller: url,
+                    label: 'URL',
+                    obscureText: false,
+                    validator: ValidationBuilder().url().build(),
+                  ),
+                  const SizedBox(height: 16),
+                  LoginInput(
+                    controller: username,
+                    label: 'Username',
+                    obscureText: false,
+                    validator: ValidationBuilder().required().build(),
+                  ),
+                  const SizedBox(height: 16),
+                  LoginInput(
+                    controller: password,
+                    label: 'Password',
+                    obscureText: true,
+                    validator: ValidationBuilder().required().build(),
+                    onEnterPressed: () => _showDialog(),
+                  ),
+                  Text(password.text),
+                ])),
+            TextButton(
+              style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary, foregroundColor: Theme.of(context).colorScheme.onPrimary),
+              onPressed: () {
+                if (_loginFormKey.currentState!.validate()) {
+                  //ScaffoldMessenger.of(context).showSnackBar(
+                  //  const SnackBar(content: Text('Processing Data')));
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        // Retrieve the text the that user has entered by using the
+                        // TextEditingController.
+                        content: Text("${username.text} ${password.text}"),
+                      );
+                    },
                   );
-                },
-              );
-            },
-            child: const Text('Fly me to the moon'),
-          )
-        ],
-      )),
+                }
+                ;
+              },
+              child: const Text('Fly me to the moon'),
+            )
+          ],
+        ),
+      ),
     );
+  }
+
+  _showDialog() {
+    if (_loginFormKey.currentState!.validate()) {
+      //ScaffoldMessenger.of(context).showSnackBar(
+      //  const SnackBar(content: Text('Processing Data')));
+      return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            // Retrieve the text the that user has entered by using the
+            // TextEditingController.
+            content: Text("${username.text} ${password.text}"),
+          );
+        },
+      );
+    }
   }
 }
