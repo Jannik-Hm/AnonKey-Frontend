@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+import './login_controller.dart';
 
-class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+class LoginView extends StatefulWidget {
+  LoginView({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('LoginView'),
-      ),
-    );
-  }
+   @override
+  State<LoginView> createState() => LoginController();
 }
+
+
 // Todo: Implement SplashScreenView

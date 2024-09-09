@@ -89,7 +89,7 @@ class MyApp extends StatelessWidget {
                         } else if (snapshot.hasData) {
                           // Wenn das Future abgeschlossen ist, zeigen wir das entsprechende Widget
                           if (snapshot.data!) {
-                            return const LoginView();
+                            return LoginView();
                           } else {
                             return const SampleItemListView();
                           }
