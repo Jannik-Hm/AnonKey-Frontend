@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:form_validator/form_validator.dart';
 import './logo.dart';
 
 class CredentialEntry extends StatefulWidget {
@@ -35,7 +34,8 @@ class _CredentialEntry extends State<CredentialEntry> {
             // Image on the left
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 70.0),
-              child: getLogoFromUrl(widget.url),
+              //child: Image.network("https://icons.duckduckgo.com/ip3/linustechtips.com.ico"),
+              child: getByteLogoFromUrl(widget.url),
             ),
             const SizedBox(
               width: 20.0,
