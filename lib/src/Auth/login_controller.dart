@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 
 import './login_input.dart';
+import './../Credentials/list-entry/credential_entry.dart';
+import './../Credentials/credential_data.dart';
 
 class LoginController extends State<LoginView> {
   final url = TextEditingController();
@@ -67,7 +69,8 @@ class LoginController extends State<LoginView> {
                   foregroundColor: Theme.of(context).colorScheme.onPrimary),
               onPressed: () => _showDialog(),
               child: const Text('Fly me to the moon'),
-            )
+            ),
+            CredentialEntry(credential: Credential(websiteUrl: "https://google.de", username: "jannik", password: "test", displayName: "Google", uuid: '', passwordSalt: '', usernameSalt: '', note: '', folderUuid: '', createdTimeStamp: '', changedTimeStamp: '', deletedTimeStamp: '',)),
           ],
         ),
       ),
