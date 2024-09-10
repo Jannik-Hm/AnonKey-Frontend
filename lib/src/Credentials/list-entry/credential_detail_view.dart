@@ -17,8 +17,13 @@ class CredentialDetailWidget extends StatefulWidget {
 
 class _CredentialDetailWidget extends State<CredentialDetailWidget> {
   final displayNameFocus = FocusNode();
+  final passwordFocus = FocusNode();
+  final usernameFocus = FocusNode();
+  final websiteUrlFocus = FocusNode();
+  final noteFocus = FocusNode();
   late bool _enabled;
   late bool _obscurePassword;
+  final double spacing = 16.0;
 
   @override
   void initState() {
@@ -30,8 +35,19 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
 
   @override
   Widget build(BuildContext context) {
+    //final uuid;
     final displayName = TextEditingController(text: widget.credential.displayName);
-    final GlobalKey<CredentialInputState> displayNameWidget = GlobalKey<CredentialInputState>();
+
+    final password = TextEditingController(text: widget.credential.password);
+    //final passwordSalt;
+
+    final username = TextEditingController(text: widget.credential.username);
+    //final usernameSalt;
+
+    final websiteUrl = TextEditingController(text: widget.credential.websiteUrl);
+
+    final note = TextEditingController(text: widget.credential.note);
+    // String folderUuid;
 
     void _enableFields() {
       setState(() {
@@ -49,6 +65,10 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
 
     void _save() {
       widget.credential.displayName = displayName.text;
+      widget.credential.username = username.text;
+      widget.credential.password = password.text;
+      widget.credential.websiteUrl = websiteUrl.text;
+      widget.credential.note = note.text;
     }
 
     return Scaffold(
@@ -72,7 +92,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                   Icons.cancel,
                   color: Theme.of(context).colorScheme.onPrimary,
                 )),
-          //IconButton(onPressed: () => displayNameWidget.currentState?.enable(), icon: Icon(Icons.edit))
+          const SizedBox(width: 8.0,),
         ],
       ),
       body: Padding(
@@ -80,13 +100,48 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         child: Column(
           children: [
             CredentialInput(
-              key: displayNameWidget,
+              key: UniqueKey(),
               controller: displayName,
               label: 'Display Name',
-              obscureText: _obscurePassword,
+              obscureText: false,
               focus: displayNameFocus,
               enabled: _enabled,
-              //value: widget.credential.displayName,
+            ),
+            SizedBox(height: spacing),
+            CredentialInput(
+              key: UniqueKey(),
+              controller: websiteUrl,
+              label: 'URL',
+              obscureText: false,
+              focus: websiteUrlFocus,
+              enabled: _enabled,
+            ),
+            SizedBox(height: spacing),
+            CredentialInput(
+              key: UniqueKey(),
+              controller: username,
+              label: 'Username',
+              obscureText: false,
+              focus: usernameFocus,
+              enabled: _enabled,
+            ),
+            SizedBox(height: spacing),
+            CredentialInput(
+              key: UniqueKey(),
+              controller: password,
+              label: 'Password',
+              obscureText: _obscurePassword,
+              focus: passwordFocus,
+              enabled: _enabled,
+            ),
+            SizedBox(height: spacing),
+            CredentialInput(
+              key: UniqueKey(),
+              controller: note,
+              label: 'Notes',
+              obscureText: false,
+              focus: noteFocus,
+              enabled: _enabled,
             ),
           ],
         ),
