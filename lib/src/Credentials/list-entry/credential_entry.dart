@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './logo.dart';
@@ -19,8 +20,30 @@ class CredentialEntry extends StatefulWidget {
 }
 
 class _CredentialEntry extends State<CredentialEntry> {
+  Timer? _timer;
+
   @override
   Widget build(BuildContext context) {
+    void copyToClipboard({required String value, required String message}) {
+      Clipboard.setData(ClipboardData(text: value)).then((_) {
+        _timer?.cancel(); // Cancel any existing timer
+        _timer = Timer(const Duration(seconds: 10), () async {
+          ClipboardData? current = await Clipboard.getData('text/plain');
+          if(current != null && current.text == value){
+            Clipboard.setData(const ClipboardData(text: ''));
+          }
+        });
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              duration: const Duration(seconds: 1),
+            ),
+          );
+        }
+      });
+    }
+
     return InkWell(
       onTap: () => {
         Navigator.push(
@@ -72,7 +95,8 @@ class _CredentialEntry extends State<CredentialEntry> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
               ),
-              onPressed: () async {
+              onPressed: () => copyToClipboard(message: 'Copied Username', value: widget.credential.username),
+              /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: widget.credential.username));
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +106,7 @@ class _CredentialEntry extends State<CredentialEntry> {
                     ),
                   );
                 }
-              },
+              }, */
               child: Icon(
                 Icons.person,
                 color: Theme.of(context).colorScheme.onPrimary,
@@ -93,7 +117,8 @@ class _CredentialEntry extends State<CredentialEntry> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
               ),
-              onPressed: () async {
+              onPressed: () => copyToClipboard(message: 'Copied Password', value: widget.credential.password),
+              /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: widget.credential.password));
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -103,7 +128,7 @@ class _CredentialEntry extends State<CredentialEntry> {
                     ),
                   );
                 }
-              },
+              }, */
               child: Icon(
                 Icons.password,
                 color: Theme.of(context).colorScheme.onPrimary,
