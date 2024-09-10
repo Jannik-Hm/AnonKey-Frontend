@@ -1,7 +1,6 @@
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
-import './../Credentials/list-entry/credential_entry.dart';
 
 import './login_input.dart';
 
@@ -68,7 +67,7 @@ class LoginController extends State<LoginView> {
                   foregroundColor: Theme.of(context).colorScheme.onPrimary),
               onPressed: () => _showDialog(),
               child: const Text('Fly me to the moon'),
-            ),
+            )
           ],
         ),
       ),
