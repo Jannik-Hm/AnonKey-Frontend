@@ -1,0 +1,804 @@
+openapi: 3.0.1
+info:
+  title: AnonKey-Backend
+  version: '1.1'
+paths:
+  /authentication/login:
+    post:
+      tags:
+        - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationLoginRequestBody'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationLoginResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /authentication/logout:
+    delete:
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /authentication/changePassword:
+    put:
+      tags:
+        - Authentication
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /credentials/create:
+    post:
+      tags:
+        - Credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialsCreateRequestBody'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialsCreateResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /credentials/get:
+    get:
+      tags:
+        - Credentials
+      parameters:
+        - name: credentialUuid
+          in: query
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialsGetResponseBody'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /credentials/getAll:
+    get:
+      tags:
+        - Credentials
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialsGetAllResponseBody'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /credentials/update:
+    put:
+      tags:
+        - Credentials
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialsUpdateRequestBody'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialsUpdateResponseBody'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /credentials/delete:
+    delete:
+      tags:
+        - Credentials
+      parameters:
+        - name: credentialUuid
+          in: query
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /folders/create:
+    post:
+      tags:
+        - Folders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FoldersCreateRequestBody'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoldersCreateResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /folders/get:
+    get:
+      tags:
+        - Folders
+      parameters:
+        - name: folderUuid
+          in: query
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoldersGetResponseBody'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /folders/getAll:
+    get:
+      tags:
+        - Folders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoldersGetAllResponseBody'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /folders/update:
+    put:
+      tags:
+        - Folders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FoldersUpdateRequestBody'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoldersUpdateResponseBody'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /folders/delete:
+    delete:
+      tags:
+        - Folders
+      parameters:
+        - name: folderUuid
+          in: query
+          required: true
+          style: form
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /service/ping:
+    get:
+      tags:
+        - Service
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /user/create:
+    post:
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersCreateRequestBody'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersCreateResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /user/get:
+    get:
+      tags:
+        - Users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersGetResponseBody'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /user/update:
+    put:
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersUpdateRequestBody'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /user/delete:
+    delete:
+      tags:
+        - Users
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+components:
+  schemas:
+    AuthenticationLoginRequestBody:
+      type: object
+      properties:
+        userName:
+          type: string
+          nullable: true
+        kdfPasswordResult:
+          type: string
+          nullable: true
+      additionalProperties: false
+    AuthenticationLoginResponseBody:
+      type: object
+      properties:
+        token:
+          type: string
+          nullable: true
+        expiresInSeconds:
+          type: integer
+          format: int32
+      additionalProperties: false
+    CredentialsCreateCredential:
+      type: object
+      properties:
+        uuid:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+        passwordSalt:
+          type: string
+          nullable: true
+        username:
+          type: string
+          nullable: true
+        usernameSalt:
+          type: string
+          nullable: true
+        websiteUrl:
+          type: string
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        folderUuid:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CredentialsCreateRequestBody:
+      type: object
+      properties:
+        credential:
+          $ref: '#/components/schemas/CredentialsCreateCredential'
+      additionalProperties: false
+    CredentialsCreateResponseBody:
+      type: object
+      properties:
+        credentialUuid:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CredentialsGetAllCredential:
+      type: object
+      properties:
+        uuid:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+        passwordSalt:
+          type: string
+          nullable: true
+        username:
+          type: string
+          nullable: true
+        usernameSalt:
+          type: string
+          nullable: true
+        websiteUrl:
+          type: string
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        folderUuid:
+          type: string
+          nullable: true
+        createdTimestamp:
+          type: integer
+          format: int64
+        changedTimestamp:
+          type: integer
+          format: int64
+        deletedTimestamp:
+          type: integer
+          format: int64
+      additionalProperties: false
+    CredentialsGetAllResponseBody:
+      type: object
+      properties:
+        credential:
+          type: array
+          items:
+            $ref: '#/components/schemas/CredentialsGetAllCredential'
+          nullable: true
+      additionalProperties: false
+    CredentialsGetCredential:
+      type: object
+      properties:
+        uuid:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+        passwordSalt:
+          type: string
+          nullable: true
+        username:
+          type: string
+          nullable: true
+        usernameSalt:
+          type: string
+          nullable: true
+        websiteUrl:
+          type: string
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        folderUuid:
+          type: string
+          nullable: true
+        createdTimestamp:
+          type: integer
+          format: int64
+        changedTimestamp:
+          type: integer
+          format: int64
+        deletedTimestamp:
+          type: integer
+          format: int64
+      additionalProperties: false
+    CredentialsGetResponseBody:
+      type: object
+      properties:
+        credential:
+          $ref: '#/components/schemas/CredentialsGetCredential'
+      additionalProperties: false
+    CredentialsUpdateCredentialRequest:
+      type: object
+      properties:
+        uuid:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+        passwordSalt:
+          type: string
+          nullable: true
+        username:
+          type: string
+          nullable: true
+        usernameSalt:
+          type: string
+          nullable: true
+        websiteUrl:
+          type: string
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        folderUuid:
+          type: string
+          nullable: true
+      additionalProperties: false
+    CredentialsUpdateCredentialResponse:
+      type: object
+      properties:
+        uuid:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+        passwordSalt:
+          type: string
+          nullable: true
+        username:
+          type: string
+          nullable: true
+        usernameSalt:
+          type: string
+          nullable: true
+        websiteUrl:
+          type: string
+          nullable: true
+        note:
+          type: string
+          nullable: true
+        displayName:
+          type: string
+          nullable: true
+        folderUuid:
+          type: string
+          nullable: true
+        createdTimestamp:
+          type: integer
+          format: int64
+        changedTimestamp:
+          type: integer
+          format: int64
+        deletedTimestamp:
+          type: integer
+          format: int64
+      additionalProperties: false
+    CredentialsUpdateRequestBody:
+      type: object
+      properties:
+        credential:
+          $ref: '#/components/schemas/CredentialsUpdateCredentialRequest'
+      additionalProperties: false
+    CredentialsUpdateResponseBody:
+      type: object
+      properties:
+        credential:
+          $ref: '#/components/schemas/CredentialsUpdateCredentialResponse'
+      additionalProperties: false
+    ErrorResponseBody:
+      type: object
+      properties:
+        message:
+          type: string
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        internalCode:
+          type: integer
+          format: int32
+      additionalProperties: false
+    FoldersCreateFolder:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: true
+        icon:
+          type: integer
+          format: int32
+      additionalProperties: false
+    FoldersCreateRequestBody:
+      type: object
+      properties:
+        folder:
+          $ref: '#/components/schemas/FoldersCreateFolder'
+      additionalProperties: false
+    FoldersCreateResponseBody:
+      type: object
+      properties:
+        folderUuid:
+          type: string
+          nullable: true
+      additionalProperties: false
+    FoldersGetAllFolder:
+      type: object
+      properties:
+        uuid:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        icon:
+          type: integer
+          format: int32
+      additionalProperties: false
+    FoldersGetAllResponseBody:
+      type: object
+      properties:
+        folder:
+          $ref: '#/components/schemas/FoldersGetAllFolder'
+      additionalProperties: false
+    FoldersGetFolder:
+      type: object
+      properties:
+        uuid:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        icon:
+          type: integer
+          format: int32
+      additionalProperties: false
+    FoldersGetResponseBody:
+      type: object
+      properties:
+        folder:
+          $ref: '#/components/schemas/FoldersGetFolder'
+      additionalProperties: false
+    FoldersUpdateFolder:
+      type: object
+      properties:
+        uuid:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        icon:
+          type: integer
+          format: int32
+      additionalProperties: false
+    FoldersUpdateRequestBody:
+      type: object
+      properties:
+        folder:
+          $ref: '#/components/schemas/FoldersUpdateFolder'
+      additionalProperties: false
+    FoldersUpdateResponseBody:
+      type: object
+      properties:
+        folderUuid:
+          type: string
+          nullable: true
+      additionalProperties: false
+    UsersCreateRequestBody:
+      type: object
+      properties:
+        userName:
+          type: string
+          nullable: true
+        userDisplayName:
+          type: string
+          nullable: true
+        kdfPasswordResult:
+          type: string
+          nullable: true
+      additionalProperties: false
+    UsersCreateResponseBody:
+      type: object
+      properties:
+        token:
+          type: string
+          nullable: true
+        expiresInSeconds:
+          type: integer
+          format: int32
+      additionalProperties: false
+    UsersGetResponseBody:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UsersGetUser'
+      additionalProperties: false
+    UsersGetUser:
+      type: object
+      properties:
+        displayName:
+          type: string
+          nullable: true
+      additionalProperties: false
+    UsersUpdateRequestBody:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UsersUpdateUser'
+      additionalProperties: false
+    UsersUpdateUser:
+      type: object
+      properties:
+        displayName:
+          type: string
+          nullable: true
+      additionalProperties: false
