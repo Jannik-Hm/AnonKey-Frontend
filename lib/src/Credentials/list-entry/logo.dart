@@ -2,7 +2,6 @@ import 'package:favicon/favicon.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:html/parser.dart' as parser;
 
 String _extractDomain(String url) {
   // Parse the URL using Uri.parse
@@ -37,25 +36,14 @@ StatefulWidget getNetworkLogoFromUrl(String url) {
   return FutureBuilder(
       future: _getBestLogoUrlFromUrl(url),
       builder: (context, snapshot) {
-        /* if(snapshot.hasData && snapshot.data != null){
-      print(snapshot.hasData);
-      print(snapshot.data);
-      return Image.network(snapshot.data!);
-    }else{
-      return const Icon(Icons.public);
-    } */
         if (snapshot.connectionState == ConnectionState.waiting) {
           // While the future is loading, show a progress indicator
           return CircularProgressIndicator();
         } else if (snapshot.hasError) {
           // If there's an error, show a fallback icon or error message
           // print(snapshot.error); // Debugging information
-          print(snapshot.error);
           return const Icon(Icons.public);
-        } else if (snapshot.hasData /* && !listEquals(iconEmptyArray, snapshot.data) */) {
-          // If data is available (URL of the image), show the image
-          //print(snapshot.data);
-          //return Image.memory(snapshot.data!);
+        } else if (snapshot.hasData) {
           return Image.network(snapshot.data!);
         } else {
           // Fallback if no data is present
@@ -68,24 +56,16 @@ StatefulWidget getByteLogoFromUrl(String url) {
   return FutureBuilder(
       future: _getBestLogoFromUrl(url),
       builder: (context, snapshot) {
-        /* if(snapshot.hasData && snapshot.data != null){
-      print(snapshot.hasData);
-      print(snapshot.data);
-      return Image.network(snapshot.data!);
-    }else{
-      return const Icon(Icons.public);
-    } */
         if (snapshot.connectionState == ConnectionState.waiting) {
           // While the future is loading, show a progress indicator
           return CircularProgressIndicator();
         } else if (snapshot.hasError) {
           // If there's an error, show a fallback icon or error message
           // print(snapshot.error); // Debugging information
-          print(snapshot.error);
           return const Icon(Icons.public);
         } else if (snapshot.hasData && !listEquals(iconEmptyArray, snapshot.data)) {
           // If data is available (URL of the image), show the image
-          //print(snapshot.data);
+          //print(snapshot.data); // Debugging information
           return Image.memory(snapshot.data!);
         } else {
           // Fallback if no data is present
