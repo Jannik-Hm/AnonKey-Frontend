@@ -69,7 +69,6 @@ class LoginController extends State<LoginView> {
               onPressed: () => _showDialog(),
               child: const Text('Fly me to the moon'),
             ),
-            CredentialEntry(url: "https://google.de", username: "jannik", password: "test", title: "Google"),
           ],
         ),
       ),
