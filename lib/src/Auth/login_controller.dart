@@ -29,7 +29,7 @@ class LoginController extends State<LoginView> {
                   Container(
                     margin: const EdgeInsets.only(bottom: 50),
                     child: const Image(
-                        image: AssetImage('images/logo.png'),
+                        image: AssetImage('assets/images/Logo.png'),
                         width: 200,
                         height: 200),
                   ),
