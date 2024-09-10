@@ -35,7 +35,7 @@ class _CredentialEntry extends State<CredentialEntry> {
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: 70.0),
               //child: Image.network("https://icons.duckduckgo.com/ip3/linustechtips.com.ico"),
-              child: getByteLogoFromUrl(widget.url),
+              child: getNetworkLogoFromUrl(widget.url),
             ),
             const SizedBox(
               width: 20.0,
