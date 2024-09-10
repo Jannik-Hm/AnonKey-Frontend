@@ -1,37 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './logo.dart';
+import './credential_detail_view.dart';
+import './../credential_data.dart';
 
 //Usage: CredentialEntry(websiteUrl: "https://google.de", username: "jannik", password: "test", displayName: "Google", uuid: '', passwordSalt: '', usernameSalt: '', note: '', folderUuid: '', createdTimeStamp: '', changedTimeStamp: '', deletedTimeStamp: '',),
 
 class CredentialEntry extends StatefulWidget {
-  final String uuid;
-  final String password;
-  final String passwordSalt;
-  final String username;
-  final String usernameSalt;
-  final String websiteUrl;
-  final String note;
-  final String displayName;
-  final String folderUuid;
-  final String createdTimeStamp;
-  final String changedTimeStamp;
-  final String deletedTimeStamp;
+  Credential credential;
 
-  const CredentialEntry({
+  CredentialEntry({
     super.key,
-    required this.websiteUrl,
-    required this.username,
-    required this.password,
-    required this.displayName,
-    required this.uuid,
-    required this.passwordSalt,
-    required this.usernameSalt,
-    required this.note,
-    required this.folderUuid,
-    required this.createdTimeStamp,
-    required this.changedTimeStamp,
-    required this.deletedTimeStamp,
+    required this.credential,
   });
 
   @override
@@ -42,7 +22,14 @@ class _CredentialEntry extends State<CredentialEntry> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => {},
+      onTap: () => {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CredentialDetailWidget(credential: widget.credential),
+          ),
+        )
+      },
       child: Ink(
         padding: const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
         color: Theme.of(context).colorScheme.tertiary,
@@ -53,7 +40,7 @@ class _CredentialEntry extends State<CredentialEntry> {
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 70.0),
               //child: Image.network("https://icons.duckduckgo.com/ip3/linustechtips.com.ico"),
-              child: getNetworkLogoFromUrl(widget.websiteUrl),
+              child: getNetworkLogoFromUrl(widget.credential.websiteUrl),
             ),
             const SizedBox(
               width: 20.0,
@@ -66,13 +53,13 @@ class _CredentialEntry extends State<CredentialEntry> {
                   crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
                   children: [
                     Text(
-                      widget.displayName,
+                      widget.credential.displayName,
                       style: const TextStyle(
                         fontSize: 20.0,
                       ),
                     ),
                     Text(
-                      widget.username,
+                      widget.credential.username,
                       style: const TextStyle(
                         fontSize: 15.0,
                       ),
@@ -86,10 +73,13 @@ class _CredentialEntry extends State<CredentialEntry> {
                 backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
               ),
               onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: widget.username));
+                await Clipboard.setData(ClipboardData(text: widget.credential.username));
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Copied Username'), duration: Duration(seconds: 1),),
+                    const SnackBar(
+                      content: Text('Copied Username'),
+                      duration: Duration(seconds: 1),
+                    ),
                   );
                 }
               },
@@ -104,10 +94,13 @@ class _CredentialEntry extends State<CredentialEntry> {
                 backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
               ),
               onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: widget.password));
+                await Clipboard.setData(ClipboardData(text: widget.credential.password));
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Copied Password'), duration: Duration(seconds: 1),),
+                    const SnackBar(
+                      content: Text('Copied Password'),
+                      duration: Duration(seconds: 1),
+                    ),
                   );
                 }
               },
