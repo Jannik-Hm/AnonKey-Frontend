@@ -44,6 +44,8 @@ class _CredentialEntry extends State<CredentialEntry> {
       });
     }
 
+    Credential.New(clearPassword: "12345678", displayName: "Test", folderUuid: 0, masterPassword: "SuperSicher", username: "test", uuid: "balabadasda", websiteUrl: "google.de", note: "", createdTimeStamp: 0);
+
     return InkWell(
       onTap: () => {
         Navigator.push(

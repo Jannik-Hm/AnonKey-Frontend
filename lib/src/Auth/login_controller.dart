@@ -31,9 +31,10 @@ class LoginController extends State<LoginView> {
                   Container(
                     margin: const EdgeInsets.only(bottom: 50),
                     child: const Image(
-                        image: AssetImage('assets/images/Logo.png'),
-                        width: 200,
-                        height: 200),
+                      image: AssetImage('assets/images/Logo.png'),
+                      width: 200,
+                      height: 200,
+                    ),
                   ),
                   LoginInput(
                     focus: _urlFocus,
@@ -65,12 +66,13 @@ class LoginController extends State<LoginView> {
                 ])),
             TextButton(
               style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              ),
               onPressed: () => _showDialog(),
               child: const Text('Fly me to the moon'),
             ),
-            CredentialEntry(credential: Credential(websiteUrl: "https://google.de", username: "jannik", password: "test", displayName: "Google", uuid: '', passwordSalt: '', usernameSalt: '', note: '', folderUuid: '', createdTimeStamp: '', changedTimeStamp: '', deletedTimeStamp: '',)),
+            CredentialEntry(credential: Credential(websiteUrl: "https://google.de", username: "jannik", password: "test", displayName: "Google", uuid: '', passwordSalt: '', usernameSalt: '', note: '', folderUuid: 0)),
           ],
         ),
       ),
