@@ -4,6 +4,9 @@ import 'dart:typed_data';
 import 'package:cryptography/cryptography.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
+//TODO: Error Handling if Master Password or Salt is incorrect
+//TODO: Save encryptedPass as well to minimize AES runs by checking before de-/encrypting?
+
 class Credential {
   final String uuid;
   String password;
@@ -86,7 +89,8 @@ class Credential {
   }) {
     final passwordSalt = _createCryptoRandomString(10);
     print(passwordSalt);
-    encryptPassword(masterPassword: masterPassword, kdfSalt: uuid, clearPassword: clearPassword, encryptedSalt: passwordSalt).then(print);
+    getKDFBase64(masterPassword: masterPassword, salt: uuid).then(print);
+    encryptString(masterPassword: masterPassword, kdfSalt: uuid, clearString: clearPassword, encryptedSalt: passwordSalt).then(print);
     getClearPassword(masterPassword: masterPassword, kdfSalt: uuid, encryptedPassword: "0y9P8H+AzqfAQQuLGB/MhQ==", encryptedSalt: "IU0e-CSGD6QK7g==").then(print);
     return Credential(
       uuid: uuid,
@@ -102,17 +106,17 @@ class Credential {
     );
   }
 
-  static Future<String> encryptPassword({required String masterPassword, required String kdfSalt, required String clearPassword, required String encryptedSalt}) async {
-    return getKDF(masterPassword: masterPassword, salt: kdfSalt).then(
+  static Future<String> encryptString({required String masterPassword, required String kdfSalt, required String clearString, required String encryptedSalt}) async {
+    return getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
       (value) => encrypt.Encrypter(encrypt.AES(value)).encrypt(
-        clearPassword,
+        clearString,
         iv: encrypt.IV.fromUtf8(encryptedSalt),
       ).base64,
     );
   }
 
   static Future<String> getClearPassword({required String masterPassword, required String kdfSalt, required String encryptedPassword, required String encryptedSalt}) async {
-    return getKDF(masterPassword: masterPassword, salt: kdfSalt).then(
+    return getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
       (value) => encrypt.Encrypter(encrypt.AES(value)).decrypt64(
         encryptedPassword,
         iv: encrypt.IV.fromUtf8(encryptedSalt),
@@ -120,11 +124,19 @@ class Credential {
     );
   }
 
-  static Future<encrypt.Key> getKDF({required String masterPassword, required String salt}) async {
+  static Future<Uint8List> getKDFBytes({required String masterPassword, required String salt}) async {
     return Pbkdf2(
       macAlgorithm: Hmac.sha256(),
       iterations: 10000, // 20k iterations
       bits: 256, // 256 bits = 32 bytes output
-    ).deriveKeyFromPassword(password: masterPassword, nonce: utf8.encode(salt)).then((kdf) => kdf.extractBytes().then((value) => encrypt.Key(Uint8List.fromList(value))));
+    ).deriveKeyFromPassword(password: masterPassword, nonce: utf8.encode(salt)).then((kdf) => kdf.extractBytes().then((value) => Uint8List.fromList(value)));
+  }
+
+  static Future<encrypt.Key> getKDFKey({required String masterPassword, required String salt}) async {
+    return getKDFBytes(masterPassword: masterPassword, salt: salt).then((value) => encrypt.Key(value));
+  }
+
+  static Future<String> getKDFBase64({required String masterPassword, required String salt}) async {
+    return getKDFBytes(masterPassword: masterPassword, salt: salt).then((value) => base64Encode(value));
   }
 }
