@@ -9,7 +9,8 @@ import 'package:encrypt/encrypt.dart' as encrypt;
 
 class Credential {
   final String uuid;
-  String password;
+  String encryptedPassword;
+  String clearPassword;
   String passwordSalt;
   String username;
   String usernameSalt;
@@ -32,7 +33,8 @@ class Credential {
   Credential({
     required this.websiteUrl,
     required this.username,
-    required this.password,
+    required this.encryptedPassword,
+    required this.clearPassword,
     required this.displayName,
     required this.uuid,
     required this.passwordSalt,
@@ -63,7 +65,8 @@ class Credential {
     return Credential(
       websiteUrl: websiteUrl,
       username: username,
-      password: await getClearPassword(masterPassword: masterPassword, kdfSalt: uuid, encryptedPassword: encryptedPassword, encryptedSalt: passwordSalt),
+      encryptedPassword: encryptedPassword,
+      clearPassword: await getClearPassword(masterPassword: masterPassword, kdfSalt: uuid, encryptedPassword: encryptedPassword, encryptedSalt: passwordSalt),
       displayName: displayName,
       uuid: uuid,
       passwordSalt: passwordSalt,
@@ -76,7 +79,7 @@ class Credential {
     );
   }
 
-  static Credential New({
+  static Future<Credential> New({
     required String masterPassword,
     required String uuid,
     required String websiteUrl,
@@ -86,7 +89,7 @@ class Credential {
     String note = "",
     required int folderUuid,
     required int createdTimeStamp,
-  }) {
+  }) async {
     final passwordSalt = _createCryptoRandomString(10);
     print(passwordSalt);
     getKDFBase64(masterPassword: masterPassword, salt: uuid).then(print);
@@ -96,7 +99,8 @@ class Credential {
       uuid: uuid,
       websiteUrl: websiteUrl,
       username: username,
-      password: clearPassword,
+      encryptedPassword: await encryptString(masterPassword: masterPassword, kdfSalt: uuid, clearString: clearPassword, encryptedSalt: passwordSalt),
+      clearPassword: clearPassword,
       displayName: displayName,
       passwordSalt: passwordSalt,
       usernameSalt: _createCryptoRandomString(32),

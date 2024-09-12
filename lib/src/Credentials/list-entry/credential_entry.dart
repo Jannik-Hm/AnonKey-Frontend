@@ -119,7 +119,7 @@ class _CredentialEntry extends State<CredentialEntry> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
               ),
-              onPressed: () => copyToClipboard(message: 'Copied Password', value: widget.credential.password),
+              onPressed: () => copyToClipboard(message: 'Copied Password', value: widget.credential.clearPassword),
               /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: widget.credential.password));
                 if (context.mounted) {
