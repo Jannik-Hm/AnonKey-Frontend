@@ -66,7 +66,7 @@ class Credential {
       websiteUrl: websiteUrl,
       username: username,
       encryptedPassword: encryptedPassword,
-      clearPassword: await getClearPassword(masterPassword: masterPassword, kdfSalt: uuid, encryptedPassword: encryptedPassword, encryptedSalt: passwordSalt),
+      clearPassword: await getClearString(masterPassword: masterPassword, kdfSalt: uuid, encryptedString: encryptedPassword, encryptedSalt: passwordSalt),
       displayName: displayName,
       uuid: uuid,
       passwordSalt: passwordSalt,
@@ -94,7 +94,7 @@ class Credential {
     print(passwordSalt);
     getKDFBase64(masterPassword: masterPassword, salt: uuid).then(print);
     encryptString(masterPassword: masterPassword, kdfSalt: uuid, clearString: clearPassword, encryptedSalt: passwordSalt).then(print);
-    getClearPassword(masterPassword: masterPassword, kdfSalt: uuid, encryptedPassword: "0y9P8H+AzqfAQQuLGB/MhQ==", encryptedSalt: "IU0e-CSGD6QK7g==").then(print);
+    getClearString(masterPassword: masterPassword, kdfSalt: uuid, encryptedString: "0y9P8H+AzqfAQQuLGB/MhQ==", encryptedSalt: "IU0e-CSGD6QK7g==").then(print);
     return Credential(
       uuid: uuid,
       websiteUrl: websiteUrl,
@@ -112,20 +112,26 @@ class Credential {
 
   static Future<String> encryptString({required String masterPassword, required String kdfSalt, required String clearString, required String encryptedSalt}) async {
     return getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
-      (value) => encrypt.Encrypter(encrypt.AES(value)).encrypt(
-        clearString,
-        iv: encrypt.IV.fromUtf8(encryptedSalt),
-      ).base64,
+      (value) => encrypt.Encrypter(encrypt.AES(value))
+          .encrypt(
+            clearString,
+            iv: encrypt.IV.fromUtf8(encryptedSalt),
+          )
+          .base64,
     );
   }
 
-  static Future<String> getClearPassword({required String masterPassword, required String kdfSalt, required String encryptedPassword, required String encryptedSalt}) async {
-    return getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
-      (value) => encrypt.Encrypter(encrypt.AES(value)).decrypt64(
-        encryptedPassword,
-        iv: encrypt.IV.fromUtf8(encryptedSalt),
-      ),
-    );
+  static Future<String> getClearString({required String masterPassword, required String kdfSalt, required String encryptedString, required String encryptedSalt}) async {
+    try {
+      return getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
+        (value) => encrypt.Encrypter(encrypt.AES(value)).decrypt64(
+          encryptedString,
+          iv: encrypt.IV.fromUtf8(encryptedSalt),
+        ),
+      );
+    } catch (error) {
+      throw ArgumentError("Decryption Arguments do not match encrypted String");
+    }
   }
 
   static Future<Uint8List> getKDFBytes({required String masterPassword, required String salt}) async {

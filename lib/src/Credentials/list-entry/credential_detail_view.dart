@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:anonkey_frontend/src/Credentials/list-entry/credential_input.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 
 class CredentialDetailWidget extends StatefulWidget {
-  Credential credential;
+  final Credential credential;
 
-  CredentialDetailWidget({
+  const CredentialDetailWidget({
     super.key,
     required this.credential,
   });
@@ -23,6 +22,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
   final noteFocus = FocusNode();
   late bool _enabled;
   late bool _obscurePassword;
+  late Credential _credential;
   final double spacing = 16.0;
 
   @override
@@ -31,63 +31,64 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     // Initialize the mutable object from the widget field
     _enabled = false;
     _obscurePassword = true;
+    _credential = widget.credential;
   }
 
   @override
   Widget build(BuildContext context) {
     //final uuid;
-    final displayName = TextEditingController(text: widget.credential.displayName);
+    final displayName = TextEditingController(text: _credential.displayName);
 
-    final password = TextEditingController(text: widget.credential.clearPassword);
+    final password = TextEditingController(text: _credential.clearPassword);
     //final passwordSalt;
 
-    final username = TextEditingController(text: widget.credential.username);
+    final username = TextEditingController(text: _credential.username);
     //final usernameSalt;
 
-    final websiteUrl = TextEditingController(text: widget.credential.websiteUrl);
+    final websiteUrl = TextEditingController(text: _credential.websiteUrl);
 
-    final note = TextEditingController(text: widget.credential.note);
+    final note = TextEditingController(text: _credential.note);
     // String folderUuid;
 
-    void _enableFields() {
+    void enableFields() {
       setState(() {
         _enabled = true;
         _obscurePassword = false;
       });
     }
 
-    void _disableFields() {
+    void disableFields() {
       setState(() {
         _enabled = false;
         _obscurePassword = true;
       });
     }
 
-    void _save() {
-      widget.credential.displayName = displayName.text;
-      widget.credential.username = username.text;
-      widget.credential.clearPassword = password.text;
-      widget.credential.websiteUrl = websiteUrl.text;
-      widget.credential.note = note.text;
+    void save() {
+      _credential.displayName = displayName.text;
+      _credential.username = username.text;
+      _credential.clearPassword = password.text;
+      _credential.websiteUrl = websiteUrl.text;
+      _credential.note = note.text;
     }
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: Text(widget.credential.displayName),
+        title: Text(_credential.displayName),
         actions: [
-          if (!_enabled) IconButton(onPressed: () => _enableFields(), icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary)),
+          if (!_enabled) IconButton(onPressed: () => enableFields(), icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary)),
           if (_enabled)
             IconButton(
-                onPressed: () => {_save(), _disableFields()},
+                onPressed: () => {save(), disableFields()},
                 icon: Icon(
                   Icons.save,
                   color: Theme.of(context).colorScheme.onPrimary,
                 )),
           if (_enabled)
             IconButton(
-                onPressed: () => _disableFields(),
+                onPressed: () => disableFields(),
                 icon: Icon(
                   Icons.cancel,
                   color: Theme.of(context).colorScheme.onPrimary,

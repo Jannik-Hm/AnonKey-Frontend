@@ -8,9 +8,9 @@ import './../credential_data.dart';
 //Usage: CredentialEntry(websiteUrl: "https://google.de", username: "jannik", password: "test", displayName: "Google", uuid: '', passwordSalt: '', usernameSalt: '', note: '', folderUuid: '', createdTimeStamp: '', changedTimeStamp: '', deletedTimeStamp: '',),
 
 class CredentialEntry extends StatefulWidget {
-  Credential credential;
+  final Credential credential;
 
-  CredentialEntry({
+  const CredentialEntry({
     super.key,
     required this.credential,
   });
@@ -21,6 +21,14 @@ class CredentialEntry extends StatefulWidget {
 
 class _CredentialEntry extends State<CredentialEntry> {
   Timer? _timer;
+  late Credential _credential;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the mutable object from the widget field
+    _credential = widget.credential;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +59,7 @@ class _CredentialEntry extends State<CredentialEntry> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => CredentialDetailWidget(credential: widget.credential),
+            builder: (_) => CredentialDetailWidget(credential: _credential),
           ),
         )
       },
@@ -65,7 +73,7 @@ class _CredentialEntry extends State<CredentialEntry> {
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 70.0),
               //child: Image.network("https://icons.duckduckgo.com/ip3/linustechtips.com.ico"),
-              child: getNetworkLogoFromUrl(widget.credential.websiteUrl),
+              child: getNetworkLogoFromUrl(_credential.websiteUrl),
             ),
             const SizedBox(
               width: 20.0,
@@ -78,13 +86,13 @@ class _CredentialEntry extends State<CredentialEntry> {
                   crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
                   children: [
                     Text(
-                      widget.credential.displayName,
+                      _credential.displayName,
                       style: const TextStyle(
                         fontSize: 20.0,
                       ),
                     ),
                     Text(
-                      widget.credential.username,
+                      _credential.username,
                       style: const TextStyle(
                         fontSize: 15.0,
                       ),
@@ -97,9 +105,9 @@ class _CredentialEntry extends State<CredentialEntry> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
               ),
-              onPressed: () => copyToClipboard(message: 'Copied Username', value: widget.credential.username),
+              onPressed: () => copyToClipboard(message: 'Copied Username', value: _credential.username),
               /* onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: widget.credential.username));
+                await Clipboard.setData(ClipboardData(text: _credential.username));
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -119,9 +127,9 @@ class _CredentialEntry extends State<CredentialEntry> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
               ),
-              onPressed: () => copyToClipboard(message: 'Copied Password', value: widget.credential.clearPassword),
+              onPressed: () => copyToClipboard(message: 'Copied Password', value: _credential.clearPassword),
               /* onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: widget.credential.password));
+                await Clipboard.setData(ClipboardData(text: _credential.password));
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
