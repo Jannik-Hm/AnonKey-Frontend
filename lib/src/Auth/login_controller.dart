@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 
 import './login_input.dart';
-import './../Credentials/list-entry/credential_entry.dart';
-import './../Credentials/credential_data.dart';
 
 class LoginController extends State<LoginView> {
   final url = TextEditingController();
@@ -31,10 +29,9 @@ class LoginController extends State<LoginView> {
                   Container(
                     margin: const EdgeInsets.only(bottom: 50),
                     child: const Image(
-                      image: AssetImage('assets/images/Logo.png'),
-                      width: 200,
-                      height: 200,
-                    ),
+                        image: AssetImage('assets/images/Logo.png'),
+                        width: 200,
+                        height: 200),
                   ),
                   LoginInput(
                     focus: _urlFocus,
@@ -66,13 +63,11 @@ class LoginController extends State<LoginView> {
                 ])),
             TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              ),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary),
               onPressed: () => _showDialog(),
               child: const Text('Fly me to the moon'),
-            ),
-            CredentialEntry(credential: Credential(websiteUrl: "https://google.de", clearUsername: "jannik", encryptedUsername: "", clearPassword: "test", displayName: "Google", uuid: '', passwordSalt: '', usernameSalt: '', note: '', folderUuid: 0, encryptedPassword: 'ojvakFaBMTmLvCWd6jaK5w==')),
+            )
           ],
         ),
       ),
