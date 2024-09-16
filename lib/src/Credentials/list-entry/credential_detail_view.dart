@@ -42,7 +42,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     final password = TextEditingController(text: _credential.clearPassword);
     //final passwordSalt;
 
-    final username = TextEditingController(text: _credential.username);
+    final username = TextEditingController(text: _credential.clearUsername);
     //final usernameSalt;
 
     final websiteUrl = TextEditingController(text: _credential.websiteUrl);
@@ -66,7 +66,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
 
     void save() {
       _credential.displayName = displayName.text;
-      _credential.username = username.text;
+      _credential.clearUsername = username.text;
       _credential.clearPassword = password.text;
       _credential.websiteUrl = websiteUrl.text;
       _credential.note = note.text;

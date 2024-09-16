@@ -52,7 +52,7 @@ class _CredentialEntry extends State<CredentialEntry> {
       });
     }
 
-    Credential.New(clearPassword: "12345678", displayName: "Test", folderUuid: 0, masterPassword: "SuperSicher", username: "test", uuid: "balabadasda", websiteUrl: "google.de", note: "", createdTimeStamp: 0);
+    Credential.New(clearPassword: "12345678", displayName: "Test", folderUuid: 0, masterPassword: "SuperSicher", clearUsername: "test", uuid: "balabadasda", websiteUrl: "google.de", note: "", createdTimeStamp: 0);
 
     return InkWell(
       onTap: () => {
@@ -92,7 +92,7 @@ class _CredentialEntry extends State<CredentialEntry> {
                       ),
                     ),
                     Text(
-                      _credential.username,
+                      _credential.clearUsername,
                       style: const TextStyle(
                         fontSize: 15.0,
                       ),
@@ -105,7 +105,7 @@ class _CredentialEntry extends State<CredentialEntry> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
               ),
-              onPressed: () => copyToClipboard(message: 'Copied Username', value: _credential.username),
+              onPressed: () => copyToClipboard(message: 'Copied Username', value: _credential.clearUsername),
               /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: _credential.username));
                 if (context.mounted) {

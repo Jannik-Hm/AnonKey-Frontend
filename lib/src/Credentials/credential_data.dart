@@ -12,7 +12,8 @@ class Credential {
   String encryptedPassword;
   String clearPassword;
   String passwordSalt;
-  String username;
+  String encryptedUsername;
+  String clearUsername;
   String usernameSalt;
   String websiteUrl;
   String note;
@@ -32,7 +33,8 @@ class Credential {
 
   Credential({
     required this.websiteUrl,
-    required this.username,
+    required this.clearUsername,
+    required this.encryptedUsername,
     required this.encryptedPassword,
     required this.clearPassword,
     required this.displayName,
@@ -46,10 +48,11 @@ class Credential {
     this.deletedTimeStamp,
   });
 
-  Future<Credential> fromApi({
+  /// Function to generate a Credential Object from API get requests
+  static Future<Credential> fromApi({
     required String masterPassword,
     required String websiteUrl,
-    required String username,
+    required String encryptedUsername,
     required String encryptedPassword,
     required String displayName,
     required String uuid,
@@ -64,7 +67,8 @@ class Credential {
     //Encrypter encrypter = Encrypter(AES());
     return Credential(
       websiteUrl: websiteUrl,
-      username: username,
+      clearUsername: await getClearString(masterPassword: masterPassword, kdfSalt: uuid, encryptedString: encryptedUsername, encryptedSalt: usernameSalt),
+      encryptedUsername: encryptedUsername,
       encryptedPassword: encryptedPassword,
       clearPassword: await getClearString(masterPassword: masterPassword, kdfSalt: uuid, encryptedString: encryptedPassword, encryptedSalt: passwordSalt),
       displayName: displayName,
@@ -79,11 +83,12 @@ class Credential {
     );
   }
 
+  /// Function to generate a New Credential entry
   static Future<Credential> New({
     required String masterPassword,
     required String uuid,
     required String websiteUrl,
-    required String username,
+    required String clearUsername,
     required String clearPassword,
     required String displayName,
     String note = "",
@@ -91,6 +96,7 @@ class Credential {
     required int createdTimeStamp,
   }) async {
     final passwordSalt = _createCryptoRandomString(10);
+    final usernameSalt = _createCryptoRandomString(10);
     print(passwordSalt);
     getKDFBase64(masterPassword: masterPassword, salt: uuid).then(print);
     encryptString(masterPassword: masterPassword, kdfSalt: uuid, clearString: clearPassword, encryptedSalt: passwordSalt).then(print);
@@ -98,18 +104,21 @@ class Credential {
     return Credential(
       uuid: uuid,
       websiteUrl: websiteUrl,
-      username: username,
+      clearUsername: clearUsername,
+      encryptedUsername: await encryptString(masterPassword: masterPassword, kdfSalt: uuid, clearString: clearUsername, encryptedSalt: usernameSalt),
       encryptedPassword: await encryptString(masterPassword: masterPassword, kdfSalt: uuid, clearString: clearPassword, encryptedSalt: passwordSalt),
       clearPassword: clearPassword,
       displayName: displayName,
       passwordSalt: passwordSalt,
-      usernameSalt: _createCryptoRandomString(32),
+      usernameSalt: usernameSalt,
       note: note,
       createdTimeStamp: DateTime.fromMillisecondsSinceEpoch(createdTimeStamp),
       folderUuid: folderUuid,
     );
   }
 
+  /// Returns an async String containing the encrypted content of [clearString] in base64.
+  /// Needs the [masterPassword] and [kdfSalt] to generate the KDF and the [encryptedSalt] to encrypt.
   static Future<String> encryptString({required String masterPassword, required String kdfSalt, required String clearString, required String encryptedSalt}) async {
     return getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
       (value) => encrypt.Encrypter(encrypt.AES(value))
@@ -121,6 +130,8 @@ class Credential {
     );
   }
 
+  /// Returns an async String containing the decrypted content of [encryptedString].
+  /// Needs the [masterPassword] and [kdfSalt] to generate the KDF and the [encryptedSalt] to decrypt.
   static Future<String> getClearString({required String masterPassword, required String kdfSalt, required String encryptedString, required String encryptedSalt}) async {
     try {
       return getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
@@ -134,6 +145,23 @@ class Credential {
     }
   }
 
+  Future<String> getEncryptedPassword({required String masterPassword}) async {
+    return encryptString(masterPassword: masterPassword, kdfSalt: this.uuid, clearString: this.clearPassword, encryptedSalt: this.passwordSalt);
+  }
+
+  Future<String> getClearPassword({required String masterPassword}) async {
+    return getClearString(masterPassword: masterPassword, kdfSalt: this.uuid, encryptedString: this.encryptedPassword, encryptedSalt: this.passwordSalt);
+  }
+
+  Future<String> getEncryptedUsername({required String masterPassword}) async {
+    return encryptString(masterPassword: masterPassword, kdfSalt: this.uuid, clearString: this.clearPassword, encryptedSalt: this.passwordSalt);
+  }
+
+  Future<String> getClearUsername({required String masterPassword}) async {
+    return getClearString(masterPassword: masterPassword, kdfSalt: this.uuid, encryptedString: this.encryptedPassword, encryptedSalt: this.passwordSalt);
+  }
+
+  /// Async function to generate a KDF in byte form.
   static Future<Uint8List> getKDFBytes({required String masterPassword, required String salt}) async {
     return Pbkdf2(
       macAlgorithm: Hmac.sha256(),
@@ -142,10 +170,12 @@ class Credential {
     ).deriveKeyFromPassword(password: masterPassword, nonce: utf8.encode(salt)).then((kdf) => kdf.extractBytes().then((value) => Uint8List.fromList(value)));
   }
 
+  /// Async function to generate a KDF in encrypt.key form for AES de-/encryption.
   static Future<encrypt.Key> getKDFKey({required String masterPassword, required String salt}) async {
     return getKDFBytes(masterPassword: masterPassword, salt: salt).then((value) => encrypt.Key(value));
   }
 
+  /// Async function to generate a KDF in base64 form.
   static Future<String> getKDFBase64({required String masterPassword, required String salt}) async {
     return getKDFBytes(masterPassword: masterPassword, salt: salt).then((value) => base64Encode(value));
   }

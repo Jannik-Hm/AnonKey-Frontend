@@ -72,7 +72,7 @@ class LoginController extends State<LoginView> {
               onPressed: () => _showDialog(),
               child: const Text('Fly me to the moon'),
             ),
-            CredentialEntry(credential: Credential(websiteUrl: "https://google.de", username: "jannik", clearPassword: "test", displayName: "Google", uuid: '', passwordSalt: '', usernameSalt: '', note: '', folderUuid: 0, encryptedPassword: 'ojvakFaBMTmLvCWd6jaK5w==')),
+            CredentialEntry(credential: Credential(websiteUrl: "https://google.de", clearUsername: "jannik", encryptedUsername: "", clearPassword: "test", displayName: "Google", uuid: '', passwordSalt: '', usernameSalt: '', note: '', folderUuid: 0, encryptedPassword: 'ojvakFaBMTmLvCWd6jaK5w==')),
           ],
         ),
       ),
