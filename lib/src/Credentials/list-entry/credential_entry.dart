@@ -44,10 +44,12 @@ class _CredentialEntry extends State<CredentialEntry> {
     return InkWell(
       onTap: () => {},
       child: Ink(
-        padding: const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
+        padding: const EdgeInsets.only(
+            left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
         color: Theme.of(context).colorScheme.tertiary,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensure even spacing
+          mainAxisAlignment:
+              MainAxisAlignment.spaceBetween, // Ensure even spacing
           children: [
             // Image on the left
             ConstrainedBox(
@@ -61,9 +63,12 @@ class _CredentialEntry extends State<CredentialEntry> {
             // Vertically stacked texts in the middle
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0), // Add some spacing between the image and text
+                padding: const EdgeInsets.symmetric(
+                    horizontal:
+                        8.0), // Add some spacing between the image and text
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Align text to the left
                   children: [
                     Text(
                       widget.displayName,
@@ -83,13 +88,18 @@ class _CredentialEntry extends State<CredentialEntry> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
+                backgroundColor: Theme.of(context)
+                    .colorScheme
+                    .primary, // Set the primary color from ColorScheme
               ),
               onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: widget.username));
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Copied Username'), duration: Duration(seconds: 1),),
+                    const SnackBar(
+                      content: Text('Copied Username'),
+                      duration: Duration(seconds: 1),
+                    ),
                   );
                 }
               },
@@ -101,13 +111,18 @@ class _CredentialEntry extends State<CredentialEntry> {
             const SizedBox(width: 8.0),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
+                backgroundColor: Theme.of(context)
+                    .colorScheme
+                    .primary, // Set the primary color from ColorScheme
               ),
               onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: widget.password));
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Copied Password'), duration: Duration(seconds: 1),),
+                    const SnackBar(
+                      content: Text('Copied Password'),
+                      duration: Duration(seconds: 1),
+                    ),
                   );
                 }
               },

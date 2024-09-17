@@ -1,4 +1,4 @@
-import 'package:anonkey_frontend/src/Auth/login_view.dart';
+import 'package:anonkey_frontend/src/Auth/register_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           // background.
           restorationScopeId: 'app',
 
-          debugShowCheckedModeBanner: false,
+          debugShowCheckedModeBanner: true,
 
           // Provide the generated AppLocalizations to the MaterialApp. This
           // allows descendant Widgets to display the correct translations
@@ -46,7 +46,8 @@ class MyApp extends StatelessWidget {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: const [
-            Locale('en', ''), // English, no country code
+            Locale('en'), // English, no country code
+            Locale('de') // German, no country code
           ],
 
           // Use AppLocalizations to configure the correct application title
@@ -107,7 +108,7 @@ class MyApp extends StatelessWidget {
                         } else if (snapshot.hasData) {
                           // Wenn das Future abgeschlossen ist, zeigen wir das entsprechende Widget
                           if (snapshot.data!) {
-                            return const LoginView();
+                            return const RegisterView();
                           } else {
                             return const SampleItemListView();
                           }

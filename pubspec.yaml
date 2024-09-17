@@ -23,6 +23,7 @@ dependencies:
   openapi_generator_annotations: ^5.0.2
   shared_preferences: ^2.3.2
   rxdart: any
+  intl: any
 
 dev_dependencies:
   flutter_test:

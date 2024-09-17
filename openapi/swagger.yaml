@@ -1,12 +1,13 @@
 openapi: 3.0.1
 info:
   title: AnonKey-Backend
-  version: '1.1'
+  version: '1.0'
 paths:
   /authentication/login:
     post:
       tags:
         - Authentication
+      summary: Authenticates the user and returns an access token.
       requestBody:
         content:
           application/json:
@@ -20,6 +21,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthenticationLoginResponseBody'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
         '400':
           description: Bad Request
           content:
@@ -30,6 +37,7 @@ paths:
     delete:
       tags:
         - Authentication
+      summary: Invalidates an access token for user logout.
       responses:
         '200':
           description: OK
@@ -43,6 +51,13 @@ paths:
     put:
       tags:
         - Authentication
+      summary: Changes a users password.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationChangePasswordRequestBody'
+        required: true
       responses:
         '200':
           description: OK
@@ -56,6 +71,7 @@ paths:
     post:
       tags:
         - Credentials
+      summary: Creates a new credential object.
       requestBody:
         content:
           application/json:
@@ -65,10 +81,6 @@ paths:
       responses:
         '200':
           description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CredentialsCreateResponseBody'
         '400':
           description: Bad Request
           content:
@@ -79,6 +91,7 @@ paths:
     get:
       tags:
         - Credentials
+      summary: Gets information on a credential object.
       parameters:
         - name: credentialUuid
           in: query
@@ -109,6 +122,7 @@ paths:
     get:
       tags:
         - Credentials
+      summary: Gets all available credential objects for this user.
       responses:
         '200':
           description: OK
@@ -132,6 +146,7 @@ paths:
     put:
       tags:
         - Credentials
+      summary: Updates a credential object.
       requestBody:
         content:
           application/json:
@@ -161,6 +176,7 @@ paths:
     delete:
       tags:
         - Credentials
+      summary: Deletes an existing credential object.
       parameters:
         - name: credentialUuid
           in: query
@@ -187,6 +203,7 @@ paths:
     post:
       tags:
         - Folders
+      summary: Creates a new folder.
       requestBody:
         content:
           application/json:
@@ -210,6 +227,7 @@ paths:
     get:
       tags:
         - Folders
+      summary: Gets information on an existing folder.
       parameters:
         - name: folderUuid
           in: query
@@ -240,6 +258,7 @@ paths:
     get:
       tags:
         - Folders
+      summary: Gets all folders for a user.
       responses:
         '200':
           description: OK
@@ -263,6 +282,7 @@ paths:
     put:
       tags:
         - Folders
+      summary: Updates an existing folder object.
       requestBody:
         content:
           application/json:
@@ -292,6 +312,7 @@ paths:
     delete:
       tags:
         - Folders
+      summary: Deletes an existing folder.
       parameters:
         - name: folderUuid
           in: query
@@ -318,6 +339,7 @@ paths:
     get:
       tags:
         - Service
+      summary: Checks the connection to the server.
       responses:
         '200':
           description: OK
@@ -329,6 +351,7 @@ paths:
     post:
       tags:
         - Users
+      summary: Creates a new user.
       requestBody:
         content:
           application/json:
@@ -342,6 +365,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UsersCreateResponseBody'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
         '400':
           description: Bad Request
           content:
@@ -352,6 +381,7 @@ paths:
     get:
       tags:
         - Users
+      summary: Gets information for an existing user.
       responses:
         '200':
           description: OK
@@ -369,6 +399,7 @@ paths:
     put:
       tags:
         - Users
+      summary: Updates an existing user.
       requestBody:
         content:
           application/json:
@@ -394,6 +425,7 @@ paths:
     delete:
       tags:
         - Users
+      summary: Deletes an existing user.
       responses:
         '200':
           description: OK
@@ -409,396 +441,548 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseBody'
+  /uuid/new:
+    get:
+      tags:
+        - UUID
+      summary: Returns a new UUID for several endpoints.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
 components:
   schemas:
+    AuthenticationChangePasswordRequestBody:
+      type: object
+      properties:
+        kdfResultOldPassword:
+          type: string
+          description: The KDF result of the old password.
+          nullable: true
+        kdfResultNewPassword:
+          type: string
+          description: The new KDF result that should be used from now on.
+          nullable: true
+      additionalProperties: false
+      description: The body of a password change request.
     AuthenticationLoginRequestBody:
       type: object
       properties:
         userName:
           type: string
+          description: The name of the user to log in.
           nullable: true
         kdfPasswordResult:
           type: string
+          description: The result of the KDF function of the user's password.
           nullable: true
       additionalProperties: false
+      description: The body of a login request.
     AuthenticationLoginResponseBody:
       type: object
       properties:
         token:
           type: string
+          description: The token that can be used for authentication.
           nullable: true
         expiresInSeconds:
           type: integer
+          description: The time in seconds the token expires in.
           format: int32
       additionalProperties: false
+      description: The body of the response to a login request.
     CredentialsCreateCredential:
       type: object
       properties:
         uuid:
           type: string
+          description: The UUID of the credential.
           nullable: true
         password:
           type: string
+          description: The encrypted password to store.
           nullable: true
         passwordSalt:
           type: string
+          description: The salt of the stored password.
           nullable: true
         username:
           type: string
+          description: The encrypted username to store.
           nullable: true
         usernameSalt:
           type: string
+          description: The salt of the encrypted username.
           nullable: true
         websiteUrl:
           type: string
+          description: The URL of the website the credential belongs to.
           nullable: true
         note:
           type: string
+          description: A note attached to the credential.
           nullable: true
         displayName:
           type: string
+          description: The display name of the credential..
           nullable: true
         folderUuid:
           type: string
+          description: "The UUID of the folder the credential is in.\r\nUse NULL for no folder."
           nullable: true
       additionalProperties: false
+      description: The credential object inside a credential create request.
     CredentialsCreateRequestBody:
       type: object
       properties:
         credential:
           $ref: '#/components/schemas/CredentialsCreateCredential'
       additionalProperties: false
-    CredentialsCreateResponseBody:
-      type: object
-      properties:
-        credentialUuid:
-          type: string
-          nullable: true
-      additionalProperties: false
+      description: The body of a credential create request.
     CredentialsGetAllCredential:
       type: object
       properties:
         uuid:
           type: string
+          description: The UUID of the credential.
           nullable: true
         password:
           type: string
+          description: The encrypted password to store.
           nullable: true
         passwordSalt:
           type: string
+          description: The salt of the stored password.
           nullable: true
         username:
           type: string
+          description: The encrypted username to store.
           nullable: true
         usernameSalt:
           type: string
+          description: The salt of the encrypted username.
           nullable: true
         websiteUrl:
           type: string
+          description: The URL of the website the credential belongs to.
           nullable: true
         note:
           type: string
+          description: A note attached to the credential.
           nullable: true
         displayName:
           type: string
+          description: The display name of the credential..
           nullable: true
         folderUuid:
           type: string
+          description: "The UUID of the folder the credential is in.\r\nUse NULL for no folder."
           nullable: true
         createdTimestamp:
           type: integer
+          description: The unix timestamp at which the credential was created.
           format: int64
         changedTimestamp:
           type: integer
+          description: The unix timestamp at which the credential was last edited.
           format: int64
         deletedTimestamp:
           type: integer
+          description: The unix timestamp the credential was deleted at.
           format: int64
       additionalProperties: false
+      description: The credentials inside the list returned by a get all credentials request.
     CredentialsGetAllResponseBody:
       type: object
       properties:
-        credential:
+        credentials:
           type: array
           items:
             $ref: '#/components/schemas/CredentialsGetAllCredential'
+          description: A list of credentials associated with the user.
           nullable: true
       additionalProperties: false
+      description: Response to a get all credentials request.
     CredentialsGetCredential:
       type: object
       properties:
         uuid:
           type: string
+          description: The UUID of the credential.
           nullable: true
         password:
           type: string
+          description: The encrypted password to store.
           nullable: true
         passwordSalt:
           type: string
+          description: The salt of the stored password.
           nullable: true
         username:
           type: string
+          description: The encrypted username to store.
           nullable: true
         usernameSalt:
           type: string
+          description: The salt of the encrypted username.
           nullable: true
         websiteUrl:
           type: string
+          description: The URL of the website the credential belongs to.
           nullable: true
         note:
           type: string
+          description: A note attached to the credential.
           nullable: true
         displayName:
           type: string
+          description: The display name of the credential..
           nullable: true
         folderUuid:
           type: string
+          description: "The UUID of the folder the credential is in.\r\nUse NULL for no folder."
           nullable: true
         createdTimestamp:
           type: integer
+          description: The unix timestamp at which the credential was created.
           format: int64
         changedTimestamp:
           type: integer
+          description: The unix timestamp at which the credential was last edited.
           format: int64
         deletedTimestamp:
           type: integer
+          description: The unix timestamp the credential was deleted at.
           format: int64
       additionalProperties: false
+      description: Credential in a credential get response.
     CredentialsGetResponseBody:
       type: object
       properties:
         credential:
           $ref: '#/components/schemas/CredentialsGetCredential'
       additionalProperties: false
+      description: The body of a response to a credential get request.
     CredentialsUpdateCredentialRequest:
       type: object
       properties:
         uuid:
           type: string
+          description: The UUID of the credential.
           nullable: true
         password:
           type: string
+          description: The encrypted password to store.
           nullable: true
         passwordSalt:
           type: string
+          description: The salt of the stored password.
           nullable: true
         username:
           type: string
+          description: The encrypted username to store.
           nullable: true
         usernameSalt:
           type: string
+          description: The salt of the encrypted username.
           nullable: true
         websiteUrl:
           type: string
+          description: The URL of the website the credential belongs to.
           nullable: true
         note:
           type: string
+          description: A note attached to the credential.
           nullable: true
         displayName:
           type: string
+          description: The display name of the credential..
           nullable: true
         folderUuid:
           type: string
+          description: "The UUID of the folder the credential is in.\r\nUse NULL for no folder."
           nullable: true
       additionalProperties: false
+      description: The credential inside a credential update request.
     CredentialsUpdateCredentialResponse:
       type: object
       properties:
         uuid:
           type: string
+          description: The UUID of the credential.
           nullable: true
         password:
           type: string
+          description: The encrypted password to store.
           nullable: true
         passwordSalt:
           type: string
+          description: The salt of the stored password.
           nullable: true
         username:
           type: string
+          description: The encrypted username to store.
           nullable: true
         usernameSalt:
           type: string
+          description: The salt of the encrypted username.
           nullable: true
         websiteUrl:
           type: string
+          description: The URL of the website the credential belongs to.
           nullable: true
         note:
           type: string
+          description: A note attached to the credential.
           nullable: true
         displayName:
           type: string
+          description: The display name of the credential..
           nullable: true
         folderUuid:
           type: string
+          description: "The UUID of the folder the credential is in.\r\nUse NULL for no folder."
           nullable: true
         createdTimestamp:
           type: integer
+          description: The unix timestamp at which the credential was created.
           format: int64
         changedTimestamp:
           type: integer
+          description: The unix timestamp at which the credential was last edited.
           format: int64
         deletedTimestamp:
           type: integer
+          description: The unix timestamp the credential was deleted at.
           format: int64
       additionalProperties: false
+      description: The response to a credential update operation.
     CredentialsUpdateRequestBody:
       type: object
       properties:
         credential:
           $ref: '#/components/schemas/CredentialsUpdateCredentialRequest'
       additionalProperties: false
+      description: The body of a credential update request.
     CredentialsUpdateResponseBody:
       type: object
       properties:
         credential:
           $ref: '#/components/schemas/CredentialsUpdateCredentialResponse'
       additionalProperties: false
+      description: The body of a credential update response.
     ErrorResponseBody:
       type: object
       properties:
         message:
           type: string
+          description: The short message describing the error.
           nullable: true
         detail:
           type: string
+          description: A detailed explanation detailing the error.
           nullable: true
         internalCode:
           type: integer
+          description: The error code for error correction purposes.
           format: int32
       additionalProperties: false
+      description: Structure of an error message.
     FoldersCreateFolder:
       type: object
       properties:
         name:
           type: string
+          description: Name of the new folder.
           nullable: true
         icon:
           type: integer
+          description: Icon of the new folder.
           format: int32
       additionalProperties: false
+      description: Folder contained inside a create folder operation.
     FoldersCreateRequestBody:
       type: object
       properties:
         folder:
           $ref: '#/components/schemas/FoldersCreateFolder'
       additionalProperties: false
+      description: Body of a folder create request.
     FoldersCreateResponseBody:
       type: object
       properties:
         folderUuid:
           type: string
+          description: The UUID of the newly created folder.
           nullable: true
       additionalProperties: false
+      description: Response to a folder create request.
     FoldersGetAllFolder:
       type: object
       properties:
         uuid:
           type: string
+          description: UUID of the folder.
           nullable: true
         name:
           type: string
+          description: Name of the folder.
           nullable: true
         icon:
           type: integer
+          description: Icon of the folder.
           format: int32
       additionalProperties: false
+      description: Folder in a response to a get all folders request.
     FoldersGetAllResponseBody:
       type: object
       properties:
         folder:
-          $ref: '#/components/schemas/FoldersGetAllFolder'
+          type: array
+          items:
+            $ref: '#/components/schemas/FoldersGetAllFolder'
+          description: Folders
+          nullable: true
       additionalProperties: false
+      description: Response to a get all folders request.
     FoldersGetFolder:
       type: object
       properties:
         uuid:
           type: string
+          description: UUID of the folder.
           nullable: true
         name:
           type: string
+          description: Name of the folder.
           nullable: true
         icon:
           type: integer
+          description: Icon of the folder.
           format: int32
       additionalProperties: false
+      description: Folder in a folder get response.
     FoldersGetResponseBody:
       type: object
       properties:
         folder:
           $ref: '#/components/schemas/FoldersGetFolder'
       additionalProperties: false
+      description: Response to a folder get request.
     FoldersUpdateFolder:
       type: object
       properties:
         uuid:
           type: string
+          description: UUID of the folder.
           nullable: true
         name:
           type: string
+          description: Name of the folder.
           nullable: true
         icon:
           type: integer
+          description: Icon of the folder.
           format: int32
       additionalProperties: false
+      description: Folder returned by the update request.
     FoldersUpdateRequestBody:
       type: object
       properties:
         folder:
           $ref: '#/components/schemas/FoldersUpdateFolder'
       additionalProperties: false
+      description: The body of a folder update request.
     FoldersUpdateResponseBody:
       type: object
       properties:
         folderUuid:
           type: string
+          description: UUID of the updated folder.
           nullable: true
       additionalProperties: false
+      description: Body of a response to a folder update request.
     UsersCreateRequestBody:
       type: object
       properties:
         userName:
           type: string
+          description: Name of the user to be created.
           nullable: true
         userDisplayName:
           type: string
+          description: Display name of the user to be created.
           nullable: true
         kdfPasswordResult:
           type: string
+          description: Result of the KDF for the user password.
           nullable: true
       additionalProperties: false
+      description: Body of a user create request.
     UsersCreateResponseBody:
       type: object
       properties:
         token:
           type: string
+          description: The token that can be used for authentication.
           nullable: true
         expiresInSeconds:
           type: integer
+          description: The time in seconds the token expires in.
           format: int32
       additionalProperties: false
+      description: Body of a response to a user create request.
     UsersGetResponseBody:
       type: object
       properties:
         user:
           $ref: '#/components/schemas/UsersGetUser'
       additionalProperties: false
+      description: Response body of a user get request.
     UsersGetUser:
       type: object
       properties:
         displayName:
           type: string
+          description: The display name of the user.
           nullable: true
       additionalProperties: false
+      description: User requested.
     UsersUpdateRequestBody:
       type: object
       properties:
         user:
           $ref: '#/components/schemas/UsersUpdateUser'
       additionalProperties: false
+      description: Body of a user update request.
     UsersUpdateUser:
       type: object
       properties:
+        userName:
+          type: string
+          description: The username of the user to be updated.
+          nullable: true
         displayName:
           type: string
+          description: The new display name of the user.
           nullable: true
       additionalProperties: false
+      description: User update request user.
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      description: JWT Authorization header using the Bearer scheme.
+      name: Authorization
+      in: header
+security:
+  - Bearer: [ ]
+
