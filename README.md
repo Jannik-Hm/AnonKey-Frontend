@@ -28,3 +28,12 @@ the `lib/src/localization` directory.
 To support additional languages, please visit the tutorial on
 [Internationalizing Flutter
 apps](https://flutter.dev/docs/development/accessibility-and-localization/internationalization)
+
+## Useage of Swagger
+
+you have to run the following command to generate the api client
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```
+
