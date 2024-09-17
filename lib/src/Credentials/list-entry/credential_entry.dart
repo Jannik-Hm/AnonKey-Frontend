@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './logo.dart';
 import './credential_detail_view.dart';
-import './../credential_data.dart';
+import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 
 //Usage: CredentialEntry(websiteUrl: "https://google.de", username: "jannik", password: "test", displayName: "Google", uuid: '', passwordSalt: '', usernameSalt: '', note: '', folderUuid: '', createdTimeStamp: '', changedTimeStamp: '', deletedTimeStamp: '',),
 
@@ -52,7 +52,7 @@ class _CredentialEntry extends State<CredentialEntry> {
       });
     }
 
-    Credential.New(clearPassword: "12345678", displayName: "Test", folderUuid: 0, masterPassword: "SuperSicher", clearUsername: "test", uuid: "balabadasda", websiteUrl: "google.de", note: "", createdTimeStamp: 0);
+    Credential.newEntry(clearPassword: "12345678", displayName: "Test", folderUuid: 0, masterPassword: "SuperSicher", clearUsername: "test", uuid: "balabadasda", websiteUrl: "google.de", note: "", createdTimeStamp: 0);
 
     return InkWell(
       onTap: () => {
