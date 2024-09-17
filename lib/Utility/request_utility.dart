@@ -3,13 +3,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RequestUtility {
   static getApiWithAuth(String authentication) {
-    return ApiClient(
-            dotenv.env['CLIENT_URL'] ?? Exception('CLIENT_URL not found'))
+    return ApiClient(basePath: dotenv.env['CLIENT_URL'] ?? "")
         .addDefaultHeader("Authorization", authentication);
   }
 
   static getApiWithoutAuth() {
-    return ApiClient(
-        dotenv.env['CLIENT_URL'] ?? Exception('CLIENT_URL not found'));
+    return ApiClient(basePath: dotenv.env['CLIENT_URL'] ?? "");
   }
 }
