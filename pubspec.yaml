@@ -10,6 +10,8 @@ environment:
   sdk: '>=3.2.3 <4.0.0'
 
 dependencies:
+  cryptography: ^2.7.0
+  encrypt: ^5.0.3
   favicon: ^1.1.2
   flutter:
     sdk: flutter

@@ -1,37 +1,18 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './logo.dart';
+import './credential_detail_view.dart';
+import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 
 //Usage: CredentialEntry(websiteUrl: "https://google.de", username: "jannik", password: "test", displayName: "Google", uuid: '', passwordSalt: '', usernameSalt: '', note: '', folderUuid: '', createdTimeStamp: '', changedTimeStamp: '', deletedTimeStamp: '',),
 
 class CredentialEntry extends StatefulWidget {
-  final String uuid;
-  final String password;
-  final String passwordSalt;
-  final String username;
-  final String usernameSalt;
-  final String websiteUrl;
-  final String note;
-  final String displayName;
-  final String folderUuid;
-  final String createdTimeStamp;
-  final String changedTimeStamp;
-  final String deletedTimeStamp;
+  final Credential credential;
 
   const CredentialEntry({
     super.key,
-    required this.websiteUrl,
-    required this.username,
-    required this.password,
-    required this.displayName,
-    required this.uuid,
-    required this.passwordSalt,
-    required this.usernameSalt,
-    required this.note,
-    required this.folderUuid,
-    required this.createdTimeStamp,
-    required this.changedTimeStamp,
-    required this.deletedTimeStamp,
+    required this.credential,
   });
 
   @override
@@ -39,10 +20,49 @@ class CredentialEntry extends StatefulWidget {
 }
 
 class _CredentialEntry extends State<CredentialEntry> {
+  Timer? _timer;
+  late Credential _credential;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the mutable object from the widget field
+    _credential = widget.credential;
+  }
+
   @override
   Widget build(BuildContext context) {
+    void copyToClipboard({required String value, required String message}) {
+      Clipboard.setData(ClipboardData(text: value)).then((_) {
+        _timer?.cancel(); // Cancel any existing timer
+        _timer = Timer(const Duration(seconds: 10), () async {
+          ClipboardData? current = await Clipboard.getData('text/plain');
+          if(current != null && current.text == value){
+            Clipboard.setData(const ClipboardData(text: ''));
+          }
+        });
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              duration: const Duration(seconds: 1),
+            ),
+          );
+        }
+      });
+    }
+
+    Credential.newEntry(clearPassword: "12345678", displayName: "Test", folderUuid: 0, masterPassword: "SuperSicher", clearUsername: "test", uuid: "balabadasda", websiteUrl: "google.de", note: "", createdTimeStamp: 0);
+
     return InkWell(
-      onTap: () => {},
+      onTap: () => {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CredentialDetailWidget(credential: _credential),
+          ),
+        )
+      },
       child: Ink(
         padding: const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
         color: Theme.of(context).colorScheme.tertiary,
@@ -53,7 +73,7 @@ class _CredentialEntry extends State<CredentialEntry> {
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 70.0),
               //child: Image.network("https://icons.duckduckgo.com/ip3/linustechtips.com.ico"),
-              child: getNetworkLogoFromUrl(widget.websiteUrl),
+              child: getNetworkLogoFromUrl(_credential.websiteUrl),
             ),
             const SizedBox(
               width: 20.0,
@@ -66,13 +86,13 @@ class _CredentialEntry extends State<CredentialEntry> {
                   crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
                   children: [
                     Text(
-                      widget.displayName,
+                      _credential.displayName,
                       style: const TextStyle(
                         fontSize: 20.0,
                       ),
                     ),
                     Text(
-                      widget.username,
+                      _credential.clearUsername,
                       style: const TextStyle(
                         fontSize: 15.0,
                       ),
@@ -85,14 +105,18 @@ class _CredentialEntry extends State<CredentialEntry> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
               ),
-              onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: widget.username));
+              onPressed: () => copyToClipboard(message: 'Copied Username', value: _credential.clearUsername),
+              /* onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: _credential.username));
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Copied Username'), duration: Duration(seconds: 1),),
+                    const SnackBar(
+                      content: Text('Copied Username'),
+                      duration: Duration(seconds: 1),
+                    ),
                   );
                 }
-              },
+              }, */
               child: Icon(
                 Icons.person,
                 color: Theme.of(context).colorScheme.onPrimary,
@@ -103,14 +127,18 @@ class _CredentialEntry extends State<CredentialEntry> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
               ),
-              onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: widget.password));
+              onPressed: () => copyToClipboard(message: 'Copied Password', value: _credential.clearPassword),
+              /* onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: _credential.password));
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Copied Password'), duration: Duration(seconds: 1),),
+                    const SnackBar(
+                      content: Text('Copied Password'),
+                      duration: Duration(seconds: 1),
+                    ),
                   );
                 }
-              },
+              }, */
               child: Icon(
                 Icons.password,
                 color: Theme.of(context).colorScheme.onPrimary,
