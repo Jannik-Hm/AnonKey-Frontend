@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: AnonKey-Backend
-  version: '1.0'
+  version: '1.1'
 paths:
   /authentication/login:
     post:
