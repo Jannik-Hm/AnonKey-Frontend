@@ -76,6 +76,9 @@ class LoginController extends State<LoginView> {
 
   _showDialog() {
     if (_loginFormKey.currentState!.validate()) {
+/*      ApiClient client = ApiClient(basePath: url.text);
+      AuthenticationApi api = AuthenticationApi(client);
+      api.authenticationLoginPost(AuthenticationLoginRequestBody(userName: username.text, kdfPasswordResult: password.text)).then((onValue) => print(onValue));*/
       //ScaffoldMessenger.of(context).showSnackBar(
       //  const SnackBar(content: Text('Processing Data')));
       return showDialog(
@@ -90,4 +93,5 @@ class LoginController extends State<LoginView> {
       );
     }
   }
+// Todo implement login function
 }
