@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:math';
-
 import 'package:anonkey_frontend/Utility/cryptography.dart';
 
 //TODO: Error Handling if Master Password or Salt is incorrect
@@ -66,18 +65,10 @@ class Credential {
     //Encrypter encrypter = Encrypter(AES());
     return Credential(
       websiteUrl: websiteUrl,
-      clearUsername: await Cryptography.getClearString(
-          masterPassword: masterPassword,
-          kdfSalt: uuid,
-          encryptedString: encryptedUsername,
-          encryptedSalt: usernameSalt),
+      clearUsername: await Cryptography.getClearString(masterPassword: masterPassword, kdfSalt: uuid, encryptedString: encryptedUsername, encryptedSalt: usernameSalt),
       encryptedUsername: encryptedUsername,
       encryptedPassword: encryptedPassword,
-      clearPassword: await Cryptography.getClearString(
-          masterPassword: masterPassword,
-          kdfSalt: uuid,
-          encryptedString: encryptedPassword,
-          encryptedSalt: passwordSalt),
+      clearPassword: await Cryptography.getClearString(masterPassword: masterPassword, kdfSalt: uuid, encryptedString: encryptedPassword, encryptedSalt: passwordSalt),
       displayName: displayName,
       uuid: uuid,
       passwordSalt: passwordSalt,
@@ -105,34 +96,15 @@ class Credential {
     final passwordSalt = _createCryptoRandomString(10);
     final usernameSalt = _createCryptoRandomString(10);
     print(passwordSalt);
-    Cryptography.getKDFBase64(masterPassword: masterPassword, salt: uuid)
-        .then(print);
-    Cryptography.encryptString(
-            masterPassword: masterPassword,
-            kdfSalt: uuid,
-            clearString: clearPassword,
-            encryptedSalt: passwordSalt)
-        .then(print);
-    Cryptography.getClearString(
-            masterPassword: masterPassword,
-            kdfSalt: uuid,
-            encryptedString: "0y9P8H+AzqfAQQuLGB/MhQ==",
-            encryptedSalt: "IU0e-CSGD6QK7g==")
-        .then(print);
+    Cryptography.getKDFBase64(masterPassword: masterPassword, salt: uuid).then(print);
+    Cryptography.encryptString(masterPassword: masterPassword, kdfSalt: uuid, clearString: clearPassword, encryptedSalt: passwordSalt).then(print);
+    Cryptography.getClearString(masterPassword: masterPassword, kdfSalt: uuid, encryptedString: "0y9P8H+AzqfAQQuLGB/MhQ==", encryptedSalt: "IU0e-CSGD6QK7g==").then(print);
     return Credential(
       uuid: uuid,
       websiteUrl: websiteUrl,
       clearUsername: clearUsername,
-      encryptedUsername: await Cryptography.encryptString(
-          masterPassword: masterPassword,
-          kdfSalt: uuid,
-          clearString: clearUsername,
-          encryptedSalt: usernameSalt),
-      encryptedPassword: await Cryptography.encryptString(
-          masterPassword: masterPassword,
-          kdfSalt: uuid,
-          clearString: clearPassword,
-          encryptedSalt: passwordSalt),
+      encryptedUsername: await Cryptography.encryptString(masterPassword: masterPassword, kdfSalt: uuid, clearString: clearUsername, encryptedSalt: usernameSalt),
+      encryptedPassword: await Cryptography.encryptString(masterPassword: masterPassword, kdfSalt: uuid, clearString: clearPassword, encryptedSalt: passwordSalt),
       clearPassword: clearPassword,
       displayName: displayName,
       passwordSalt: passwordSalt,
@@ -144,34 +116,18 @@ class Credential {
   }
 
   Future<String> getEncryptedPassword({required String masterPassword}) async {
-    return Cryptography.encryptString(
-        masterPassword: masterPassword,
-        kdfSalt: uuid,
-        clearString: clearPassword,
-        encryptedSalt: passwordSalt);
+    return Cryptography.encryptString(masterPassword: masterPassword, kdfSalt: this.uuid, clearString: this.clearPassword, encryptedSalt: this.passwordSalt);
   }
 
   Future<String> getClearPassword({required String masterPassword}) async {
-    return Cryptography.getClearString(
-        masterPassword: masterPassword,
-        kdfSalt: uuid,
-        encryptedString: encryptedPassword,
-        encryptedSalt: passwordSalt);
+    return Cryptography.getClearString(masterPassword: masterPassword, kdfSalt: this.uuid, encryptedString: this.encryptedPassword, encryptedSalt: this.passwordSalt);
   }
 
   Future<String> getEncryptedUsername({required String masterPassword}) async {
-    return Cryptography.encryptString(
-        masterPassword: masterPassword,
-        kdfSalt: uuid,
-        clearString: clearPassword,
-        encryptedSalt: passwordSalt);
+    return Cryptography.encryptString(masterPassword: masterPassword, kdfSalt: this.uuid, clearString: this.clearPassword, encryptedSalt: this.passwordSalt);
   }
 
   Future<String> getClearUsername({required String masterPassword}) async {
-    return Cryptography.getClearString(
-        masterPassword: masterPassword,
-        kdfSalt: uuid,
-        encryptedString: encryptedPassword,
-        encryptedSalt: passwordSalt);
+    return Cryptography.getClearString(masterPassword: masterPassword, kdfSalt: this.uuid, encryptedString: this.encryptedPassword, encryptedSalt: this.passwordSalt);
   }
 }
