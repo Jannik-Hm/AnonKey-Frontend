@@ -2,12 +2,12 @@ import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RequestUtility {
-  static getApiWithAuth(String authentication) {
-    return ApiClient(basePath: dotenv.env['CLIENT_URL'] ?? "")
-        .addDefaultHeader("Authorization", authentication);
+  static getApiWithAuth(String authentication, String basePath) {
+    return ApiClient(basePath: basePath)
+        .addDefaultHeader("Authorization", "Bearer $authentication");
   }
 
-  static getApiWithoutAuth() {
-    return ApiClient(basePath: dotenv.env['CLIENT_URL'] ?? "");
+  static getApiWithoutAuth(String basePath) {
+    return ApiClient(basePath: basePath);
   }
 }
