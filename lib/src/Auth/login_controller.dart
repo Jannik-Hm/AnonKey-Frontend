@@ -1,4 +1,5 @@
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
+import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 
@@ -74,8 +75,10 @@ class LoginController extends State<LoginView> {
     );
   }
 
-  _showDialog() {
+  _showDialog() async {
     if (_loginFormKey.currentState!.validate()) {
+      bool test = await AuthService.login(username.text, password.text)
+      print("nessi " + String.);
 /*      ApiClient client = ApiClient(basePath: url.text);
       AuthenticationApi api = AuthenticationApi(client);
       api.authenticationLoginPost(AuthenticationLoginRequestBody(userName: username.text, kdfPasswordResult: password.text)).then((onValue) => print(onValue));*/

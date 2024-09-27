@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -108,7 +109,7 @@ class MyApp extends StatelessWidget {
                         } else if (snapshot.hasData) {
                           // Wenn das Future abgeschlossen ist, zeigen wir das entsprechende Widget
                           if (snapshot.data!) {
-                            return const RegisterView();
+                            return const LoginView();
                           } else {
                             return const SampleItemListView();
                           }
