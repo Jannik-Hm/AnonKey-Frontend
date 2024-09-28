@@ -25,21 +25,6 @@ class _FolderEditWidget extends State<FolderEditWidget> {
 
   IconData? _iconData;
 
-  /* _pickIcon() async {
-    iconpicker.IconPickerIcon? icon = await iconpicker.showIconPicker(
-      context,
-      configuration: SinglePickerConfiguration(
-        iconPackModes: [iconpicker.IconPack.material],
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        iconColor: Theme.of(context).colorScheme.onSurface,
-      ),
-    );
-    _iconData = icon?.data;
-    setState(() {});
-
-    debugPrint('Picked Icon:  $icon');
-  } */
-
   @override
   void initState() {
     super.initState();

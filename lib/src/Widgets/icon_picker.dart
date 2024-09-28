@@ -3,20 +3,12 @@ import 'package:flutter_iconpicker/flutter_iconpicker.dart' as iconpicker;
 import 'package:flutter_iconpicker/Models/configuration.dart';
 
 class IconPicker extends StatefulWidget {
-  //final TextEditingController controller;
-  //final String label;
-  //final VoidCallback? onEnterPressed;
   final void Function({required IconData? iconData})? iconCallback;
-  //final FocusNode focus;
   final bool enabled;
   final IconData? iconData;
 
   const IconPicker({
     super.key,
-    //required this.controller,
-    //required this.label,
-    //this.onEnterPressed,
-    //required this.focus,
     this.iconCallback,
     this.enabled = true,
     this.iconData,
