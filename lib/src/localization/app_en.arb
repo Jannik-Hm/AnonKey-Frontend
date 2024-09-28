@@ -18,5 +18,9 @@
   "url": "URL",
   "@url": {
     "description": "URL input label"
+  },
+  "chooseIcon": "Choose Icon",
+  "@chooseIcon": {
+    "description": "Click to select an Icon"
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart' as iconpicker;
 import 'package:flutter_iconpicker/Models/configuration.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class IconPicker extends StatefulWidget {
   final void Function({required IconData? iconData})? iconCallback;
@@ -73,7 +74,7 @@ class _IconPicker extends State<IconPicker> {
             TextButton(
               onPressed: _pickIcon,
               style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.onPrimary),
-              child: const Text("Icon auswählen"),
+              child: Text(AppLocalizations.of(context)!.chooseIcon),
             )
         ],
       ),
