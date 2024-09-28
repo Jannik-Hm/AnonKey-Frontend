@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
@@ -28,6 +29,12 @@ class _FolderEntry extends State<FolderEntry> {
     _folder = widget.folder;
   }
 
+  void updateIcon({required int codePoint}) {
+    setState(() {
+      _folder.setIcon(codePoint: codePoint);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     void copyToClipboard({required String value, required String message}) {
@@ -52,39 +59,42 @@ class _FolderEntry extends State<FolderEntry> {
 
     return InkWell(
       onTap: () => {
-        /* Navigator.push(
+        Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => CredentialDetailWidget(credential: _credential),
+            builder: (_) => FolderEditWidget(folder: _folder, iconCallback: updateIcon,),
           ),
-        ) */
+        )
       },
       child: Ink(
         padding: const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
         color: Theme.of(context).colorScheme.tertiary,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensure even spacing
-          children: [
-            // Image on the left
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 70.0),
-              //child: Image.network("https://icons.duckduckgo.com/ip3/linustechtips.com.ico"),
-              child: _folder.getIcon(color: Theme.of(context).colorScheme.onPrimary),
-            ),
-            const SizedBox(
-              width: 20.0,
-            ),
-            // Vertically stacked texts in the middle
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0), // Add some spacing between the image and text
-              child: Text(
-                _folder.displayName,
-                style: const TextStyle(
-                  fontSize: 20.0,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start, // Ensure even spacing
+            children: [
+              // Image on the left
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 70.0),
+                //child: Image.network("https://icons.duckduckgo.com/ip3/linustechtips.com.ico"),
+                child: _folder.getIcon(color: Theme.of(context).colorScheme.onPrimary),
+              ),
+              const SizedBox(
+                width: 20.0,
+              ),
+              // Vertically stacked texts in the middle
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0), // Add some spacing between the image and text
+                child: Text(
+                  _folder.displayName,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
