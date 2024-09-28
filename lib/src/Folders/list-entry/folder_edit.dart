@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
-import 'package:anonkey_frontend/src/Credentials/list-entry/credential_input.dart';
+import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
+import 'package:anonkey_frontend/src/Widgets/icon_picker.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart' as iconpicker;
 import 'package:flutter_iconpicker/Models/configuration.dart';
 
@@ -26,7 +27,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
 
   IconData? _iconData;
 
-  _pickIcon() async {
+  /* _pickIcon() async {
     iconpicker.IconPickerIcon? icon = await iconpicker.showIconPicker(
       context,
       configuration: SinglePickerConfiguration(
@@ -39,7 +40,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
     setState(() {});
 
     debugPrint('Picked Icon:  $icon');
-  }
+  } */
 
   @override
   void initState() {
@@ -50,6 +51,10 @@ class _FolderEditWidget extends State<FolderEditWidget> {
     if (widget.folder != null) {
       _iconData = widget.folder?.getIconData();
     }
+  }
+
+  void updateIcon({required IconData? iconData}) {
+    _iconData = iconData;
   }
 
   @override
@@ -107,26 +112,20 @@ class _FolderEditWidget extends State<FolderEditWidget> {
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         child: Column(
           children: [
-            CredentialInput(
+            EntryInput(
               key: UniqueKey(),
               controller: displayName,
               label: 'Display Name',
-              obscureText: false,
               focus: displayNameFocus,
+              obscureText: false,
               enabled: _enabled,
             ),
             SizedBox(height: spacing),
-            if (_enabled) TextButton(onPressed: _pickIcon, child: const Text("Icon auswählen")),
-            const SizedBox(height: 10),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: (_iconData != null)
-                  ? Icon(
-                      _iconData,
-                      color: Theme.of(context).colorScheme.onSurface,
-                      size: 100.0,
-                    )
-                  : Container(),
+            IconPicker(
+              key: UniqueKey(),
+              iconData: _iconData,
+              enabled: _enabled,
+              iconCallback: updateIcon,
             ),
           ],
         ),
