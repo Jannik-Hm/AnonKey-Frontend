@@ -2,6 +2,7 @@ import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './login_input.dart';
 
@@ -39,7 +40,7 @@ class LoginController extends State<LoginView> {
                     controller: url,
                     label: 'URL',
                     obscureText: false,
-                    validator: ValidationBuilder().url().build(),
+                    //validator: ValidationBuilder().url().build(),
                     onEnterPressed: () => _usernameFocus.requestFocus(),
                   ),
                   const SizedBox(height: 16),
@@ -77,23 +78,26 @@ class LoginController extends State<LoginView> {
 
   _showDialog() async {
     if (_loginFormKey.currentState!.validate()) {
-      bool test = await AuthService.login(username.text, password.text)
-      print("nessi " + String.);
-/*      ApiClient client = ApiClient(basePath: url.text);
-      AuthenticationApi api = AuthenticationApi(client);
-      api.authenticationLoginPost(AuthenticationLoginRequestBody(userName: username.text, kdfPasswordResult: password.text)).then((onValue) => print(onValue));*/
-      //ScaffoldMessenger.of(context).showSnackBar(
-      //  const SnackBar(content: Text('Processing Data')));
-      return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            // Retrieve the text the that user has entered by using the
-            // TextEditingController.
-            content: Text("${username.text} ${password.text}"),
-          );
-        },
-      );
+      bool test = await AuthService.login(username.text, password.text);
+
+      if (test) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('url', url.text);
+        if (!mounted) return;
+        Navigator.pushNamed(context, '/home');
+      } else {
+        if (!mounted) return;
+        return showDialog(
+          context: context,
+          builder: (context) {
+            return const AlertDialog(
+              // Retrieve the text the that user has entered by using the
+              // TextEditingController.
+              content: Text('Login failed'),
+            );
+          },
+        );
+      }
     }
   }
 // Todo implement login function
