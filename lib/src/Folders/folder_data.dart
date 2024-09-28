@@ -30,6 +30,18 @@ class Folder {
     );
   }
 
+  void setIcon({required int codePoint}) {
+    this._iconData = codePoint;
+  }
+
+  int getIconCodePoint() {
+    return this._iconData;
+  }
+
+  IconData getIconData() {
+    return IconData(this._iconData, fontFamily: "MaterialIcons");
+  }
+
   api.FoldersCreateFolder createFolder() {
     return api.FoldersCreateFolder(
       icon: this._iconData,
