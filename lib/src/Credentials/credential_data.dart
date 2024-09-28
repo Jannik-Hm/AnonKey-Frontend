@@ -16,7 +16,7 @@ class Credential {
   String websiteUrl;
   String note;
   String displayName;
-  int folderUuid;
+  String folderUuid;
   DateTime? createdTimeStamp;
   DateTime? changedTimeStamp;
   DateTime? deletedTimeStamp;
@@ -57,7 +57,7 @@ class Credential {
     required String passwordSalt,
     required String usernameSalt,
     required String note,
-    required int folderUuid,
+    required String folderUuid,
     required int createdTimeStamp,
     required int changedTimeStamp,
     required int deletedTimeStamp,
@@ -90,7 +90,7 @@ class Credential {
     required String clearPassword,
     required String displayName,
     String note = "",
-    required int folderUuid,
+    required String folderUuid,
     required int createdTimeStamp,
   }) async {
     final passwordSalt = _createCryptoRandomString(10);
