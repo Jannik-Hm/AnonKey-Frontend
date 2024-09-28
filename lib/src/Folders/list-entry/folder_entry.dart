@@ -1,7 +1,5 @@
-import 'dart:async';
 import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 
 //Usage: CredentialEntry(websiteUrl: "https://google.de", username: "jannik", password: "test", displayName: "Google", uuid: '', passwordSalt: '', usernameSalt: '', note: '', folderUuid: '', createdTimeStamp: '', changedTimeStamp: '', deletedTimeStamp: '',),
@@ -19,7 +17,6 @@ class FolderEntry extends StatefulWidget {
 }
 
 class _FolderEntry extends State<FolderEntry> {
-  Timer? _timer;
   late Folder _folder;
 
   @override
@@ -37,26 +34,6 @@ class _FolderEntry extends State<FolderEntry> {
 
   @override
   Widget build(BuildContext context) {
-    void copyToClipboard({required String value, required String message}) {
-      Clipboard.setData(ClipboardData(text: value)).then((_) {
-        _timer?.cancel(); // Cancel any existing timer
-        _timer = Timer(const Duration(seconds: 10), () async {
-          ClipboardData? current = await Clipboard.getData('text/plain');
-          if (current != null && current.text == value) {
-            Clipboard.setData(const ClipboardData(text: ''));
-          }
-        });
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(message),
-              duration: const Duration(seconds: 1),
-            ),
-          );
-        }
-      });
-    }
-
     return InkWell(
       onTap: () => {
         Navigator.push(

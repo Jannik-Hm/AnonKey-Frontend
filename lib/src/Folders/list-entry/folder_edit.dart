@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Widgets/icon_picker.dart';
-import 'package:flutter_iconpicker/flutter_iconpicker.dart' as iconpicker;
-import 'package:flutter_iconpicker/Models/configuration.dart';
 
 class FolderEditWidget extends StatefulWidget {
   final Folder? folder;
