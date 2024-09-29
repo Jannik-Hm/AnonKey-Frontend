@@ -1,3 +1,4 @@
+
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -57,6 +58,12 @@ class MyApp extends StatelessWidget {
           // directory.
           onGenerateTitle: (BuildContext context) =>
               AppLocalizations.of(context)!.appTitle,
+
+          // Define the routes for your application. The "/" route is the home
+          routes: {
+            '/home': (context) => const SampleItemListView(),
+            "/register": (context) => const RegisterView(),
+          },
 
           // Define a light and dark color theme. Then, read the user's
           // preferred ThemeMode (light, dark, or system default) from the
