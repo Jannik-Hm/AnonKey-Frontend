@@ -8,6 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// This service provides methods to login and register a user.
 ///
 class AuthService {
+
   /// Logs in a user.
   ///
   /// \returns `true` if the login was successful, `false` otherwise.

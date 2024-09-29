@@ -1,4 +1,5 @@
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:form_validator/form_validator.dart';
@@ -45,7 +46,7 @@ class RegisterControllerState extends State<RegisterView> {
                         controller: url,
                         label: "URL",
                         obscureText: false,
-                        validator: ValidationBuilder().url().build(),
+                        validator: (kDebugMode) ? null : ValidationBuilder().url().build(),
                         focus: _urlFocus),
                     const SizedBox(height: 16),
                     LoginInput(

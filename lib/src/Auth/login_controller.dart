@@ -1,5 +1,6 @@
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,7 +41,7 @@ class LoginController extends State<LoginView> {
                     controller: url,
                     label: 'URL',
                     obscureText: false,
-                    validator: ValidationBuilder().url().build(),
+                    validator: (kDebugMode) ? null : ValidationBuilder().url().build(),
                     onEnterPressed: () => _usernameFocus.requestFocus(),
                   ),
                   const SizedBox(height: 16),
