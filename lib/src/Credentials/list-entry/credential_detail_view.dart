@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:anonkey_frontend/src/Credentials/list-entry/credential_input.dart';
+import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 
 class CredentialDetailWidget extends StatefulWidget {
@@ -100,7 +100,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         child: Column(
           children: [
-            CredentialInput(
+            EntryInput(
               key: UniqueKey(),
               controller: displayName,
               label: 'Display Name',
@@ -109,7 +109,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               enabled: _enabled,
             ),
             SizedBox(height: spacing),
-            CredentialInput(
+            EntryInput(
               key: UniqueKey(),
               controller: websiteUrl,
               label: 'URL',
@@ -118,7 +118,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               enabled: _enabled,
             ),
             SizedBox(height: spacing),
-            CredentialInput(
+            EntryInput(
               key: UniqueKey(),
               controller: username,
               label: 'Username',
@@ -127,7 +127,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               enabled: _enabled,
             ),
             SizedBox(height: spacing),
-            CredentialInput(
+            EntryInput(
               key: UniqueKey(),
               controller: password,
               label: 'Password',
@@ -136,7 +136,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               enabled: _enabled,
             ),
             SizedBox(height: spacing),
-            CredentialInput(
+            EntryInput(
               key: UniqueKey(),
               controller: note,
               label: 'Notes',

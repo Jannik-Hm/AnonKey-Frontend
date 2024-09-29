@@ -52,7 +52,7 @@ class _CredentialEntry extends State<CredentialEntry> {
       });
     }
 
-    Credential.newEntry(clearPassword: "12345678", displayName: "Test", folderUuid: 0, masterPassword: "SuperSicher", clearUsername: "test", uuid: "balabadasda", websiteUrl: "google.de", note: "", createdTimeStamp: 0);
+    Credential.newEntry(clearPassword: "12345678", displayName: "Test", folderUuid: "123", masterPassword: "SuperSicher", clearUsername: "test", uuid: "balabadasda", websiteUrl: "google.de", note: "", createdTimeStamp: 0);
 
     return InkWell(
       onTap: () => {

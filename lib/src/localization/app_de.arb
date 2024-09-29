@@ -3,7 +3,7 @@
   "@appTitle": {
     "description": "The title of the application"
   },
-  "register": "Registieren",
+  "register": "Registrieren",
   "@register": {
     "description": "Register button text"
   },
@@ -18,5 +18,9 @@
   "url": "URL",
   "@url": {
     "description": "URL input label"
+  },
+  "chooseIcon": "Icon auswählen",
+  "@chooseIcon": {
+    "description": "Klicken, um ein Icon auszuwählen"
   }
 }

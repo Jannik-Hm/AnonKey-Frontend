@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 
-class CredentialInput extends StatefulWidget {
+class EntryInput extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final bool obscureText;
@@ -10,7 +10,7 @@ class CredentialInput extends StatefulWidget {
   final FocusNode focus;
   final bool enabled;
 
-  const CredentialInput({
+  const EntryInput({
     super.key,
     required this.controller,
     required this.label,
@@ -22,10 +22,10 @@ class CredentialInput extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => CredentialInputState();
+  State<StatefulWidget> createState() => _EntryInput();
 }
 
-class CredentialInputState extends State<CredentialInput> {
+class _EntryInput extends State<EntryInput> {
   late bool _enabled;
   late bool _obscure;
 
