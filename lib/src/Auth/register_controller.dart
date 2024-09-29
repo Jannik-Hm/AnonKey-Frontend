@@ -1,5 +1,6 @@
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'login_input.dart';
@@ -23,6 +24,8 @@ class RegisterControllerState extends State<RegisterView> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Text(dotenv.env['CLIENT_URL'] ?? '',
+                style: const TextStyle(fontSize: 24)),
             const Image(
                 image: AssetImage('assets/images/Logo.png'),
                 width: 200,

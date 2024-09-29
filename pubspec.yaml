@@ -27,6 +27,7 @@ dependencies:
   rxdart: any
   intl: any
   flutter_iconpicker: ^4.0.0
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -43,3 +44,5 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/images/
+    - .env
+    - .env.development
