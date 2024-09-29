@@ -16,10 +16,9 @@ class AuthService {
   ///
   /// [password]: The password.
   ///
-  static Future<bool> login(String username, String password) async {
-
-    ApiClient apiClient = RequestUtility.getApiWithoutAuth(
-        "https://api.beta.anonkey.lightjack.de/api/v1");
+  static Future<bool> login(
+      String username, String password, String url) async {
+    ApiClient apiClient = RequestUtility.getApiWithoutAuth(url);
     AuthenticationApi authApi = AuthenticationApi(apiClient);
     try {
       AuthenticationLoginRequestBody loginBody = AuthenticationLoginRequestBody(
@@ -50,11 +49,10 @@ class AuthService {
   /// [displayName]: The display name.
   ///
   static Future<bool> register(
-      String username, String password, String? displayName) async {
+      String username, String password, String? displayName, String url) async {
     displayName = username;
 
-    ApiClient apiClient = RequestUtility.getApiWithoutAuth(
-        "https://api.beta.anonkey.lightjack.de/api/v1");
+    ApiClient apiClient = RequestUtility.getApiWithoutAuth(url);
     UsersApi authApi = UsersApi(apiClient);
     try {
       UsersCreateRequestBody registerBody = UsersCreateRequestBody(

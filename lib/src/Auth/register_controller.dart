@@ -45,7 +45,7 @@ class RegisterControllerState extends State<RegisterView> {
                         controller: url,
                         label: "URL",
                         obscureText: false,
-                        //validator: ValidationBuilder().url().build(),
+                        validator: ValidationBuilder().url().build(),
                         focus: _urlFocus),
                     const SizedBox(height: 16),
                     LoginInput(
@@ -97,7 +97,7 @@ class RegisterControllerState extends State<RegisterView> {
   _register() async {
     if (_loginFormKey.currentState!.validate()) {
       bool isRegistered =
-          await AuthService.register(username.text, password.text, displayName.text);
+          await AuthService.register(username.text, password.text, displayName.text, url.text);
       if (isRegistered) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('url', url.text);

@@ -40,7 +40,7 @@ class LoginController extends State<LoginView> {
                     controller: url,
                     label: 'URL',
                     obscureText: false,
-                    //validator: ValidationBuilder().url().build(),
+                    validator: ValidationBuilder().url().build(),
                     onEnterPressed: () => _usernameFocus.requestFocus(),
                   ),
                   const SizedBox(height: 16),
@@ -78,7 +78,8 @@ class LoginController extends State<LoginView> {
 
   _showDialog() async {
     if (_loginFormKey.currentState!.validate()) {
-      bool test = await AuthService.login(username.text, password.text);
+
+      bool test = await AuthService.login(username.text, password.text,url.text);
 
       if (test) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
