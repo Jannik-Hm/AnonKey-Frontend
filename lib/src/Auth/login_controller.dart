@@ -3,6 +3,7 @@ import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import './login_input.dart';
@@ -86,7 +87,7 @@ class LoginController extends State<LoginView> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('url', url.text);
         if (!mounted) return;
-        Navigator.pushNamed(context, '/home');
+        context.goNamed("home");
       } else {
         if (!mounted) return;
         return showDialog(
