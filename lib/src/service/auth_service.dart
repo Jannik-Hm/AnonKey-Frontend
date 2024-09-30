@@ -103,11 +103,18 @@ class AuthService {
   /// [username]: The username.
   ///
   /// [password]: The password.
-  static void storeAuthenticationCredentials(
+  static Future<void> storeAuthenticationCredentials(
       String? token, String username, String password) async {
     const storage = FlutterSecureStorage();
     await storage.write(key: "token", value: token);
     await storage.write(key: "password", value: password);
     await storage.write(key: "username", value: username);
+  }
+
+  static Future<void> deleteAuthenticationCredentials() async {
+    const storage = FlutterSecureStorage();
+    await storage.delete(key: "token");
+    await storage.delete(key: "password");
+    await storage.delete(key: "username");
   }
 }

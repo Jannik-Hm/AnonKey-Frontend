@@ -1,14 +1,9 @@
-
-import 'package:anonkey_frontend/src/Auth/register_view.dart';
+import 'package:anonkey_frontend/src/router/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'sample_feature/sample_item_details_view.dart';
-import 'sample_feature/sample_item_list_view.dart';
 import 'settings/settings_controller.dart';
-import 'settings/settings_view.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
@@ -28,7 +23,7 @@ class MyApp extends StatelessWidget {
     return ListenableBuilder(
       listenable: settingsController,
       builder: (BuildContext context, Widget? child) {
-        return MaterialApp(
+        return MaterialApp.router(
           // Providing a restorationScopeId allows the Navigator built by the
           // MaterialApp to restore the navigation stack when a user leaves and
           // returns to the app after it has been killed while running in the
@@ -60,10 +55,6 @@ class MyApp extends StatelessWidget {
               AppLocalizations.of(context)!.appTitle,
 
           // Define the routes for your application. The "/" route is the home
-          routes: {
-            '/home': (context) => const SampleItemListView(),
-            "/register": (context) => const RegisterView(),
-          },
 
           // Define a light and dark color theme. Then, read the user's
           // preferred ThemeMode (light, dark, or system default) from the
@@ -90,50 +81,10 @@ class MyApp extends StatelessWidget {
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
-          onGenerateRoute: (RouteSettings routeSettings) {
-            return MaterialPageRoute<void>(
-              settings: routeSettings,
-              builder: (BuildContext context) {
-                switch (routeSettings.name) {
-                  case SettingsView.routeName:
-                    return SettingsView(controller: settingsController);
-                  case SampleItemDetailsView.routeName:
-                    return const SampleItemDetailsView();
-                  case SampleItemListView.routeName:
-                  default:
-                    return FutureBuilder<bool>(
-                      future: _isFirstView(),
-                      builder:
-                          (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          // Während wir auf das Future warten, können wir einen Ladebildschirm anzeigen
-                          return const CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          // Wenn es einen Fehler gibt, kannst du hier etwas anzeigen
-                          return const Center(child: Text('Error occurred'));
-                        } else if (snapshot.hasData) {
-                          // Wenn das Future abgeschlossen ist, zeigen wir das entsprechende Widget
-                          if (snapshot.data!) {
-                            return const RegisterView();
-                          } else {
-                            return const SampleItemListView();
-                          }
-                        }
-                        return Container(); // Fallback falls kein Daten- oder Fehlerzustand vorliegt
-                      },
-                    );
-                }
-              },
-            );
-          },
+          routerConfig:
+              (AppRouter(settingsController: settingsController)).getRouter(),
         );
       },
     );
-  }
-
-  Future<bool> _isFirstView() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('isFirst') ?? true;
   }
 }
