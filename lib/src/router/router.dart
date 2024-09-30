@@ -1,5 +1,9 @@
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
+import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
+import 'package:anonkey_frontend/src/Credentials/list-entry/credential_detail_view.dart';
+import 'package:anonkey_frontend/src/Folders/folder_data.dart';
+import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
 import 'package:anonkey_frontend/src/sample_feature/sample_item_details_view.dart';
 import 'package:anonkey_frontend/src/sample_feature/sample_item_list_view.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
@@ -46,6 +50,20 @@ class AppRouter {
           path: "/settings",
           builder: (context, state) =>
               SettingsView(controller: settingsController),
+        ),
+        GoRoute(
+          path: '/credentialDetail',
+          builder: (context, state) {
+            final credential = state.extra as Credential; // Access the passed object
+            return CredentialDetailWidget(credential: credential,);
+          },
+        ),
+        GoRoute(
+          path: '/folderDetail',
+          builder: (context, state) {
+            final folder = state.extra as Folder; // Access the passed object
+            return FolderEditWidget(folder: folder,);
+          },
         ),
       ],
       redirect: (BuildContext context, GoRouterState state) async {
