@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Widgets/icon_picker.dart';
+import 'package:form_validator/form_validator.dart';
 
 class FolderEditWidget extends StatefulWidget {
   final Folder? folder;
   final void Function({required int codePoint})? iconCallback;
+  final Function({required Folder folderData})? onSaveCallback;
+  final Function()? onAbortCallback;
 
   const FolderEditWidget({
     super.key,
     this.folder,
     this.iconCallback,
+    this.onSaveCallback,
+    this.onAbortCallback,
   });
 
   @override
@@ -22,6 +27,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
   late bool _enabled;
   late Folder _folder;
   final double spacing = 16.0;
+  final _formkey = GlobalKey<FormState>();
 
   IconData? _iconData;
 
@@ -29,11 +35,9 @@ class _FolderEditWidget extends State<FolderEditWidget> {
   void initState() {
     super.initState();
     // Initialize the mutable object from the widget field
-    _enabled = false;
-    _folder = widget.folder ?? Folder(iconData: 0, displayName: "", uuid: "");
-    if (widget.folder != null) {
-      _iconData = widget.folder?.getIconData();
-    }
+    _enabled = (widget.folder == null);
+    _folder = widget.folder ?? Folder(iconData: Icons.folder.codePoint, displayName: "", uuid: "");
+    _iconData = _folder.getIconData();
   }
 
   void updateIcon({required IconData? iconData}) {
@@ -61,7 +65,11 @@ class _FolderEditWidget extends State<FolderEditWidget> {
     void save() {
       _folder.displayName = displayName.text;
       if (_iconData != null) {
-        widget.iconCallback!(codePoint: _iconData!.codePoint);
+        if(widget.folder == null){
+          _folder.setIcon(codePoint: _iconData!.codePoint);
+        }else if(widget.iconCallback != null){
+          widget.iconCallback!(codePoint: _iconData!.codePoint);
+        }
       }
     }
 
@@ -74,14 +82,24 @@ class _FolderEditWidget extends State<FolderEditWidget> {
           if (!_enabled) IconButton(onPressed: () => enableFields(), icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary)),
           if (_enabled)
             IconButton(
-                onPressed: () => {save(), disableFields()},
+                onPressed: () => {
+                      if (_formkey.currentState!.validate())
+                        {
+                          save(),
+                          disableFields(),
+                          if (widget.onSaveCallback != null) widget.onSaveCallback!(folderData: _folder),
+                        },
+                    },
                 icon: Icon(
                   Icons.save,
                   color: Theme.of(context).colorScheme.onPrimary,
                 )),
           if (_enabled)
             IconButton(
-                onPressed: () => disableFields(),
+                onPressed: () => {
+                      disableFields(),
+                      if (widget.onAbortCallback != null) widget.onAbortCallback!(),
+                    },
                 icon: Icon(
                   Icons.cancel,
                   color: Theme.of(context).colorScheme.onPrimary,
@@ -91,26 +109,30 @@ class _FolderEditWidget extends State<FolderEditWidget> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: Column(
-          children: [
-            EntryInput(
-              key: UniqueKey(),
-              controller: displayName,
-              label: 'Display Name',
-              focus: displayNameFocus,
-              obscureText: false,
-              enabled: _enabled,
-            ),
-            SizedBox(height: spacing),
-            IconPicker(
-              key: UniqueKey(),
-              iconData: _iconData,
-              enabled: _enabled,
-              iconCallback: updateIcon,
-            ),
-          ],
+      body: Form(
+        key: _formkey,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          child: Column(
+            children: [
+              EntryInput(
+                key: UniqueKey(),
+                controller: displayName,
+                label: 'Display Name',
+                focus: displayNameFocus,
+                validator: ValidationBuilder().required().build(),
+                obscureText: false,
+                enabled: _enabled,
+              ),
+              SizedBox(height: spacing),
+              IconPicker(
+                key: UniqueKey(),
+                iconData: _iconData,
+                enabled: _enabled,
+                iconCallback: updateIcon,
+              ),
+            ],
+          ),
         ),
       ),
     );
