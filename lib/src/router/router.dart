@@ -37,6 +37,7 @@ class AppRouter {
           builder: (context, state) => const LoginView(),
         ),
         GoRoute(
+          name: "register",
           path: "/register",
           builder: (context, state) => const RegisterView(),
         ),
@@ -54,15 +55,20 @@ class AppRouter {
         GoRoute(
           path: '/credentialDetail',
           builder: (context, state) {
-            final credential = state.extra as Credential; // Access the passed object
-            return CredentialDetailWidget(credential: credential,);
+            final credential =
+                state.extra as Credential; // Access the passed object
+            return CredentialDetailWidget(
+              credential: credential,
+            );
           },
         ),
         GoRoute(
           path: '/folderDetail',
           builder: (context, state) {
             final folder = state.extra as Folder; // Access the passed object
-            return FolderEditWidget(folder: folder,);
+            return FolderEditWidget(
+              folder: folder,
+            );
           },
         ),
       ],
@@ -81,7 +87,7 @@ class AppRouter {
         }
 
         if (!isAuthenticated) {
-          return '/login';
+          return state.fullPath == '/login' ? "/login" : '/register';
         } else {
           return null; // return "null" to display the intended route without redirecting
         }

@@ -2,6 +2,7 @@ import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,7 +43,8 @@ class LoginController extends State<LoginView> {
                     controller: url,
                     label: 'URL',
                     obscureText: false,
-                    validator: (kDebugMode) ? null : ValidationBuilder().url().build(),
+                    validator:
+                        (kDebugMode) ? null : ValidationBuilder().url().build(),
                     onEnterPressed: () => _usernameFocus.requestFocus(),
                   ),
                   const SizedBox(height: 16),
@@ -71,7 +73,11 @@ class LoginController extends State<LoginView> {
                   foregroundColor: Theme.of(context).colorScheme.onPrimary),
               onPressed: () => _showDialog(),
               child: const Text('Fly me to the moon'),
-            )
+            ),
+            TextButton(
+              onPressed: () => context.replaceNamed("register"),
+              child: Text(AppLocalizations.of(context)!.changeToRegister),
+            ),
           ],
         ),
       ),
@@ -80,8 +86,8 @@ class LoginController extends State<LoginView> {
 
   _showDialog() async {
     if (_loginFormKey.currentState!.validate()) {
-
-      bool test = await AuthService.login(username.text, password.text,url.text);
+      bool test =
+          await AuthService.login(username.text, password.text, url.text);
 
       if (test) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
