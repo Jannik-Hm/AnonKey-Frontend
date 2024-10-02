@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/cryptography.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
@@ -8,7 +9,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// This service provides methods to login and register a user.
 ///
 class AuthService {
-
   /// Logs in a user.
   ///
   /// \returns `true` if the login was successful, `false` otherwise.
@@ -21,10 +21,14 @@ class AuthService {
       String username, String password, String url) async {
     ApiClient apiClient = RequestUtility.getApiWithoutAuth(url);
     AuthenticationApi authApi = AuthenticationApi(apiClient);
+    String masterKDF = await Cryptography.getKDFBase64(
+      masterPassword: password,
+      salt: username,
+    );
     try {
       AuthenticationLoginRequestBody loginBody = AuthenticationLoginRequestBody(
         userName: username,
-        kdfPasswordResult: password,
+        kdfPasswordResult: masterKDF,
       );
       await authApi.authenticationLoginPost(loginBody).then((value) async => {
             if (value?.token != null)
@@ -55,11 +59,15 @@ class AuthService {
 
     ApiClient apiClient = RequestUtility.getApiWithoutAuth(url);
     UsersApi authApi = UsersApi(apiClient);
+    String masterKDF = await Cryptography.getKDFBase64(
+      masterPassword: password,
+      salt: username,
+    );
     try {
       UsersCreateRequestBody registerBody = UsersCreateRequestBody(
         userName: username,
         userDisplayName: username,
-        kdfPasswordResult: password,
+        kdfPasswordResult: masterKDF,
       );
       await authApi.userCreatePost(registerBody).then((value) async => {
             if (value?.token != null)
