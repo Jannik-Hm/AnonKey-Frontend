@@ -90,7 +90,7 @@ class RegisterControllerState extends State<RegisterView> {
                     ),
                     TextButton(
                       onPressed: () => context.replaceNamed("login"),
-                      child: const Text('Switch to Login'),
+                      child: Text(AppLocalizations.of(context)!.changeToLogin),
                     ),
                   ],
                 ))

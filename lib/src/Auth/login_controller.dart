@@ -2,6 +2,7 @@ import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,7 +76,7 @@ class LoginController extends State<LoginView> {
             ),
             TextButton(
               onPressed: () => context.replaceNamed("register"),
-              child: const Text('Switch to Register'),
+              child: Text(AppLocalizations.of(context)!.changeToRegister),
             ),
           ],
         ),
