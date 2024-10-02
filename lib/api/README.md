@@ -68,6 +68,8 @@ Class | Method | HTTP request | Description
 *CredentialsApi* | [**credentialsDeleteDelete**](doc//CredentialsApi.md#credentialsdeletedelete) | **DELETE** /credentials/delete | Deletes an existing credential object.
 *CredentialsApi* | [**credentialsGetAllGet**](doc//CredentialsApi.md#credentialsgetallget) | **GET** /credentials/getAll | Gets all available credential objects for this user.
 *CredentialsApi* | [**credentialsGetGet**](doc//CredentialsApi.md#credentialsgetget) | **GET** /credentials/get | Gets information on a credential object.
+*CredentialsApi* | [**credentialsSoftDeletePut**](doc//CredentialsApi.md#credentialssoftdeleteput) | **PUT** /credentials/soft-delete | SoftDeletes an existing credential object.
+*CredentialsApi* | [**credentialsSoftUndeletePut**](doc//CredentialsApi.md#credentialssoftundeleteput) | **PUT** /credentials/soft-undelete | SoftUndeletes an existing credential object.
 *CredentialsApi* | [**credentialsUpdatePut**](doc//CredentialsApi.md#credentialsupdateput) | **PUT** /credentials/update | Updates a credential object.
 *FoldersApi* | [**foldersCreatePost**](doc//FoldersApi.md#folderscreatepost) | **POST** /folders/create | Creates a new folder.
 *FoldersApi* | [**foldersDeleteDelete**](doc//FoldersApi.md#foldersdeletedelete) | **DELETE** /folders/delete | Deletes an existing folder.

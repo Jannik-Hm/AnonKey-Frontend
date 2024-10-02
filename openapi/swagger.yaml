@@ -81,6 +81,12 @@ paths:
       responses:
         '200':
           description: OK
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
         '400':
           description: Bad Request
           content:
@@ -96,7 +102,6 @@ paths:
         - name: credentialUuid
           in: query
           required: true
-          style: form
           schema:
             type: string
       responses:
@@ -172,6 +177,58 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseBody'
+  /credentials/soft-delete:
+    put:
+      tags:
+        - Credentials
+      summary: SoftDeletes an existing credential object.
+      parameters:
+        - name: credentialUuid
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /credentials/soft-undelete:
+    put:
+      tags:
+        - Credentials
+      summary: SoftUndeletes an existing credential object.
+      parameters:
+        - name: credentialUuid
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
   /credentials/delete:
     delete:
       tags:
@@ -181,7 +238,6 @@ paths:
         - name: credentialUuid
           in: query
           required: true
-          style: form
           schema:
             type: string
       responses:
@@ -217,6 +273,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FoldersCreateResponseBody'
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
         '400':
           description: Bad Request
           content:
@@ -232,7 +294,6 @@ paths:
         - name: folderUuid
           in: query
           required: true
-          style: form
           schema:
             type: string
       responses:
@@ -317,9 +378,13 @@ paths:
         - name: folderUuid
           in: query
           required: true
-          style: form
           schema:
             type: string
+        - name: recursive
+          in: query
+          required: true
+          schema:
+            type: boolean
       responses:
         '200':
           description: OK
@@ -448,7 +513,7 @@ paths:
       summary: Returns a new UUID for several endpoints.
       responses:
         '200':
-          description: Success
+          description: OK
           content:
             application/json:
               schema:
@@ -527,13 +592,25 @@ components:
           type: string
           description: The URL of the website the credential belongs to.
           nullable: true
+        websiteUrlSalt:
+          type: string
+          description: The WebsiteUrlSalt of the credetial
+          nullable: true
         note:
           type: string
           description: A note attached to the credential.
           nullable: true
+        noteSalt:
+          type: string
+          description: The NoteSalt  of the credetial
+          nullable: true
         displayName:
           type: string
           description: The display name of the credential..
+          nullable: true
+        displayNameSalt:
+          type: string
+          description: The DisplayNameSalt of the credetial
           nullable: true
         folderUuid:
           type: string
@@ -575,13 +652,25 @@ components:
           type: string
           description: The URL of the website the credential belongs to.
           nullable: true
+        websiteUrlSalt:
+          type: string
+          description: The WebsiteUrlSalt of the credetial
+          nullable: true
         note:
           type: string
           description: A note attached to the credential.
           nullable: true
+        noteSalt:
+          type: string
+          description: The NoteSalt  of the credetial
+          nullable: true
         displayName:
           type: string
           description: The display name of the credential..
+          nullable: true
+        displayNameSalt:
+          type: string
+          description: The DisplayNameSalt of the credetial
           nullable: true
         folderUuid:
           type: string
@@ -599,6 +688,7 @@ components:
           type: integer
           description: The unix timestamp the credential was deleted at.
           format: int64
+          nullable: true
       additionalProperties: false
       description: The credentials inside the list returned by a get all credentials request.
     CredentialsGetAllResponseBody:
@@ -639,13 +729,25 @@ components:
           type: string
           description: The URL of the website the credential belongs to.
           nullable: true
+        websiteUrlSalt:
+          type: string
+          description: The WebsiteUrlSalt of the credetial
+          nullable: true
         note:
           type: string
           description: A note attached to the credential.
           nullable: true
+        noteSalt:
+          type: string
+          description: The NoteSalt  of the credetial
+          nullable: true
         displayName:
           type: string
           description: The display name of the credential..
+          nullable: true
+        displayNameSalt:
+          type: string
+          description: The DisplayNameSalt of the credetial
           nullable: true
         folderUuid:
           type: string
@@ -663,6 +765,7 @@ components:
           type: integer
           description: The unix timestamp the credential was deleted at.
           format: int64
+          nullable: true
       additionalProperties: false
       description: Credential in a credential get response.
     CredentialsGetResponseBody:
@@ -699,17 +802,34 @@ components:
           type: string
           description: The URL of the website the credential belongs to.
           nullable: true
+        websiteUrlSalt:
+          type: string
+          description: The WebsiteUrlSalt of the credetial
+          nullable: true
         note:
           type: string
           description: A note attached to the credential.
+          nullable: true
+        noteSalt:
+          type: string
+          description: The NoteSalt  of the credetial
           nullable: true
         displayName:
           type: string
           description: The display name of the credential..
           nullable: true
+        displayNameSalt:
+          type: string
+          description: The DisplayNameSalt of the credetial
+          nullable: true
         folderUuid:
           type: string
           description: "The UUID of the folder the credential is in.\r\nUse NULL for no folder."
+          nullable: true
+        deletedTimestamp:
+          type: integer
+          description: "The DeletedTimestamp of the credential in order to be able to recover a credential.\r\nUse NULL in oder to recover after deleting."
+          format: int64
           nullable: true
       additionalProperties: false
       description: The credential inside a credential update request.
@@ -740,13 +860,25 @@ components:
           type: string
           description: The URL of the website the credential belongs to.
           nullable: true
+        websiteUrlSalt:
+          type: string
+          description: The WebsiteUrlSalt of the credetial
+          nullable: true
         note:
           type: string
           description: A note attached to the credential.
           nullable: true
+        noteSalt:
+          type: string
+          description: The NoteSalt  of the credetial
+          nullable: true
         displayName:
           type: string
           description: The display name of the credential..
+          nullable: true
+        displayNameSalt:
+          type: string
+          description: The DisplayNameSalt of the credetial
           nullable: true
         folderUuid:
           type: string
@@ -764,6 +896,7 @@ components:
           type: integer
           description: The unix timestamp the credential was deleted at.
           format: int64
+          nullable: true
       additionalProperties: false
       description: The response to a credential update operation.
     CredentialsUpdateRequestBody:
