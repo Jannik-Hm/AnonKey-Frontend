@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../service/auth_service.dart';
@@ -46,7 +47,9 @@ class RegisterControllerState extends State<RegisterView> {
                         controller: url,
                         label: "URL",
                         obscureText: false,
-                        validator: (kDebugMode) ? null : ValidationBuilder().url().build(),
+                        validator: (kDebugMode)
+                            ? null
+                            : ValidationBuilder().url().build(),
                         focus: _urlFocus),
                     const SizedBox(height: 16),
                     LoginInput(
@@ -59,14 +62,12 @@ class RegisterControllerState extends State<RegisterView> {
                             .maxLength(128)
                             .build(),
                         focus: _usernameFocus),
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     LoginInput(
                         controller: displayName,
                         label: "Display Name",
                         obscureText: false,
-                        validator: ValidationBuilder()
-                            .required()
-                            .build(),
+                        validator: ValidationBuilder().required().build(),
                         focus: _displayName),
                     const SizedBox(height: 16),
                     LoginInput(
@@ -86,7 +87,11 @@ class RegisterControllerState extends State<RegisterView> {
                               Theme.of(context).colorScheme.onPrimary),
                       onPressed: () => _register(),
                       child: const Text('Fly me to the moon'),
-                    )
+                    ),
+                    TextButton(
+                      onPressed: () => context.replaceNamed("login"),
+                      child: const Text('Switch to Login'),
+                    ),
                   ],
                 ))
           ],
@@ -97,8 +102,8 @@ class RegisterControllerState extends State<RegisterView> {
 
   _register() async {
     if (_loginFormKey.currentState!.validate()) {
-      bool isRegistered =
-          await AuthService.register(username.text, password.text, displayName.text, url.text);
+      bool isRegistered = await AuthService.register(
+          username.text, password.text, displayName.text, url.text);
       if (isRegistered) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('url', url.text);

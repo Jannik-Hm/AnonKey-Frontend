@@ -42,7 +42,8 @@ class LoginController extends State<LoginView> {
                     controller: url,
                     label: 'URL',
                     obscureText: false,
-                    validator: (kDebugMode) ? null : ValidationBuilder().url().build(),
+                    validator:
+                        (kDebugMode) ? null : ValidationBuilder().url().build(),
                     onEnterPressed: () => _usernameFocus.requestFocus(),
                   ),
                   const SizedBox(height: 16),
@@ -71,7 +72,11 @@ class LoginController extends State<LoginView> {
                   foregroundColor: Theme.of(context).colorScheme.onPrimary),
               onPressed: () => _showDialog(),
               child: const Text('Fly me to the moon'),
-            )
+            ),
+            TextButton(
+              onPressed: () => context.replaceNamed("register"),
+              child: const Text('Switch to Register'),
+            ),
           ],
         ),
       ),
@@ -80,8 +85,8 @@ class LoginController extends State<LoginView> {
 
   _showDialog() async {
     if (_loginFormKey.currentState!.validate()) {
-
-      bool test = await AuthService.login(username.text, password.text,url.text);
+      bool test =
+          await AuthService.login(username.text, password.text, url.text);
 
       if (test) {
         SharedPreferences prefs = await SharedPreferences.getInstance();
