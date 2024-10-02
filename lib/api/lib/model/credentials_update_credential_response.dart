@@ -19,8 +19,11 @@ class CredentialsUpdateCredentialResponse {
     this.username,
     this.usernameSalt,
     this.websiteUrl,
+    this.websiteUrlSalt,
     this.note,
+    this.noteSalt,
     this.displayName,
+    this.displayNameSalt,
     this.folderUuid,
     this.createdTimestamp,
     this.changedTimestamp,
@@ -45,11 +48,20 @@ class CredentialsUpdateCredentialResponse {
   /// The URL of the website the credential belongs to.
   String? websiteUrl;
 
+  /// The WebsiteUrlSalt of the credetial
+  String? websiteUrlSalt;
+
   /// A note attached to the credential.
   String? note;
 
+  /// The NoteSalt  of the credetial
+  String? noteSalt;
+
   /// The display name of the credential..
   String? displayName;
+
+  /// The DisplayNameSalt of the credetial
+  String? displayNameSalt;
 
   /// The UUID of the folder the credential is in.  Use NULL for no folder.
   String? folderUuid;
@@ -73,12 +85,6 @@ class CredentialsUpdateCredentialResponse {
   int? changedTimestamp;
 
   /// The unix timestamp the credential was deleted at.
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
   int? deletedTimestamp;
 
   @override
@@ -91,8 +97,11 @@ class CredentialsUpdateCredentialResponse {
           other.username == username &&
           other.usernameSalt == usernameSalt &&
           other.websiteUrl == websiteUrl &&
+          other.websiteUrlSalt == websiteUrlSalt &&
           other.note == note &&
+          other.noteSalt == noteSalt &&
           other.displayName == displayName &&
+          other.displayNameSalt == displayNameSalt &&
           other.folderUuid == folderUuid &&
           other.createdTimestamp == createdTimestamp &&
           other.changedTimestamp == changedTimestamp &&
@@ -107,8 +116,11 @@ class CredentialsUpdateCredentialResponse {
       (username == null ? 0 : username!.hashCode) +
       (usernameSalt == null ? 0 : usernameSalt!.hashCode) +
       (websiteUrl == null ? 0 : websiteUrl!.hashCode) +
+      (websiteUrlSalt == null ? 0 : websiteUrlSalt!.hashCode) +
       (note == null ? 0 : note!.hashCode) +
+      (noteSalt == null ? 0 : noteSalt!.hashCode) +
       (displayName == null ? 0 : displayName!.hashCode) +
+      (displayNameSalt == null ? 0 : displayNameSalt!.hashCode) +
       (folderUuid == null ? 0 : folderUuid!.hashCode) +
       (createdTimestamp == null ? 0 : createdTimestamp!.hashCode) +
       (changedTimestamp == null ? 0 : changedTimestamp!.hashCode) +
@@ -116,7 +128,7 @@ class CredentialsUpdateCredentialResponse {
 
   @override
   String toString() =>
-      'CredentialsUpdateCredentialResponse[uuid=$uuid, password=$password, passwordSalt=$passwordSalt, username=$username, usernameSalt=$usernameSalt, websiteUrl=$websiteUrl, note=$note, displayName=$displayName, folderUuid=$folderUuid, createdTimestamp=$createdTimestamp, changedTimestamp=$changedTimestamp, deletedTimestamp=$deletedTimestamp]';
+      'CredentialsUpdateCredentialResponse[uuid=$uuid, password=$password, passwordSalt=$passwordSalt, username=$username, usernameSalt=$usernameSalt, websiteUrl=$websiteUrl, websiteUrlSalt=$websiteUrlSalt, note=$note, noteSalt=$noteSalt, displayName=$displayName, displayNameSalt=$displayNameSalt, folderUuid=$folderUuid, createdTimestamp=$createdTimestamp, changedTimestamp=$changedTimestamp, deletedTimestamp=$deletedTimestamp]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -150,15 +162,30 @@ class CredentialsUpdateCredentialResponse {
     } else {
       json[r'websiteUrl'] = null;
     }
+    if (this.websiteUrlSalt != null) {
+      json[r'websiteUrlSalt'] = this.websiteUrlSalt;
+    } else {
+      json[r'websiteUrlSalt'] = null;
+    }
     if (this.note != null) {
       json[r'note'] = this.note;
     } else {
       json[r'note'] = null;
     }
+    if (this.noteSalt != null) {
+      json[r'noteSalt'] = this.noteSalt;
+    } else {
+      json[r'noteSalt'] = null;
+    }
     if (this.displayName != null) {
       json[r'displayName'] = this.displayName;
     } else {
       json[r'displayName'] = null;
+    }
+    if (this.displayNameSalt != null) {
+      json[r'displayNameSalt'] = this.displayNameSalt;
+    } else {
+      json[r'displayNameSalt'] = null;
     }
     if (this.folderUuid != null) {
       json[r'folderUuid'] = this.folderUuid;
@@ -210,8 +237,11 @@ class CredentialsUpdateCredentialResponse {
         username: mapValueOfType<String>(json, r'username'),
         usernameSalt: mapValueOfType<String>(json, r'usernameSalt'),
         websiteUrl: mapValueOfType<String>(json, r'websiteUrl'),
+        websiteUrlSalt: mapValueOfType<String>(json, r'websiteUrlSalt'),
         note: mapValueOfType<String>(json, r'note'),
+        noteSalt: mapValueOfType<String>(json, r'noteSalt'),
         displayName: mapValueOfType<String>(json, r'displayName'),
+        displayNameSalt: mapValueOfType<String>(json, r'displayNameSalt'),
         folderUuid: mapValueOfType<String>(json, r'folderUuid'),
         createdTimestamp: mapValueOfType<int>(json, r'createdTimestamp'),
         changedTimestamp: mapValueOfType<int>(json, r'changedTimestamp'),

@@ -62,7 +62,7 @@ Name | Type | Description  | Notes
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **foldersDeleteDelete**
-> foldersDeleteDelete(folderUuid)
+> foldersDeleteDelete(folderUuid, recursive)
 
 Deletes an existing folder.
 
@@ -76,9 +76,10 @@ import 'package:anonkey_frontend/api.dart';
 
 final api_instance = FoldersApi();
 final folderUuid = folderUuid_example; // String | 
+final recursive = true; // bool | 
 
 try {
-    api_instance.foldersDeleteDelete(folderUuid);
+    api_instance.foldersDeleteDelete(folderUuid, recursive);
 } catch (e) {
     print('Exception when calling FoldersApi->foldersDeleteDelete: $e\n');
 }
@@ -89,6 +90,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **folderUuid** | **String**|  | 
+ **recursive** | **bool**|  | 
 
 ### Return type
 

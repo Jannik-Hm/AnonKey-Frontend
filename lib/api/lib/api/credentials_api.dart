@@ -224,6 +224,108 @@ class CredentialsApi {
     return null;
   }
 
+  /// SoftDeletes an existing credential object.
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [String] credentialUuid (required):
+  Future<Response> credentialsSoftDeletePutWithHttpInfo(
+    String credentialUuid,
+  ) async {
+    // ignore: prefer_const_declarations
+    final path = r'/credentials/soft-delete';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    queryParams.addAll(_queryParams('', 'credentialUuid', credentialUuid));
+
+    const contentTypes = <String>[];
+
+    return apiClient.invokeAPI(
+      path,
+      'PUT',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// SoftDeletes an existing credential object.
+  ///
+  /// Parameters:
+  ///
+  /// * [String] credentialUuid (required):
+  Future<void> credentialsSoftDeletePut(
+    String credentialUuid,
+  ) async {
+    final response = await credentialsSoftDeletePutWithHttpInfo(
+      credentialUuid,
+    );
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+  }
+
+  /// SoftUndeletes an existing credential object.
+  ///
+  /// Note: This method returns the HTTP [Response].
+  ///
+  /// Parameters:
+  ///
+  /// * [String] credentialUuid (required):
+  Future<Response> credentialsSoftUndeletePutWithHttpInfo(
+    String credentialUuid,
+  ) async {
+    // ignore: prefer_const_declarations
+    final path = r'/credentials/soft-undelete';
+
+    // ignore: prefer_final_locals
+    Object? postBody;
+
+    final queryParams = <QueryParam>[];
+    final headerParams = <String, String>{};
+    final formParams = <String, String>{};
+
+    queryParams.addAll(_queryParams('', 'credentialUuid', credentialUuid));
+
+    const contentTypes = <String>[];
+
+    return apiClient.invokeAPI(
+      path,
+      'PUT',
+      queryParams,
+      postBody,
+      headerParams,
+      formParams,
+      contentTypes.isEmpty ? null : contentTypes.first,
+    );
+  }
+
+  /// SoftUndeletes an existing credential object.
+  ///
+  /// Parameters:
+  ///
+  /// * [String] credentialUuid (required):
+  Future<void> credentialsSoftUndeletePut(
+    String credentialUuid,
+  ) async {
+    final response = await credentialsSoftUndeletePutWithHttpInfo(
+      credentialUuid,
+    );
+    if (response.statusCode >= HttpStatus.badRequest) {
+      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
+    }
+  }
+
   /// Updates a credential object.
   ///
   /// Note: This method returns the HTTP [Response].

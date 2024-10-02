@@ -83,8 +83,11 @@ class FoldersApi {
   /// Parameters:
   ///
   /// * [String] folderUuid (required):
+  ///
+  /// * [bool] recursive (required):
   Future<Response> foldersDeleteDeleteWithHttpInfo(
     String folderUuid,
+    bool recursive,
   ) async {
     // ignore: prefer_const_declarations
     final path = r'/folders/delete';
@@ -97,6 +100,7 @@ class FoldersApi {
     final formParams = <String, String>{};
 
     queryParams.addAll(_queryParams('', 'folderUuid', folderUuid));
+    queryParams.addAll(_queryParams('', 'recursive', recursive));
 
     const contentTypes = <String>[];
 
@@ -116,11 +120,15 @@ class FoldersApi {
   /// Parameters:
   ///
   /// * [String] folderUuid (required):
+  ///
+  /// * [bool] recursive (required):
   Future<void> foldersDeleteDelete(
     String folderUuid,
+    bool recursive,
   ) async {
     final response = await foldersDeleteDeleteWithHttpInfo(
       folderUuid,
+      recursive,
     );
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
