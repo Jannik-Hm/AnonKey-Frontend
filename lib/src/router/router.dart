@@ -87,8 +87,7 @@ class AppRouter {
         }
 
         if (!isAuthenticated) {
-          print(state.matchedLocation);
-          return state.matchedLocation == '/login' ? "/login" : '/register';
+          return state.fullPath == '/login' ? "/login" : '/register';
         } else {
           return null; // return "null" to display the intended route without redirecting
         }
