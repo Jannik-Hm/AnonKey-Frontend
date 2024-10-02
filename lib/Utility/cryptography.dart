@@ -1,9 +1,18 @@
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:cryptography/cryptography.dart';
 import 'dart:convert';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
 class Cryptography {
+  static final Random _random = Random.secure();
+
+  static String createCryptoRandomString([int length = 32]) {
+    int byteLength = 3 * (length ~/ 4) - 2;
+    var values = List<int>.generate(byteLength, (i) => _random.nextInt(256));
+
+    return base64Url.encode(values);
+  }
   /// Async function to generate a KDF in byte form.
   static Future<Uint8List> getKDFBytes({required String masterPassword, required String salt}) async {
     return Pbkdf2(
