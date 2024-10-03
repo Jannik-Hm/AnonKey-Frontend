@@ -1,10 +1,6 @@
 import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
-import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Folders/folder_list.dart';
-import 'package:anonkey_frontend/src/Widgets/dropdown_button.dart';
-import 'package:anonkey_frontend/src/Widgets/dropdown_tile.dart';
-import 'package:anonkey_frontend/src/Widgets/folder_dropdown.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
