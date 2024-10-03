@@ -464,7 +464,7 @@ class Credential {
   api.CredentialsUpdateCredentialRequest updateAPICredentialRequest() {
     return api.CredentialsUpdateCredentialRequest(
       uuid: this.uuid,
-      folderUuid: /* this.folderUuid */ "1",
+      folderUuid: this.folderUuid,
       displayName: this._encryptedDisplayName,
       displayNameSalt: this._displayNameSalt,
       websiteUrl: this._encryptedWebsiteUrl,

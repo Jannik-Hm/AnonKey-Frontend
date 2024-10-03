@@ -52,7 +52,7 @@ class AppRouter {
           builder: (context, state) =>
               SettingsView(controller: settingsController),
         ),
-        GoRoute(
+        /* GoRoute(
           path: '/credentialDetail',
           builder: (context, state) {
             final credential =
@@ -61,7 +61,7 @@ class AppRouter {
               credential: credential,
             );
           },
-        ),
+        ), */
         GoRoute(
           path: '/folderDetail',
           builder: (context, state) {

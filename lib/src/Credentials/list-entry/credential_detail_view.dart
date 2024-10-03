@@ -1,6 +1,8 @@
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
+import 'package:anonkey_frontend/src/Folders/folder_data.dart';
+import 'package:anonkey_frontend/src/Widgets/folder_dropdown.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
@@ -9,12 +11,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CredentialDetailWidget extends StatefulWidget {
   final Credential credential;
+  final List<Folder> availableFolders;
   final Function(Credential credential)? onSaveCallback;
 
   const CredentialDetailWidget({
     super.key,
     required this.credential,
     this.onSaveCallback,
+    required this.availableFolders,
   });
 
   @override
@@ -57,6 +61,8 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     final note = TextEditingController(text: _credential.getClearNote());
     // String folderUuid;
 
+    String newFolderUUID = "";
+
     void enableFields() {
       setState(() {
         _enabled = true;
@@ -73,6 +79,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
 
     Future<bool> save() async {
       String pass = (await AuthService.getAuthenticationCredentials())["password"]!;
+      print(newFolderUUID);
       Credential temp = await _credential.updateFromLocal(
         masterPassword: pass,
         clearWebsiteUrl: websiteUrl.text,
@@ -80,7 +87,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         clearPassword: password.text,
         clearDisplayName: displayName.text,
         clearNote: note.text,
-        folderUuid: "",
+        folderUuid: newFolderUUID,
       );
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? url = prefs.getString('url');
@@ -169,6 +176,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               enabled: _enabled,
             ),
             SizedBox(height: spacing),
+            //TODO: update Notes to multi-line Text Area
             EntryInput(
               key: UniqueKey(),
               controller: note,
@@ -176,6 +184,16 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               obscureText: false,
               focus: noteFocus,
               enabled: _enabled,
+            ),
+            SizedBox(height: spacing),
+            FolderDropdown(
+              key: UniqueKey(),
+              folders: widget.availableFolders,
+              enabled: _enabled,
+              currentFolderUuid: _credential.folderUuid ?? "",
+              onChangeCallback: (value) {
+                newFolderUUID = value ?? "";
+              },
             ),
           ],
         ),
