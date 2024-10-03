@@ -36,12 +36,7 @@ class _FolderEntry extends State<FolderEntry> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => FolderEditWidget(folder: _folder, iconCallback: updateIcon,),
-          ),
-        )
+        //TODO: open view with all credentials associated with this folder
       },
       child: Ink(
         padding: const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
@@ -49,25 +44,46 @@ class _FolderEntry extends State<FolderEntry> {
         child: Padding(
           padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start, // Ensure even spacing
+            mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensure even spacing
             children: [
               // Image on the left
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 70.0),
-                //child: Image.network("https://icons.duckduckgo.com/ip3/linustechtips.com.ico"),
                 child: _folder.getIcon(color: Theme.of(context).colorScheme.onPrimary),
               ),
               const SizedBox(
                 width: 20.0,
               ),
               // Vertically stacked texts in the middle
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0), // Add some spacing between the image and text
-                child: Text(
-                  _folder.displayName,
-                  style: const TextStyle(
-                    fontSize: 20.0,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0), // Add some spacing between the image and text
+                  child: Text(
+                    _folder.displayName,
+                    style: const TextStyle(
+                      fontSize: 20.0,
+                    ),
                   ),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
+                ),
+                onPressed: () => {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => FolderEditWidget(
+                        folder: _folder,
+                        iconCallback: updateIcon,
+                      ),
+                    ),
+                  )
+                },
+                child: Icon(
+                  Icons.edit,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
             ],
@@ -77,3 +93,18 @@ class _FolderEntry extends State<FolderEntry> {
     );
   }
 }
+
+//  TODO: add button for creation of new Folders
+//  with action:
+/*
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => FolderEditWidget(
+              onSaveCallback: ({required folderData}) {
+                //TODO: do something with created folderData
+              },
+            ),
+          ),
+        )
+*/
