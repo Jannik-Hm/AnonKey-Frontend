@@ -479,10 +479,9 @@ class Credential {
     );
   }
 
-  api.CredentialsUpdateRequestBody updateAPICredentialRequestBody() {
-    print(this.updateAPICredentialRequest());
+  api.CredentialsUpdateRequestBody updateAPICredentialRequestBody({api.CredentialsUpdateCredentialRequest? requestdata}) {
     return api.CredentialsUpdateRequestBody(
-      credential: this.updateAPICredentialRequest(),
+      credential: requestdata ?? this.updateAPICredentialRequest(),
     );
   }
 }
