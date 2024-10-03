@@ -52,7 +52,7 @@ class _CredentialEntry extends State<CredentialEntry> {
       });
     }
 
-    Credential.newEntry(clearPassword: "12345678", displayName: "Test", folderUuid: "123", masterPassword: "SuperSicher", clearUsername: "test", uuid: "balabadasda", websiteUrl: "google.de", note: "", createdTimeStamp: 0);
+    Credential.newEntry(clearPassword: "12345678", clearDisplayName: "Test", folderUuid: "123", masterPassword: "SuperSicher", clearUsername: "test", uuid: "balabadasda", clearWebsiteUrl: "google.de", clearNote: "", createdTimeStamp: 0);
 
     return InkWell(
       onTap: () => {
@@ -75,7 +75,7 @@ class _CredentialEntry extends State<CredentialEntry> {
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 70.0),
               //child: Image.network("https://icons.duckduckgo.com/ip3/linustechtips.com.ico"),
-              child: getNetworkLogoFromUrl(_credential.websiteUrl),
+              child: getNetworkLogoFromUrl(_credential.clearWebsiteUrl),
             ),
             const SizedBox(
               width: 20.0,
@@ -91,7 +91,7 @@ class _CredentialEntry extends State<CredentialEntry> {
                       CrossAxisAlignment.start, // Align text to the left
                   children: [
                     Text(
-                      _credential.displayName,
+                      _credential.clearDisplayName,
                       style: const TextStyle(
                         fontSize: 20.0,
                       ),

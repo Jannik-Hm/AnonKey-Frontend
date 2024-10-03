@@ -37,7 +37,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
   @override
   Widget build(BuildContext context) {
     //final uuid;
-    final displayName = TextEditingController(text: _credential.displayName);
+    final displayName = TextEditingController(text: _credential.clearDisplayName);
 
     final password = TextEditingController(text: _credential.clearPassword);
     //final passwordSalt;
@@ -45,9 +45,9 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     final username = TextEditingController(text: _credential.clearUsername);
     //final usernameSalt;
 
-    final websiteUrl = TextEditingController(text: _credential.websiteUrl);
+    final websiteUrl = TextEditingController(text: _credential.clearWebsiteUrl);
 
-    final note = TextEditingController(text: _credential.note);
+    final note = TextEditingController(text: _credential.clearNote);
     // String folderUuid;
 
     void enableFields() {
@@ -65,18 +65,18 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     }
 
     void save() {
-      _credential.displayName = displayName.text;
+      _credential.clearDisplayName = displayName.text;
       _credential.clearUsername = username.text;
       _credential.clearPassword = password.text;
-      _credential.websiteUrl = websiteUrl.text;
-      _credential.note = note.text;
+      _credential.clearWebsiteUrl = websiteUrl.text;
+      _credential.clearNote = note.text;
     }
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: Text(_credential.displayName),
+        title: Text(_credential.clearDisplayName),
         actions: [
           if (!_enabled) IconButton(onPressed: () => enableFields(), icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary)),
           if (_enabled)
