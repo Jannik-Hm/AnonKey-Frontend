@@ -1,5 +1,9 @@
+import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart' as api;
+import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
+import 'package:anonkey_frontend/src/service/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CredentialList {
   Map<String, Credential> byIDList = {};
@@ -73,5 +77,22 @@ class CredentialList {
       add(credential);
     }
     return this;
+  }
+
+  static Future<CredentialList?> getFromAPIFull() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? url = prefs.getString('url');
+    Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+    if (url != null) {
+      ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+      CredentialsApi api = CredentialsApi(apiClient);
+      CredentialsGetAllResponseBody? response = await api.credentialsGetAllGet();
+
+      if (response != null) {
+        CredentialList data = await CredentialList.getFromAPI(credentials: response, masterPassword: authdata["password"]!);
+        return data;
+      }
+    }
+    return null;
   }
 }
