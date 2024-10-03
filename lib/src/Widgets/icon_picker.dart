@@ -32,6 +32,7 @@ class _IconPicker extends State<IconPicker> {
         iconColor: Theme.of(context).colorScheme.onSurface,
       ),
     );
+    if(icon?.data == null) return;
     _iconData = icon?.data;
     setState(() {
       if(widget.iconCallback != null){
