@@ -1,7 +1,5 @@
-import 'package:anonkey_frontend/src/Auth/login_controller.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../settings/settings_view.dart';
@@ -188,7 +186,8 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 800.0, // Set a valid height
               child: RepaintBoundary(
-                child: SettingsView(controller: _controller), // Replace with your actual widget
+                child: SettingsView(
+                    controller: _controller), // Replace with your actual widget
               ),
             )
           ],
