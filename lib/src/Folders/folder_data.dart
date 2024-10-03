@@ -58,6 +58,10 @@ class Folder {
     );
   }
 
+  api.FoldersUpdateRequestBody updateFolderBody({api.FoldersUpdateFolder? requestdata}) {
+    return api.FoldersUpdateRequestBody(folder: requestdata ?? updateFolder());
+  }
+
   api.FoldersUpdateFolder updateFolder() {
     return api.FoldersUpdateFolder(
       icon: this._iconData,

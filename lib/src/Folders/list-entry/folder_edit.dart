@@ -1,8 +1,12 @@
+import 'package:anonkey_frontend/Utility/request_utility.dart';
+import 'package:anonkey_frontend/api/lib/api.dart';
+import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Widgets/icon_picker.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FolderEditWidget extends StatefulWidget {
   final Folder? folder;
@@ -62,14 +66,21 @@ class _FolderEditWidget extends State<FolderEditWidget> {
       });
     }
 
-    void save() {
+    void save() async {
       _folder.displayName = displayName.text;
       if (_iconData != null) {
-        if(widget.folder == null){
-          _folder.setIcon(codePoint: _iconData!.codePoint);
-        }else if(widget.iconCallback != null){
+        _folder.setIcon(codePoint: _iconData!.codePoint);
+        if(widget.folder != null && widget.iconCallback != null){
           widget.iconCallback!(codePoint: _iconData!.codePoint);
         }
+      }
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? url = prefs.getString('url');
+      Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+      if (url != null) {
+        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        FoldersApi api = FoldersApi(apiClient);
+        await api.foldersUpdatePut(_folder.updateFolderBody());
       }
     }
 
