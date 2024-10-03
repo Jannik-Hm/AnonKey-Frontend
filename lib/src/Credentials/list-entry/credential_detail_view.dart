@@ -34,6 +34,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
   late bool _obscurePassword;
   late Credential _credential;
   final double spacing = 16.0;
+  late String newFolderUUID;
 
   @override
   void initState() {
@@ -42,6 +43,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     _enabled = false;
     _obscurePassword = true;
     _credential = widget.credential;
+    newFolderUUID = _credential.folderUuid ?? "";
   }
 
   @override
@@ -58,9 +60,6 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     final websiteUrl = TextEditingController(text: _credential.getClearWebsiteUrl());
 
     final note = TextEditingController(text: _credential.getClearNote());
-    // String folderUuid;
-
-    String newFolderUUID = "";
 
     void enableFields() {
       setState(() {
@@ -94,6 +93,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       if (url != null) {
         ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
         CredentialsApi api = CredentialsApi(apiClient);
+        print(temp.updateAPICredentialRequestBody());
         await api.credentialsUpdatePut(temp.updateAPICredentialRequestBody());
       }
       setState(() {
