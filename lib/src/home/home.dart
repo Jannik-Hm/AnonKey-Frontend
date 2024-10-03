@@ -1,28 +1,40 @@
+import 'package:anonkey_frontend/src/Auth/login_controller.dart';
+import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(const AnonKeyApp());
-
-class AnonKeyApp extends StatelessWidget {
-  const AnonKeyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      home: const HomeScreen(),
-    );
-  }
-}
+import '../settings/settings_view.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.controller, required this.index});
+
+  final SettingsController controller;
+  final int index;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int currentPageIndex = 0;
+  late int currentPageIndex;
+  late final SettingsController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller;
+    currentPageIndex = widget.index;
+    _initializeSettings();
+  }
+
+  Future<void> _initializeSettings() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      currentPageIndex = prefs.getInt("site") ?? widget.index;
+    });
+    prefs.remove("site");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: const Icon(Icons.shield),
                   title: const Text('Total Passwords'),
                   subtitle: const Text('You have 42 passwords saved'),
-                  trailing: Icon(Icons.visibility, color: theme.colorScheme.primary),
+                  trailing:
+                      Icon(Icons.visibility, color: theme.colorScheme.primary),
                 ),
               ),
               Card(
@@ -85,8 +98,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListTile(
                   leading: const Icon(Icons.security),
                   title: const Text('Security Tips'),
-                  subtitle: const Text('Keep your passwords strong and unique.'),
-                  trailing: Icon(Icons.arrow_forward_ios, color: theme.colorScheme.primary),
+                  subtitle:
+                      const Text('Keep your passwords strong and unique.'),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                      color: theme.colorScheme.primary),
                 ),
               ),
               const SizedBox(height: 20),
@@ -102,7 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: const Icon(Icons.folder),
                   title: const Text('Work'),
                   subtitle: const Text('12 passwords'),
-                  trailing: Icon(Icons.arrow_forward_ios, color: theme.colorScheme.primary),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                      color: theme.colorScheme.primary),
                 ),
               ),
               Card(
@@ -112,7 +128,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: const Icon(Icons.folder),
                   title: const Text('Google'),
                   subtitle: const Text('8 passwords'),
-                  trailing: Icon(Icons.arrow_forward_ios, color: theme.colorScheme.primary),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                      color: theme.colorScheme.primary),
                 ),
               ),
               Card(
@@ -122,7 +139,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: const Icon(Icons.folder),
                   title: const Text('Private'),
                   subtitle: const Text('22 passwords'),
-                  trailing: Icon(Icons.arrow_forward_ios, color: theme.colorScheme.primary),
+                  trailing: Icon(Icons.arrow_forward_ios,
+                      color: theme.colorScheme.primary),
                 ),
               ),
               const SizedBox(height: 20),
@@ -138,7 +156,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: const Icon(Icons.favorite),
                   title: const Text('Netflix Account'),
                   subtitle: const Text('username@gmail.com'),
-                  trailing: Icon(Icons.more_vert, color: theme.colorScheme.primary),
+                  trailing:
+                      Icon(Icons.more_vert, color: theme.colorScheme.primary),
                 ),
               ),
             ],
@@ -165,17 +184,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
         /// Settings
         ListView(
-          padding: const EdgeInsets.all(8.0),
           children: [
-            Text(
-              'Settings',
-              style: theme.textTheme.headlineMedium,
-            ),
-            Text(
-              '\nhier müsstet ihr eure settings importieren, ich konnte das leider nicht testen da das mit android studio nicht geklappt hat (kann immer nur eine datei im browser testen)',
-              style: theme.textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 10),
+            SizedBox(
+              height: 800.0, // Set a valid height
+              child: RepaintBoundary(
+                child: SettingsView(controller: _controller), // Replace with your actual widget
+              ),
+            )
           ],
         ),
       ][currentPageIndex],

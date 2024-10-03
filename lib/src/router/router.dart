@@ -28,9 +28,18 @@ class AppRouter {
       initialLocation: '/',
       routes: [
         GoRoute(
+          path: '/:site',
+          builder: (context, state) => HomeScreen(
+            controller: settingsController,
+            index: int.parse(state.pathParameters['site']!),
+          ),
+        ),
+        GoRoute(
           name: "home",
           path: '/',
-          builder: (context, state) => const HomeScreen(),
+          builder: (context, state) => HomeScreen(
+            controller: settingsController, index: 0,
+          ),
         ),
         GoRoute(
           name: "login",
