@@ -70,7 +70,7 @@ class CredentialList {
     }
   }
 
-  Future<CredentialList> updateFromLocalObject({required Credential credential}) async {
+  CredentialList updateFromLocalObject({required Credential credential}) {
     Credential? temp = byIDList[credential.uuid];
     if(temp != null){
       remove(credential.uuid);
