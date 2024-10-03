@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:math';
 import 'package:anonkey_frontend/Utility/cryptography.dart';
 
 //TODO: Error Handling if Master Password or Salt is incorrect
@@ -20,14 +18,6 @@ class Credential {
   DateTime? createdTimeStamp;
   DateTime? changedTimeStamp;
   DateTime? deletedTimeStamp;
-
-  static final Random _random = Random.secure();
-
-  static String _createCryptoRandomString([int length = 32]) {
-    var values = List<int>.generate(length, (i) => _random.nextInt(256));
-
-    return base64Url.encode(values);
-  }
 
   Credential({
     required this.websiteUrl,
@@ -93,12 +83,13 @@ class Credential {
     required String folderUuid,
     required int createdTimeStamp,
   }) async {
-    final passwordSalt = _createCryptoRandomString(10);
-    final usernameSalt = _createCryptoRandomString(10);
+    final passwordSalt = Cryptography.createCryptoRandomString(16);
+    final usernameSalt = Cryptography.createCryptoRandomString(16);
     print(passwordSalt);
     Cryptography.getKDFBase64(masterPassword: masterPassword, salt: uuid).then(print);
-    Cryptography.encryptString(masterPassword: masterPassword, kdfSalt: uuid, clearString: clearPassword, encryptedSalt: passwordSalt).then(print);
-    Cryptography.getClearString(masterPassword: masterPassword, kdfSalt: uuid, encryptedString: "0y9P8H+AzqfAQQuLGB/MhQ==", encryptedSalt: "IU0e-CSGD6QK7g==").then(print);
+    String tempString = await Cryptography.encryptString(masterPassword: masterPassword, kdfSalt: uuid, clearString: clearPassword, encryptedSalt: passwordSalt);
+    print(tempString);
+    Cryptography.getClearString(masterPassword: masterPassword, kdfSalt: uuid, encryptedString: tempString /* "0y9P8H+AzqfAQQuLGB/MhQ==" */, encryptedSalt: passwordSalt /* "IU0e-CSGD6QK7g==" */).then(print);
     return Credential(
       uuid: uuid,
       websiteUrl: websiteUrl,

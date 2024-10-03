@@ -22,5 +22,13 @@
   "chooseIcon": "Icon auswählen",
   "@chooseIcon": {
     "description": "Klicken, um ein Icon auszuwählen"
+  },
+  "changeToRegister": "Du hast noch keinen Account? Hier registrieren",
+  "@changeToRegister": {
+    "description": "Text to change to register"
+  },
+  "changeToLogin": "Du hast schon einen Account? Hier einloggen",
+  "@changeToLogin": {
+    "description": "Text to change to login"
   }
 }
