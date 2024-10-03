@@ -8,6 +8,15 @@ class Folder {
 
   Folder({required int iconData, required this.displayName, required this.uuid}) : _iconData = iconData;
 
+  @override
+  String toString() {
+    return """
+
+    UUID: ${uuid},
+    Name: ${displayName},
+    IconCodePoint: ${_iconData}""";
+  }
+
   static Folder? fromSingleApi({required api.FoldersGetResponseBody response}) {
     api.FoldersGetFolder? folder = response.folder;
     if (folder == null) {
