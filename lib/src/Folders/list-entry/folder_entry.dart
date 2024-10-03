@@ -1,15 +1,23 @@
+import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
+import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
+import 'package:anonkey_frontend/src/Folders/folder_list.dart';
 import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
+import 'package:go_router/go_router.dart';
 
 //Usage: CredentialEntry(websiteUrl: "https://google.de", username: "jannik", password: "test", displayName: "Google", uuid: '', passwordSalt: '', usernameSalt: '', note: '', folderUuid: '', createdTimeStamp: '', changedTimeStamp: '', deletedTimeStamp: '',),
 
 class FolderEntry extends StatefulWidget {
   final Folder folder;
+  final CredentialList credentials;
+  final FolderList? availableFolders;
 
   const FolderEntry({
     super.key,
     required this.folder,
+    required this.credentials,
+    this.availableFolders,
   });
 
   @override
@@ -36,7 +44,7 @@ class _FolderEntry extends State<FolderEntry> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => {
-        //TODO: open view with all credentials associated with this folder
+        context.push('/folder', extra: CredentialListWidgetData(availableFolders: widget.availableFolders, credentials: widget.credentials, currentFolderUuid: widget.folder.uuid!)),
       },
       child: Ink(
         padding: const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),

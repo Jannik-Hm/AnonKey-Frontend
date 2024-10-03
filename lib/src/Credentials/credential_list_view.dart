@@ -4,6 +4,18 @@ import 'package:anonkey_frontend/src/Credentials/list-entry/credential_entry.dar
 import 'package:anonkey_frontend/src/Folders/folder_list.dart';
 import 'package:flutter/material.dart';
 
+class CredentialListWidgetData {
+  final CredentialList credentials;
+  final String currentFolderUuid;
+  final FolderList? availableFolders;
+
+  CredentialListWidgetData({
+    required this.credentials,
+    required this.currentFolderUuid,
+    required this.availableFolders,
+  });
+}
+
 class CredentialListWidget extends StatefulWidget {
   final CredentialList credentials;
   final String currentFolderUuid;
