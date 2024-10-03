@@ -99,6 +99,7 @@ class Credential {
   DateTime? getChangedTimeStamp() {
     return this._changedTimeStamp;
   }
+
   DateTime? getDeletedTimeStamp() {
     return this._deletedTimeStamp;
   }
@@ -287,56 +288,56 @@ class Credential {
     required int? changedTimeStamp,
     required int? deletedTimeStamp,
   }) async {
-      this.folderUuid = folderUuid;
-      //
-      this._clearWebsiteUrl= await Cryptography.getClearString(
-        masterPassword: masterPassword,
-        kdfSalt: uuid,
-        encryptedString: encryptedWebsiteUrl,
-        encryptedSalt: websiteUrlSalt,
-      );
-      this._encryptedWebsiteUrl = encryptedWebsiteUrl;
-      this._websiteUrlSalt = websiteUrlSalt;
-      //
-      this._clearUsername = await Cryptography.getClearString(
-        masterPassword: masterPassword,
-        kdfSalt: uuid,
-        encryptedString: encryptedUsername,
-        encryptedSalt: usernameSalt,
-      );
-      this._encryptedUsername = encryptedUsername;
-      this._usernameSalt = usernameSalt;
-      //
-      this._clearPassword = await Cryptography.getClearString(
-        masterPassword: masterPassword,
-        kdfSalt: uuid,
-        encryptedString: encryptedPassword,
-        encryptedSalt: passwordSalt,
-      );
-      this._encryptedPassword = encryptedPassword;
-      this._passwordSalt = passwordSalt;
-      //
-      this._clearDisplayName = await Cryptography.getClearString(
-        masterPassword: masterPassword,
-        kdfSalt: uuid,
-        encryptedString: encryptedDisplayName,
-        encryptedSalt: displayNameSalt,
-      );
-      this._encryptedDisplayName = encryptedDisplayName;
-      this._displayNameSalt = displayNameSalt;
-      //
-      this._clearNote = await Cryptography.getClearString(
-        masterPassword: masterPassword,
-        kdfSalt: uuid,
-        encryptedString: encryptedNote,
-        encryptedSalt: noteSalt,
-      );
-      this._encryptedNote = encryptedNote;
-      this._noteSalt = noteSalt;
-      //
-      this._createdTimeStamp = (createdTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(createdTimeStamp * 1000);
-      this._changedTimeStamp = (changedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(changedTimeStamp * 1000);
-      this._deletedTimeStamp = (deletedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(deletedTimeStamp * 1000);
+    this.folderUuid = folderUuid;
+    //
+    this._clearWebsiteUrl = await Cryptography.getClearString(
+      masterPassword: masterPassword,
+      kdfSalt: uuid,
+      encryptedString: encryptedWebsiteUrl,
+      encryptedSalt: websiteUrlSalt,
+    );
+    this._encryptedWebsiteUrl = encryptedWebsiteUrl;
+    this._websiteUrlSalt = websiteUrlSalt;
+    //
+    this._clearUsername = await Cryptography.getClearString(
+      masterPassword: masterPassword,
+      kdfSalt: uuid,
+      encryptedString: encryptedUsername,
+      encryptedSalt: usernameSalt,
+    );
+    this._encryptedUsername = encryptedUsername;
+    this._usernameSalt = usernameSalt;
+    //
+    this._clearPassword = await Cryptography.getClearString(
+      masterPassword: masterPassword,
+      kdfSalt: uuid,
+      encryptedString: encryptedPassword,
+      encryptedSalt: passwordSalt,
+    );
+    this._encryptedPassword = encryptedPassword;
+    this._passwordSalt = passwordSalt;
+    //
+    this._clearDisplayName = await Cryptography.getClearString(
+      masterPassword: masterPassword,
+      kdfSalt: uuid,
+      encryptedString: encryptedDisplayName,
+      encryptedSalt: displayNameSalt,
+    );
+    this._encryptedDisplayName = encryptedDisplayName;
+    this._displayNameSalt = displayNameSalt;
+    //
+    this._clearNote = await Cryptography.getClearString(
+      masterPassword: masterPassword,
+      kdfSalt: uuid,
+      encryptedString: encryptedNote,
+      encryptedSalt: noteSalt,
+    );
+    this._encryptedNote = encryptedNote;
+    this._noteSalt = noteSalt;
+    //
+    this._createdTimeStamp = (createdTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(createdTimeStamp * 1000);
+    this._changedTimeStamp = (changedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(changedTimeStamp * 1000);
+    this._deletedTimeStamp = (deletedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(deletedTimeStamp * 1000);
   }
 
   Future<Credential> updateFromLocal({
@@ -349,7 +350,7 @@ class Credential {
     required String? folderUuid,
     int? changedTimeStamp,
   }) async {
-      /* this.folderUuid = folderUuid;
+    /* this.folderUuid = folderUuid;
       //
       this._clearWebsiteUrl = clearWebsiteUrl;
       this._encryptedWebsiteUrl = await Cryptography.encryptString(
@@ -393,7 +394,7 @@ class Credential {
       //
       this._changedTimeStamp = (changedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(changedTimeStamp);
       print(this); */
-      return newEntry(masterPassword: masterPassword, uuid: uuid, clearWebsiteUrl: clearWebsiteUrl, clearUsername: clearUsername, clearPassword: clearPassword, clearDisplayName: clearDisplayName, folderUuid: folderUuid, createdTimeStamp: null, clearNote: clearNote);
+    return newEntry(masterPassword: masterPassword, uuid: uuid, clearWebsiteUrl: clearWebsiteUrl, clearUsername: clearUsername, clearPassword: clearPassword, clearDisplayName: clearDisplayName, folderUuid: folderUuid, createdTimeStamp: null, clearNote: clearNote);
   }
 
   /* Future<String> getEncryptedPassword({required String masterPassword}) async {
@@ -460,12 +461,28 @@ class Credential {
     );
   }
 
-  /*
-  api.FoldersUpdateFolder updateFolder() {
-    return api.FoldersUpdateFolder(
-      icon: this._iconData,
-      name: this.displayName,
+  api.CredentialsUpdateCredentialRequest updateAPICredentialRequest() {
+    return api.CredentialsUpdateCredentialRequest(
       uuid: this.uuid,
+      folderUuid: /* this.folderUuid */ "1",
+      displayName: this._encryptedDisplayName,
+      displayNameSalt: this._displayNameSalt,
+      websiteUrl: this._encryptedWebsiteUrl,
+      websiteUrlSalt: this._websiteUrlSalt,
+      username: this._encryptedUsername,
+      usernameSalt: this._usernameSalt,
+      password: this._encryptedPassword,
+      passwordSalt: this._passwordSalt,
+      note: this._encryptedNote,
+      noteSalt: this._noteSalt,
+      deletedTimestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
     );
-  } */
+  }
+
+  api.CredentialsUpdateRequestBody updateAPICredentialRequestBody() {
+    print(this.updateAPICredentialRequest());
+    return api.CredentialsUpdateRequestBody(
+      credential: this.updateAPICredentialRequest(),
+    );
+  }
 }

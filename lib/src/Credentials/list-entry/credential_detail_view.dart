@@ -1,7 +1,11 @@
+import 'package:anonkey_frontend/Utility/request_utility.dart';
+import 'package:anonkey_frontend/api/lib/api.dart';
+import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CredentialDetailWidget extends StatefulWidget {
   final Credential credential;
@@ -78,6 +82,14 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         clearNote: note.text,
         folderUuid: "",
       );
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? url = prefs.getString('url');
+      Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+      if (url != null) {
+        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        CredentialsApi api = CredentialsApi(apiClient);
+        await api.credentialsUpdatePut(temp.updateAPICredentialRequestBody());
+      }
       setState(() {
         _credential = temp;
       });
