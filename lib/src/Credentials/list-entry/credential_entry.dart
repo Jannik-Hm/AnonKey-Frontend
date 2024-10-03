@@ -9,10 +9,12 @@ import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 
 class CredentialEntry extends StatefulWidget {
   final Credential credential;
+  final Function(Credential credential)? onSaveCallback;
 
   const CredentialEntry({
     super.key,
     required this.credential,
+    this.onSaveCallback,
   });
 
   @override
@@ -52,14 +54,14 @@ class _CredentialEntry extends State<CredentialEntry> {
       });
     }
 
-    Credential.newEntry(clearPassword: "12345678", clearDisplayName: "Test", folderUuid: "123", masterPassword: "SuperSicher", clearUsername: "test", uuid: "balabadasda", clearWebsiteUrl: "google.de", clearNote: "", createdTimeStamp: 0);
+    //Credential.newEntry(clearPassword: "12345678", clearDisplayName: "Test", folderUuid: "123", masterPassword: "SuperSicher", clearUsername: "test", uuid: "balabadasda", clearWebsiteUrl: "google.de", clearNote: "", createdTimeStamp: 0);
 
     return InkWell(
       onTap: () => {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => CredentialDetailWidget(credential: _credential),
+            builder: (_) => CredentialDetailWidget(credential: _credential, onSaveCallback: widget.onSaveCallback,),
           ),
         )
       },
@@ -75,7 +77,7 @@ class _CredentialEntry extends State<CredentialEntry> {
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 70.0),
               //child: Image.network("https://icons.duckduckgo.com/ip3/linustechtips.com.ico"),
-              child: getNetworkLogoFromUrl(_credential.clearWebsiteUrl),
+              child: getNetworkLogoFromUrl(_credential.getClearWebsiteUrl()),
             ),
             const SizedBox(
               width: 20.0,
@@ -91,13 +93,13 @@ class _CredentialEntry extends State<CredentialEntry> {
                       CrossAxisAlignment.start, // Align text to the left
                   children: [
                     Text(
-                      _credential.clearDisplayName,
+                      _credential.getClearDisplayName(),
                       style: const TextStyle(
                         fontSize: 20.0,
                       ),
                     ),
                     Text(
-                      _credential.clearUsername,
+                      _credential.getClearUsername(),
                       style: const TextStyle(
                         fontSize: 15.0,
                       ),
@@ -112,7 +114,7 @@ class _CredentialEntry extends State<CredentialEntry> {
                     .colorScheme
                     .primary, // Set the primary color from ColorScheme
               ),
-              onPressed: () => copyToClipboard(message: 'Copied Username', value: _credential.clearUsername),
+              onPressed: () => copyToClipboard(message: 'Copied Username', value: _credential.getClearUsername()),
               /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: _credential.username));
                 if (context.mounted) {
@@ -136,7 +138,7 @@ class _CredentialEntry extends State<CredentialEntry> {
                     .colorScheme
                     .primary, // Set the primary color from ColorScheme
               ),
-              onPressed: () => copyToClipboard(message: 'Copied Password', value: _credential.clearPassword),
+              onPressed: () => copyToClipboard(message: 'Copied Password', value: _credential.getClearPassword()),
               /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: _credential.password));
                 if (context.mounted) {

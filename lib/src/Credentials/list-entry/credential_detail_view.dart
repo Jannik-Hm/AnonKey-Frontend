@@ -1,13 +1,16 @@
+import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 
 class CredentialDetailWidget extends StatefulWidget {
   final Credential credential;
+  final Function(Credential credential)? onSaveCallback;
 
   const CredentialDetailWidget({
     super.key,
     required this.credential,
+    this.onSaveCallback,
   });
 
   @override
@@ -37,17 +40,17 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
   @override
   Widget build(BuildContext context) {
     //final uuid;
-    final displayName = TextEditingController(text: _credential.clearDisplayName);
+    final displayName = TextEditingController(text: _credential.getClearDisplayName());
 
-    final password = TextEditingController(text: _credential.clearPassword);
+    final password = TextEditingController(text: _credential.getClearPassword());
     //final passwordSalt;
 
-    final username = TextEditingController(text: _credential.clearUsername);
+    final username = TextEditingController(text: _credential.getClearUsername());
     //final usernameSalt;
 
-    final websiteUrl = TextEditingController(text: _credential.clearWebsiteUrl);
+    final websiteUrl = TextEditingController(text: _credential.getClearWebsiteUrl());
 
-    final note = TextEditingController(text: _credential.clearNote);
+    final note = TextEditingController(text: _credential.getClearNote());
     // String folderUuid;
 
     void enableFields() {
@@ -64,24 +67,40 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       });
     }
 
-    void save() {
-      _credential.clearDisplayName = displayName.text;
-      _credential.clearUsername = username.text;
-      _credential.clearPassword = password.text;
-      _credential.clearWebsiteUrl = websiteUrl.text;
-      _credential.clearNote = note.text;
+    Future<bool> save() async {
+      String pass = (await AuthService.getAuthenticationCredentials())["password"]!;
+      Credential temp = await _credential.updateFromLocal(
+        masterPassword: pass,
+        clearWebsiteUrl: websiteUrl.text,
+        clearUsername: username.text,
+        clearPassword: password.text,
+        clearDisplayName: displayName.text,
+        clearNote: note.text,
+        folderUuid: "",
+      );
+      setState(() {
+        _credential = temp;
+      });
+      widget.onSaveCallback!(temp);
+      return true;
     }
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: Text(_credential.clearDisplayName),
+        title: Text(_credential.getClearDisplayName()),
         actions: [
           if (!_enabled) IconButton(onPressed: () => enableFields(), icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary)),
           if (_enabled)
             IconButton(
-                onPressed: () => {save(), disableFields()},
+                onPressed: () => {
+                      save().then(
+                        (value) {
+                          disableFields();
+                        },
+                      )
+                    },
                 icon: Icon(
                   Icons.save,
                   color: Theme.of(context).colorScheme.onPrimary,
@@ -93,7 +112,9 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                   Icons.cancel,
                   color: Theme.of(context).colorScheme.onPrimary,
                 )),
-          const SizedBox(width: 8.0,),
+          const SizedBox(
+            width: 8.0,
+          ),
         ],
       ),
       body: Padding(
