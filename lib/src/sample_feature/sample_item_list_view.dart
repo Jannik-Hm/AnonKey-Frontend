@@ -1,6 +1,7 @@
 import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
 import 'package:anonkey_frontend/src/Folders/folder_list.dart';
+import 'package:anonkey_frontend/src/Folders/folder_list_view_widget.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -84,65 +85,65 @@ class SampleItemListView extends StatelessWidget {
         },
       ), */
       body: Column(
-        children: [
-          Expanded(
-            child: FutureBuilder<_CombinedData>(
-              future: Future.wait([CredentialList.getFromAPIFull(), FolderList.getFromAPIFull()]).then(
-                (results) {
-                  return _CombinedData(credentials: results[0] as CredentialList, folders: results[1] as FolderList);
+          children: [
+            Expanded(
+              child: FutureBuilder<_CombinedData>(
+                future: Future.wait([CredentialList.getFromAPIFull(), FolderList.getFromAPIFull()]).then(
+                  (results) {
+                    return _CombinedData(credentials: results[0] as CredentialList, folders: results[1] as FolderList);
+                  },
+                ),
+                builder: (context, snapshot) {
+                  List<Widget> children;
+                  if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                    children = <Widget>[
+                      CredentialListWidget(
+                        credentials: snapshot.data!.credentials!,
+                        availableFolders: snapshot.data!.folders,
+                        currentFolderUuid: "09f770c5-b1c1-41c6-bfd2-818b7b443da9",
+                      ),
+                      FolderListWidget(folders: snapshot.data!.folders!, credentials: snapshot.data!.credentials!,),
+                    ];
+                  } else if (snapshot.hasError) {
+                    children = <Widget>[
+                      const Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                        size: 60,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text('Error: ${snapshot.error}'),
+                      ),
+                    ];
+                  } else {
+                    children = const <Widget>[
+                      SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CircularProgressIndicator(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 16),
+                        child: Text('Awaiting result...'),
+                      ),
+                    ];
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: children,
+                    ),
+                  );
                 },
               ),
-              builder: (context, snapshot) {
-                List<Widget> children;
-                print(snapshot.data?.credentials?.byIDList);
-                if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
-                  children = <Widget>[
-                    CredentialListWidget(
-                      credentials: snapshot.data!.credentials!,
-                      availableFolders: snapshot.data!.folders,
-                      currentFolderUuid: "09f770c5-b1c1-41c6-bfd2-818b7b443da9",
-                    )
-                  ];
-                } else if (snapshot.hasError) {
-                  children = <Widget>[
-                    const Icon(
-                      Icons.error_outline,
-                      color: Colors.red,
-                      size: 60,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: Text('Error: ${snapshot.error}'),
-                    ),
-                  ];
-                } else {
-                  children = const <Widget>[
-                    SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: CircularProgressIndicator(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text('Awaiting result...'),
-                    ),
-                  ];
-                }
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: children,
-                  ),
-                );
-              },
             ),
-          ),
-          TextButton(
-            onPressed: () => _logout(),
-            child: const Text("Logout"),
-          ),
-        ],
-      ),
+            TextButton(
+              onPressed: () => _logout(),
+              child: const Text("Logout"),
+            ),
+          ],
+        ),
     );
   }
 }
