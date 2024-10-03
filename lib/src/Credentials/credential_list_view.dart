@@ -1,6 +1,5 @@
 import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
 import 'package:anonkey_frontend/src/Credentials/list-entry/credential_entry.dart';
-import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Folders/folder_list.dart';
 import 'package:flutter/material.dart';
 
@@ -18,11 +17,11 @@ class CredentialListWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _CredentialListWidget();
 }
 
-class _combinedData {
+class _CombinedData {
   final CredentialList? credentials;
   final FolderList? folders;
 
-  _combinedData({required this.credentials, required this.folders});
+  _CombinedData({required this.credentials, required this.folders});
 }
 
 class _CredentialListWidget extends State<CredentialListWidget> {
@@ -40,11 +39,11 @@ class _CredentialListWidget extends State<CredentialListWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<_combinedData>(
+      body: FutureBuilder<_CombinedData>(
         future: Future.wait(
           [credentials, widget.availableFolders]
         ).then((results) {
-          return _combinedData(credentials: results[0] as CredentialList, folders: results[1] as FolderList);
+          return _CombinedData(credentials: results[0] as CredentialList, folders: results[1] as FolderList);
         },),
         //future: credentials,
         builder: (context, snapshot) {

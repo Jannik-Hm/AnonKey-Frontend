@@ -1,6 +1,5 @@
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
-import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Widgets/folder_dropdown.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';

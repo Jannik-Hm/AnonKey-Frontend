@@ -1,7 +1,7 @@
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
-import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
-import 'package:anonkey_frontend/src/Credentials/list-entry/credential_detail_view.dart';
+/* import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
+import 'package:anonkey_frontend/src/Credentials/list-entry/credential_detail_view.dart'; */
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
 import 'package:anonkey_frontend/src/sample_feature/sample_item_details_view.dart';
