@@ -5,7 +5,7 @@
 import 'package:anonkey_frontend/api.dart';
 ```
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *https://api.beta.anonkey.lightjack.de*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

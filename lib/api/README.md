@@ -57,7 +57,7 @@ try {
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://localhost*
+All URIs are relative to *https://api.beta.anonkey.lightjack.de*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

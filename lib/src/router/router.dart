@@ -4,6 +4,7 @@ import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:anonkey_frontend/src/Credentials/list-entry/credential_detail_view.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
+import 'package:anonkey_frontend/src/home/home.dart';
 import 'package:anonkey_frontend/src/sample_feature/sample_item_details_view.dart';
 import 'package:anonkey_frontend/src/sample_feature/sample_item_list_view.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
@@ -29,7 +30,7 @@ class AppRouter {
         GoRoute(
           name: "home",
           path: '/',
-          builder: (context, state) => const SampleItemListView(),
+          builder: (context, state) => const HomeScreen(),
         ),
         GoRoute(
           name: "login",
