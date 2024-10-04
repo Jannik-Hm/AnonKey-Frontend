@@ -271,7 +271,7 @@ class Credential {
     );
   }
 
-  void updateFromApi({
+  Future<Credential> updateFromApi({
     required String masterPassword,
     required String encryptedWebsiteUrl,
     required String websiteUrlSalt,
@@ -353,6 +353,8 @@ class Credential {
     this._createdTimeStamp = (createdTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(createdTimeStamp * 1000);
     this._changedTimeStamp = (changedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(changedTimeStamp * 1000);
     this._deletedTimeStamp = (deletedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(deletedTimeStamp * 1000);
+    //
+    return this;
   }
 
   Future<Credential> updateFromLocal({

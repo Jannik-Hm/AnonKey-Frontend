@@ -63,19 +63,74 @@ class CredentialList {
     int? changedTimeStamp,
   }) async {
     Credential? temp = byIDList[uuid];
-    if(temp != null){
+    if (temp != null) {
       remove(uuid);
-      add(await Credential.newEntry(masterPassword: masterPassword, uuid: uuid, clearWebsiteUrl: clearWebsiteUrl, clearUsername: clearUsername, clearPassword: clearPassword, clearDisplayName: clearDisplayName, folderUuid: folderUuid, createdTimeStamp: temp.getCreatedTimeStamp()!.millisecondsSinceEpoch~/1000, clearNote: clearNote));
+      add(await Credential.newEntry(
+          masterPassword: masterPassword,
+          uuid: uuid,
+          clearWebsiteUrl: clearWebsiteUrl,
+          clearUsername: clearUsername,
+          clearPassword: clearPassword,
+          clearDisplayName: clearDisplayName,
+          folderUuid: folderUuid,
+          createdTimeStamp: temp.getCreatedTimeStamp()!.millisecondsSinceEpoch ~/ 1000,
+          clearNote: clearNote));
     }
   }
 
   CredentialList updateFromLocalObject({required Credential credential}) {
     Credential? temp = byIDList[credential.uuid];
-    if(temp != null){
+    if (temp != null) {
       remove(credential.uuid);
       add(credential);
     }
     return this;
+  }
+
+  Future<CredentialList> updateFromAPI({required api.CredentialsGetAllResponseBody credentials, required String masterPassword}) async {
+    CredentialList data = this;
+    for (var credential in credentials.credentials!) {
+      Credential? origin = data.byIDList[credential.uuid!];
+      Credential temp;
+      if (origin != null) {
+        temp = await origin.updateFromApi(
+            masterPassword: masterPassword,
+            encryptedWebsiteUrl: credential.websiteUrl!,
+            websiteUrlSalt: credential.websiteUrlSalt!,
+            encryptedUsername: credential.username!,
+            usernameSalt: credential.usernameSalt!,
+            encryptedPassword: credential.password!,
+            passwordSalt: credential.passwordSalt!,
+            encryptedDisplayName: credential.displayName!,
+            displayNameSalt: credential.displayNameSalt!,
+            encryptedNote: credential.note!,
+            noteSalt: credential.noteSalt!,
+            folderUuid: credential.folderUuid,
+            createdTimeStamp: credential.createdTimestamp,
+            changedTimeStamp: credential.changedTimestamp,
+            deletedTimeStamp: credential.deletedTimestamp);
+      } else {
+        temp = await Credential.fromApi(
+            uuid: credential.uuid!,
+            masterPassword: masterPassword,
+            encryptedWebsiteUrl: credential.websiteUrl!,
+            websiteUrlSalt: credential.websiteUrlSalt!,
+            encryptedUsername: credential.username!,
+            usernameSalt: credential.usernameSalt!,
+            encryptedPassword: credential.password!,
+            passwordSalt: credential.passwordSalt!,
+            encryptedDisplayName: credential.displayName!,
+            displayNameSalt: credential.displayNameSalt!,
+            encryptedNote: credential.note!,
+            noteSalt: credential.noteSalt!,
+            folderUuid: credential.folderUuid,
+            createdTimeStamp: credential.createdTimestamp,
+            changedTimeStamp: credential.changedTimestamp,
+            deletedTimeStamp: credential.deletedTimestamp);
+      }
+      data.updateFromLocalObject(credential: temp);
+    }
+    return data;
   }
 
   static Future<CredentialList?> getFromAPIFull() async {
