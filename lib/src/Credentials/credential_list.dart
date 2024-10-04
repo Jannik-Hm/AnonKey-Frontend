@@ -7,22 +7,44 @@ import 'package:shared_preferences/shared_preferences.dart';
 class CredentialList {
   Map<String, Credential> byIDList = {};
   Map<String, List<Credential>> byFolderMap = {};
+  Map<String, Credential> deletedList = {};
 
   CredentialList._();
 
   void add(Credential credential) {
-    byIDList[credential.uuid] = credential;
-    //
-    String folder = credential.folderUuid ?? "";
-    if (byFolderMap[folder] == null) byFolderMap[folder] = [];
-    byFolderMap[folder]!.add(credential);
+    if(credential.getDeletedTimeStamp() != null){
+      deletedList[credential.uuid] = credential;
+    }else{
+      byIDList[credential.uuid] = credential;
+      //
+      String folder = credential.folderUuid ?? "";
+      if (byFolderMap[folder] == null) byFolderMap[folder] = [];
+      byFolderMap[folder]!.add(credential);
+    }
   }
 
   void remove(String credentialUUID) {
+    deletedList.remove(credentialUUID);
     Credential? credential = byIDList[credentialUUID];
     if (credential != null) {
       byFolderMap[credential.folderUuid ?? ""]?.remove(credential);
       byIDList.remove(credentialUUID);
+    }
+  }
+
+  void restore(String credentialUUID) {
+    Credential? credential = deletedList[credentialUUID];
+    if (credential != null){
+      deletedList.remove(credentialUUID);
+      add(credential);
+    }
+  }
+
+  void softDelete(String credentialUUID) {
+    Credential? credential = byIDList[credentialUUID];
+    if (credential != null) {
+      remove(credentialUUID);
+      deletedList[credentialUUID] = credential;
     }
   }
 
