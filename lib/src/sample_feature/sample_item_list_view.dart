@@ -100,7 +100,7 @@ class SampleItemListView extends StatelessWidget {
                       CredentialListWidget(
                         credentials: snapshot.data!.credentials!,
                         availableFolders: snapshot.data!.folders,
-                        currentFolderUuid: "09f770c5-b1c1-41c6-bfd2-818b7b443da9",
+                        currentFolderUuid: "",
                       ),
                       FolderListWidget(folders: snapshot.data!.folders!, credentials: snapshot.data!.credentials!,),
                     ];
