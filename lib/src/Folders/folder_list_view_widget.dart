@@ -41,6 +41,13 @@ class _FolderListWidget extends State<FolderListWidget> {
       folder: folder,
       availableFolders: widget.folders,
       credentials: widget.credentials,
+      onDeleteCallback: (uuid) {
+        setState(() {
+          folders.remove(uuid);
+          folderList = folders.byIDList.values.toList();
+          //TODO: Update CredentialList --> Get from API or manually?
+        });
+      },
     );
   }
 

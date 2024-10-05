@@ -12,12 +12,14 @@ class FolderEntry extends StatefulWidget {
   final Folder folder;
   final CredentialList credentials;
   final FolderList? availableFolders;
+  final Function(String uuid)? onDeleteCallback;
 
   const FolderEntry({
     super.key,
     required this.folder,
     required this.credentials,
     this.availableFolders,
+    this.onDeleteCallback,
   });
 
   @override
@@ -85,6 +87,7 @@ class _FolderEntry extends State<FolderEntry> {
                       builder: (_) => FolderEditWidget(
                         folder: _folder,
                         iconCallback: updateIcon,
+                        onDeleteCallback: widget.onDeleteCallback,
                       ),
                     ),
                   )

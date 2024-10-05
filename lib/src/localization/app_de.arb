@@ -38,5 +38,29 @@
   "confirmCredentialDeleteText": "Bist du sicher, dass du den Eintrag \"{displayName}\" in den gelöscht Ordner bewegen möchtest?",
   "@confirmCredentialDeleteText": {
     "description": ""
+  },
+  "abort": "Abbrechen",
+  "@abort": {
+    "description": ""
+  },
+  "confirm": "Bestätigen",
+  "@confirm": {
+    "description": ""
+  },
+  "confirmFolderDeleteTitle": "Ordner \"{displayName}\" löschen?",
+  "@confirmFolderDeleteTitle": {
+    "description": ""
+  },
+  "confirmFolderDeleteText": "Bist du sicher, dass du den Ordner \"{displayName}\" löschen möchtest?",
+  "@confirmFolderDeleteText": {
+    "description": ""
+  },
+  "deleteFolderWithCredentials": "Löschen samt Einträgen",
+  "@deleteFolderWithCredentials": {
+    "description": ""
+  },
+  "deleteFolderKeepCredentials": "Löschen, Einträge behalten",
+  "@deleteFolderKeepCredentials": {
+    "description": ""
   }
 }

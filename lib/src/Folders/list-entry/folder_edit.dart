@@ -7,11 +7,13 @@ import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Widgets/icon_picker.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FolderEditWidget extends StatefulWidget {
   final Folder? folder;
   final void Function({required int codePoint})? iconCallback;
   final Function({required Folder folderData})? onSaveCallback;
+  final Function(String uuid)? onDeleteCallback;
   final Function()? onAbortCallback;
 
   const FolderEditWidget({
@@ -20,6 +22,7 @@ class FolderEditWidget extends StatefulWidget {
     this.iconCallback,
     this.onSaveCallback,
     this.onAbortCallback,
+    this.onDeleteCallback,
   });
 
   @override
@@ -66,11 +69,11 @@ class _FolderEditWidget extends State<FolderEditWidget> {
       });
     }
 
-    void save() async {
+    Future<bool> save() async {
       _folder.displayName = displayName.text;
       if (_iconData != null) {
         _folder.setIcon(codePoint: _iconData!.codePoint);
-        if(widget.folder != null && widget.iconCallback != null){
+        if (widget.folder != null && widget.iconCallback != null) {
           widget.iconCallback!(codePoint: _iconData!.codePoint);
         }
       }
@@ -82,6 +85,88 @@ class _FolderEditWidget extends State<FolderEditWidget> {
         FoldersApi api = FoldersApi(apiClient);
         await api.foldersUpdatePut(_folder.updateFolderBody());
       }
+      return true;
+    }
+
+    Future<bool> delete(bool recursive) async {
+      /* SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? url = prefs.getString('url');
+      Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+      if (url != null) {
+        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        FoldersApi api = FoldersApi(apiClient);
+        await api.foldersDeleteDelete(_folder.uuid!, recursive).then((value) {
+        });
+      } */
+      if (widget.onDeleteCallback != null) widget.onDeleteCallback!(_folder.uuid!);
+      return true;
+    }
+
+    showDeleteConfirmDialog(Folder folder) {
+      return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            // Retrieve the text the that user has entered by using the
+            // TextEditingController.
+            title: Text(AppLocalizations.of(context)!.confirmFolderDeleteTitle(folder.displayName)),
+            //content: Text('Are you sure you want to move Credential "${credential.getClearDisplayName()}" into the deleted Folder?'),
+            content: Text(AppLocalizations.of(context)!.confirmFolderDeleteText(folder.displayName)),
+            actions: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        print("Abort");
+                        Navigator.of(context).pop();
+                      },
+                      style: TextButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
+                      child: Text(AppLocalizations.of(context)!.abort),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20.0,
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        delete(true).then(
+                          (value) {
+                            print("Delete with Credentials");
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      },
+                      style: TextButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                      child: Text(AppLocalizations.of(context)!.deleteFolderWithCredentials),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20.0,
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        delete(false).then(
+                          (value) {
+                            print("Delete, keep Credentials");
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      },
+                      style: TextButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                      child: Text(AppLocalizations.of(context)!.deleteFolderKeepCredentials),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
     }
 
     return Scaffold(
@@ -96,9 +181,12 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                 onPressed: () => {
                       if (_formkey.currentState!.validate())
                         {
-                          save(),
-                          disableFields(),
-                          if (widget.onSaveCallback != null) widget.onSaveCallback!(folderData: _folder),
+                          save().then(
+                            (value) {
+                              disableFields();
+                              if (widget.onSaveCallback != null) widget.onSaveCallback!(folderData: _folder);
+                            },
+                          ),
                         },
                     },
                 icon: Icon(
@@ -119,6 +207,14 @@ class _FolderEditWidget extends State<FolderEditWidget> {
             width: 8.0,
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showDeleteConfirmDialog(_folder),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: Icon(
+          Icons.delete,
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
       ),
       body: Form(
         key: _formkey,

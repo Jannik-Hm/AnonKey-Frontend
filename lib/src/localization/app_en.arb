@@ -38,5 +38,29 @@
   "confirmCredentialDeleteText": "Are you sure you want to move Credential \"{displayName}\" into the deleted Folder?",
   "@confirmCredentialDeleteText": {
     "description": "Text to change to login"
+  },
+  "abort": "Abort",
+  "@abort": {
+    "description": ""
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": ""
+  },
+  "confirmFolderDeleteTitle": "Delete Folder \"{displayName}\"?",
+  "@confirmFolderDeleteTitle": {
+    "description": ""
+  },
+  "confirmFolderDeleteText": "Are you sure you want to delete Folder \"{displayName}\"?",
+  "@confirmFolderDeleteText": {
+    "description": ""
+  },
+  "deleteFolderWithCredentials": "Delete with Credentials",
+  "@deleteFolderWithCredentials": {
+    "description": ""
+  },
+  "deleteFolderKeepCredentials": "Delete, keep Credentials",
+  "@deleteFolderKeepCredentials": {
+    "description": ""
   }
 }

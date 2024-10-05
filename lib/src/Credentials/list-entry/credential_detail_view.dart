@@ -140,7 +140,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                         Navigator.of(context).pop();
                       },
                       style: TextButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
-                      child: const Text("Abort"),
+                      child: Text(AppLocalizations.of(context)!.abort),
                     ),
                   ),
                   const SizedBox(
@@ -158,7 +158,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                         );
                       },
                       style: TextButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-                      child: const Text("Confirm"),
+                      child: Text(AppLocalizations.of(context)!.confirm),
                     ),
                   ),
                 ],
