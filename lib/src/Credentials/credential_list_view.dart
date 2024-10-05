@@ -49,6 +49,11 @@ class _CredentialListWidget extends State<CredentialListWidget> {
           credentials = credentials.updateFromLocalObject(credential: credential);
         });
       },
+      onSoftDeleteCallback: (uuid) {
+        setState(() {
+          credentials.softDelete(uuid);
+        });
+      },
       availableFolders: widget.availableFolders!.toList(),
     );
   }

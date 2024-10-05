@@ -12,11 +12,13 @@ class CredentialEntry extends StatefulWidget {
   final Credential credential;
   final List<Folder> availableFolders;
   final Function(Credential credential)? onSaveCallback;
+  final Function(String uuid)? onSoftDeleteCallback;
 
   const CredentialEntry({
     super.key,
     required this.credential,
     this.onSaveCallback,
+    this.onSoftDeleteCallback,
     required this.availableFolders,
   });
 
@@ -67,6 +69,7 @@ class _CredentialEntry extends State<CredentialEntry> {
             builder: (_) => CredentialDetailWidget(
               credential: _credential,
               onSaveCallback: widget.onSaveCallback,
+              onSoftDeleteCallback: widget.onSoftDeleteCallback,
               availableFolders: widget.availableFolders,
             ),
           ),

@@ -30,5 +30,13 @@
   "changeToLogin": "Du hast schon einen Account? Hier einloggen",
   "@changeToLogin": {
     "description": "Text to change to login"
+  },
+  "confirmCredentialDeleteTitle": "Delete Credential \"{displayName}\"?",
+  "@confirmCredentialDeleteTitle": {
+    "description": ""
+  },
+  "confirmCredentialDeleteText": "Are you sure you want to move Credential \"{displayName}\" into the deleted Folder?",
+  "@confirmCredentialDeleteText": {
+    "description": "Text to change to login"
   }
 }

@@ -7,16 +7,19 @@ import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CredentialDetailWidget extends StatefulWidget {
   final Credential credential;
   final List<Folder> availableFolders;
   final Function(Credential credential)? onSaveCallback;
+  final Function(String uuid)? onSoftDeleteCallback;
 
   const CredentialDetailWidget({
     super.key,
     required this.credential,
     this.onSaveCallback,
+    this.onSoftDeleteCallback,
     required this.availableFolders,
   });
 
@@ -99,8 +102,71 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       setState(() {
         _credential = temp;
       });
-      widget.onSaveCallback!(temp);
+      if (widget.onSaveCallback != null) widget.onSaveCallback!(temp);
       return true;
+    }
+
+    Future<bool> delete() async {
+      print(_credential.uuid);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? url = prefs.getString('url');
+      Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+      if (url != null) {
+        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        CredentialsApi api = CredentialsApi(apiClient);
+        await api.credentialsSoftDeletePut(_credential.uuid);
+      }
+      if (widget.onSoftDeleteCallback != null) widget.onSoftDeleteCallback!(_credential.uuid);
+      return true;
+    }
+
+    showDeleteConfirmDialog(Credential credential) {
+      return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            // Retrieve the text the that user has entered by using the
+            // TextEditingController.
+            title: Text(AppLocalizations.of(context)!.confirmCredentialDeleteTitle(credential.getClearDisplayName())),
+            //content: Text('Are you sure you want to move Credential "${credential.getClearDisplayName()}" into the deleted Folder?'),
+            content: Text(AppLocalizations.of(context)!.confirmCredentialDeleteText(credential.getClearDisplayName())),
+            actions: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        print("Abort");
+                        Navigator.of(context).pop();
+                      },
+                      style: TextButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
+                      child: const Text("Abort"),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20.0,
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        delete().then(
+                          (value) {
+                            print("Confirm");
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      },
+                      style: TextButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                      child: const Text("Confirm"),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
     }
 
     return Scaffold(
@@ -134,6 +200,14 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             width: 8.0,
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => showDeleteConfirmDialog(_credential),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: Icon(
+          Icons.delete,
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
