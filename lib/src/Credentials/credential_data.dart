@@ -507,7 +507,7 @@ class Credential {
       passwordSalt: this._passwordSalt,
       note: this._encryptedNote,
       noteSalt: this._noteSalt,
-      deletedTimestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      //deletedTimestamp: DateTime.now().millisecondsSinceEpoch ~/ 1000,
     );
   }
 
