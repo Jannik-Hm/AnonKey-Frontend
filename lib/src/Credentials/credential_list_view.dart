@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class CredentialListWidgetData {
   final CredentialList credentials;
-  final String currentFolderUuid;
+  final String? currentFolderUuid;
   final FolderList? availableFolders;
 
   CredentialListWidgetData({
@@ -18,14 +18,15 @@ class CredentialListWidgetData {
 
 class CredentialListWidget extends StatefulWidget {
   final CredentialList credentials;
-  final String currentFolderUuid;
+  final String? currentFolderUuid;
   final FolderList? availableFolders;
 
+///currentFolderUuid to null for All credentials, empty String for ungrouped and FolderUuid for special Folder
   const CredentialListWidget({
     super.key,
     required this.credentials,
     required this.availableFolders,
-    this.currentFolderUuid = "",
+    this.currentFolderUuid,
   });
 
   @override
@@ -56,7 +57,7 @@ class _CredentialListWidget extends State<CredentialListWidget> {
   void initState() {
     super.initState();
     credentials = widget.credentials;
-    credentialList = ((widget.currentFolderUuid == "") ? credentials.byIDList.values.toList() : credentials.byFolderMap[widget.currentFolderUuid]!);
+    credentialList = ((widget.currentFolderUuid == null) ? credentials.byIDList.values.toList() : (credentials.byFolderMap[widget.currentFolderUuid] ?? []));
     // Initialize the mutable object from the widget field
   }
 
