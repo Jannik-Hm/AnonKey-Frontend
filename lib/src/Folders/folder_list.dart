@@ -31,6 +31,21 @@ class FolderList {
     return byIDList[uuid];
   }
 
+  /// How to use:
+  /// import 'dart:convert';
+  /// String test = jsonEncode(data);
+  /// CredentialList list = await CredentialList.fromJson(jsonDecode(test));
+  static FolderList fromJson(List<dynamic> json) {
+    FolderList data = FolderList._();
+    for (var folder in json) {
+      Folder temp = Folder.fromJson(folder);
+      data.add(temp);
+    }
+    return data;
+  }
+
+  List<dynamic> toJson() => byIDList.values.toList();
+
   static FolderList getFromAPI({required api.FoldersGetAllResponseBody folders}) {
     FolderList data = FolderList._();
     for (var folder in folders.folder!) {

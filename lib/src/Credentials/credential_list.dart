@@ -48,6 +48,21 @@ class CredentialList {
     }
   }
 
+  /// How to use:
+  /// import 'dart:convert';
+  /// String test = jsonEncode(data);
+  /// CredentialList list = await CredentialList.fromJson(jsonDecode(test));
+  static Future<CredentialList> fromJson(List<dynamic> json) async {
+    CredentialList data = CredentialList._();
+    for (var credential in json) {
+      Credential temp = await Credential.fromJson(credential);
+      data.add(temp);
+    }
+    return data;
+  }
+
+  List<dynamic> toJson() => byIDList.values.toList();
+
   static Future<CredentialList> getFromAPI({required api.CredentialsGetAllResponseBody credentials, required String masterPassword}) async {
     CredentialList data = CredentialList._();
     for (var credential in credentials.credentials!) {

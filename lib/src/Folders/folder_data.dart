@@ -17,6 +17,20 @@ class Folder {
     IconCodePoint: ${_iconData}""";
   }
 
+  static Folder fromJson(Map<String, dynamic> json) {
+    return Folder(
+      displayName: json["displayName"],
+      iconData: json["iconData"],
+      uuid: json["uuid"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'displayName': displayName,
+        'iconData': getIconCodePoint(),
+        'uuid': uuid,
+      };
+
   static Folder? fromSingleApi({required api.FoldersGetResponseBody response}) {
     api.FoldersGetFolder? folder = response.folder;
     if (folder == null) {
