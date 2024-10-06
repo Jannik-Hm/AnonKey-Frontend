@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CredentialDetailWidget extends StatefulWidget {
-  final Credential credential;
+  final Credential? credential;
   final List<Folder> availableFolders;
   final Function(Credential credential)? onSaveCallback;
   final Function(String uuid)? onSoftDeleteCallback;
@@ -35,7 +35,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
   final noteFocus = FocusNode();
   late bool _enabled;
   late bool _obscurePassword;
-  late Credential _credential;
+  late Credential? _credential;
   final double spacing = 16.0;
   late String newFolderUUID;
 
@@ -43,26 +43,26 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
   void initState() {
     super.initState();
     // Initialize the mutable object from the widget field
-    _enabled = false;
+    _enabled = (widget.credential == null);
     _obscurePassword = true;
-    _credential = widget.credential;
-    newFolderUUID = _credential.folderUuid ?? "";
+    _credential = widget.credential!;
+    newFolderUUID = _credential?.folderUuid ?? "";
   }
 
   @override
   Widget build(BuildContext context) {
     //final uuid;
-    final displayName = TextEditingController(text: _credential.getClearDisplayName());
+    final displayName = TextEditingController(text: _credential?.getClearDisplayName());
 
-    final password = TextEditingController(text: _credential.getClearPassword());
+    final password = TextEditingController(text: _credential?.getClearPassword());
     //final passwordSalt;
 
-    final username = TextEditingController(text: _credential.getClearUsername());
+    final username = TextEditingController(text: _credential?.getClearUsername());
     //final usernameSalt;
 
-    final websiteUrl = TextEditingController(text: _credential.getClearWebsiteUrl());
+    final websiteUrl = TextEditingController(text: _credential?.getClearWebsiteUrl());
 
-    final note = TextEditingController(text: _credential.getClearNote());
+    final note = TextEditingController(text: _credential?.getClearNote());
 
     void enableFields() {
       setState(() {
@@ -72,52 +72,76 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     }
 
     void disableFields() {
-      setState(() {
-        _enabled = false;
-        _obscurePassword = true;
-      });
+      if(_credential != null){
+        setState(() {
+          _enabled = false;
+          _obscurePassword = true;
+        });
+      }else{
+        Navigator.of(context).pop();
+      }
     }
 
     Future<bool> save() async {
-      String pass = (await AuthService.getAuthenticationCredentials())["password"]!;
       print(newFolderUUID);
-      Credential temp = await _credential.updateFromLocal(
-        masterPassword: pass,
-        clearWebsiteUrl: websiteUrl.text,
-        clearUsername: username.text,
-        clearPassword: password.text,
-        clearDisplayName: displayName.text,
-        clearNote: note.text,
-        folderUuid: newFolderUUID,
-      );
+      Credential temp;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? url = prefs.getString('url');
       Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
       if (url != null) {
         ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
         CredentialsApi api = CredentialsApi(apiClient);
-        print(temp.updateAPICredentialRequestBody());
-        await api.credentialsUpdatePut(temp.updateAPICredentialRequestBody());
+        if (_credential != null) {
+          temp = await _credential!.updateFromLocal(
+            masterPassword: authdata["password"]!,
+            clearWebsiteUrl: websiteUrl.text,
+            clearUsername: username.text,
+            clearPassword: password.text,
+            clearDisplayName: displayName.text,
+            clearNote: note.text,
+            folderUuid: newFolderUUID,
+          );
+          print(temp.updateAPICredentialRequestBody());
+          await api.credentialsUpdatePut(temp.updateAPICredentialRequestBody());
+        } else {
+          UUIDApi uuidApi = UUIDApi(apiClient);
+          String? uuid = await uuidApi.uuidNewGet();
+          temp = await Credential.newEntry(
+            uuid: uuid!,
+            masterPassword: authdata["password"]!,
+            clearWebsiteUrl: websiteUrl.text,
+            clearUsername: username.text,
+            clearPassword: password.text,
+            clearDisplayName: displayName.text,
+            clearNote: note.text,
+            folderUuid: newFolderUUID,
+            createdTimeStamp: DateTime.now().microsecondsSinceEpoch ~/ 1000,
+          );
+        }
+        setState(() {
+          _credential = temp;
+        });
+        if (widget.onSaveCallback != null) widget.onSaveCallback!(temp);
+        return true;
       }
-      setState(() {
-        _credential = temp;
-      });
-      if (widget.onSaveCallback != null) widget.onSaveCallback!(temp);
-      return true;
+      return false;
     }
 
     Future<bool> delete() async {
-      print(_credential.uuid);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? url = prefs.getString('url');
-      Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
-      if (url != null) {
-        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
-        CredentialsApi api = CredentialsApi(apiClient);
-        await api.credentialsSoftDeletePut(_credential.uuid);
+      if (_credential != null) {
+        print(_credential!.uuid);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String? url = prefs.getString('url');
+        Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+        if (url != null) {
+          ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+          CredentialsApi api = CredentialsApi(apiClient);
+          await api.credentialsSoftDeletePut(_credential!.uuid);
+        }
+        if (widget.onSoftDeleteCallback != null) widget.onSoftDeleteCallback!(_credential!.uuid);
+        return true;
       }
-      if (widget.onSoftDeleteCallback != null) widget.onSoftDeleteCallback!(_credential.uuid);
-      return true;
+      return false;
     }
 
     showDeleteConfirmDialog(Credential credential) {
@@ -152,8 +176,10 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                         delete().then(
                           (value) {
                             print("Confirm");
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
+                            if(context.mounted){
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            }
                           },
                         );
                       },
@@ -173,7 +199,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: Text(_credential.getClearDisplayName()),
+        title: Text(_credential?.getClearDisplayName() ?? ""),
         actions: [
           if (!_enabled) IconButton(onPressed: () => enableFields(), icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary)),
           if (_enabled)
@@ -201,14 +227,16 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => showDeleteConfirmDialog(_credential),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: Icon(
-          Icons.delete,
-          color: Theme.of(context).colorScheme.onPrimary,
-        ),
-      ),
+      floatingActionButton: (_credential != null)
+          ? FloatingActionButton(
+              onPressed: () => showDeleteConfirmDialog(_credential!),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              child: Icon(
+                Icons.delete,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            )
+          : null,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         child: Column(
@@ -263,7 +291,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               key: UniqueKey(),
               folders: widget.availableFolders,
               enabled: _enabled,
-              currentFolderUuid: _credential.folderUuid ?? "",
+              currentFolderUuid: _credential?.folderUuid ?? "",
               onChangeCallback: (value) {
                 newFolderUUID = value ?? "";
               },

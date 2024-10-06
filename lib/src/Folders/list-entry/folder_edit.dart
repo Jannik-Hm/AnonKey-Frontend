@@ -32,7 +32,7 @@ class FolderEditWidget extends StatefulWidget {
 class _FolderEditWidget extends State<FolderEditWidget> {
   final displayNameFocus = FocusNode();
   late bool _enabled;
-  late Folder _folder;
+  late Folder? _folder;
   final double spacing = 16.0;
   final _formkey = GlobalKey<FormState>();
 
@@ -43,8 +43,8 @@ class _FolderEditWidget extends State<FolderEditWidget> {
     super.initState();
     // Initialize the mutable object from the widget field
     _enabled = (widget.folder == null);
-    _folder = widget.folder ?? Folder(iconData: Icons.folder.codePoint, displayName: "", uuid: "");
-    _iconData = _folder.getIconData();
+    _folder = widget.folder;
+    _iconData = _folder?.getIconData() ?? Icons.folder;
   }
 
   void updateIcon({required IconData? iconData}) {
@@ -54,7 +54,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
   @override
   Widget build(BuildContext context) {
     //final uuid;
-    final displayName = TextEditingController(text: _folder.displayName);
+    final displayName = TextEditingController(text: _folder?.displayName);
 
     void enableFields() {
       setState(() {
@@ -63,42 +63,51 @@ class _FolderEditWidget extends State<FolderEditWidget> {
     }
 
     void disableFields() {
-      setState(() {
-        _enabled = false;
-        _iconData = _folder.getIconData();
-      });
+      if (_folder != null) {
+        setState(() {
+          _enabled = false;
+          _iconData = _folder!.getIconData();
+        });
+      } else {
+        Navigator.of(context).pop();
+      }
     }
 
     Future<bool> save() async {
-      _folder.displayName = displayName.text;
-      if (_iconData != null) {
-        _folder.setIcon(codePoint: _iconData!.codePoint);
-        if (widget.folder != null && widget.iconCallback != null) {
-          widget.iconCallback!(codePoint: _iconData!.codePoint);
-        }
-      }
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? url = prefs.getString('url');
       Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
       if (url != null) {
         ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
         FoldersApi api = FoldersApi(apiClient);
-        await api.foldersUpdatePut(_folder.updateFolderBody());
+        if (_folder != null) {
+          _folder!.displayName = displayName.text;
+          if (_iconData != null) {
+            _folder!.setIcon(codePoint: _iconData!.codePoint);
+            if (widget.folder != null && widget.iconCallback != null) {
+              widget.iconCallback!(codePoint: _iconData!.codePoint);
+            }
+          }
+          await api.foldersUpdatePut(_folder!.updateFolderBody());
+        } else {
+          api.foldersCreatePost(FoldersCreateRequestBody(folder: FoldersCreateFolder(icon: _iconData!.codePoint, name: displayName.text))).then((value) {
+            _folder = Folder(displayName: displayName.text, iconData: _iconData!.codePoint, uuid: value!.folderUuid);
+          });
+        }
       }
       return true;
     }
 
     Future<bool> delete(bool recursive) async {
-      /* SharedPreferences prefs = await SharedPreferences.getInstance();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
       String? url = prefs.getString('url');
       Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
       if (url != null) {
         ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
         FoldersApi api = FoldersApi(apiClient);
-        await api.foldersDeleteDelete(_folder.uuid!, recursive).then((value) {
-        });
-      } */
-      if (widget.onDeleteCallback != null) widget.onDeleteCallback!(_folder.uuid!);
+        await api.foldersDeleteDelete(_folder!.uuid!, recursive).then((value) {});
+      }
+      if (widget.onDeleteCallback != null) widget.onDeleteCallback!(_folder!.uuid!);
       return true;
     }
 
@@ -173,7 +182,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: Text(_folder.displayName),
+        title: Text(_folder?.displayName ?? ""),
         actions: [
           if (!_enabled) IconButton(onPressed: () => enableFields(), icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary)),
           if (_enabled)
@@ -184,7 +193,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                           save().then(
                             (value) {
                               disableFields();
-                              if (widget.onSaveCallback != null) widget.onSaveCallback!(folderData: _folder);
+                              if (widget.onSaveCallback != null && _folder != null) widget.onSaveCallback!(folderData: _folder!);
                             },
                           ),
                         },
@@ -208,14 +217,16 @@ class _FolderEditWidget extends State<FolderEditWidget> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => showDeleteConfirmDialog(_folder),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: Icon(
-          Icons.delete,
-          color: Theme.of(context).colorScheme.onPrimary,
-        ),
-      ),
+      floatingActionButton: (_folder != null)
+          ? FloatingActionButton(
+              onPressed: () => showDeleteConfirmDialog(_folder!),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              child: Icon(
+                Icons.delete,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            )
+          : null,
       body: Form(
         key: _formkey,
         child: Padding(
