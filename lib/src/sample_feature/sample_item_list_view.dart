@@ -33,12 +33,6 @@ class SampleItemListView extends StatelessWidget {
       if (!context.mounted) return;
       context.replaceNamed("login");
     }
-
-    FolderList.getFromAPIFull().then(
-      (value) {
-        print(value?.toList());
-      },
-    );
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sample Items'),

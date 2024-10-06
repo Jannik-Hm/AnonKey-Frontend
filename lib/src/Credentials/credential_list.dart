@@ -48,6 +48,8 @@ class CredentialList {
     }
   }
 
+  // TODO: save serialized (JSON) data in file storage as shared preferences will probably be too small and sqlite would be inefficient for this usecase
+
   /// How to use:
   /// import 'dart:convert';
   /// String test = jsonEncode(data);
