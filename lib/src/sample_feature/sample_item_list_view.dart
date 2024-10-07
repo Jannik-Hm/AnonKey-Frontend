@@ -2,6 +2,7 @@ import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
 import 'package:anonkey_frontend/src/Folders/folder_list.dart';
 import 'package:anonkey_frontend/src/Folders/folder_list_view_widget.dart';
+import 'package:anonkey_frontend/src/router/clear_and_navigate.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -31,7 +32,7 @@ class SampleItemListView extends StatelessWidget {
     void _logout() async {
       await AuthService.deleteAuthenticationCredentials();
       if (!context.mounted) return;
-      context.replaceNamed("login");
+      GoRouter.of(context).clearStackAndNavigate("login");
     }
     return Scaffold(
       appBar: AppBar(
