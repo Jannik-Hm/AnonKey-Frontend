@@ -1,13 +1,19 @@
+import 'package:anonkey_frontend/Utility/request_utility.dart';
+import 'package:anonkey_frontend/api/lib/api.dart';
+import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Widgets/icon_picker.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FolderEditWidget extends StatefulWidget {
   final Folder? folder;
   final void Function({required int codePoint})? iconCallback;
   final Function({required Folder folderData})? onSaveCallback;
+  final Function(String uuid)? onDeleteCallback;
   final Function()? onAbortCallback;
 
   const FolderEditWidget({
@@ -16,6 +22,7 @@ class FolderEditWidget extends StatefulWidget {
     this.iconCallback,
     this.onSaveCallback,
     this.onAbortCallback,
+    this.onDeleteCallback,
   });
 
   @override
@@ -25,7 +32,7 @@ class FolderEditWidget extends StatefulWidget {
 class _FolderEditWidget extends State<FolderEditWidget> {
   final displayNameFocus = FocusNode();
   late bool _enabled;
-  late Folder _folder;
+  late Folder? _folder;
   final double spacing = 16.0;
   final _formkey = GlobalKey<FormState>();
 
@@ -36,8 +43,8 @@ class _FolderEditWidget extends State<FolderEditWidget> {
     super.initState();
     // Initialize the mutable object from the widget field
     _enabled = (widget.folder == null);
-    _folder = widget.folder ?? Folder(iconData: Icons.folder.codePoint, displayName: "", uuid: "");
-    _iconData = _folder.getIconData();
+    _folder = widget.folder;
+    _iconData = _folder?.getIconData() ?? Icons.folder;
   }
 
   void updateIcon({required IconData? iconData}) {
@@ -47,7 +54,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
   @override
   Widget build(BuildContext context) {
     //final uuid;
-    final displayName = TextEditingController(text: _folder.displayName);
+    final displayName = TextEditingController(text: _folder?.displayName);
 
     void enableFields() {
       setState(() {
@@ -56,28 +63,126 @@ class _FolderEditWidget extends State<FolderEditWidget> {
     }
 
     void disableFields() {
-      setState(() {
-        _enabled = false;
-        _iconData = _folder.getIconData();
-      });
+      if (_folder != null) {
+        setState(() {
+          _enabled = false;
+          _iconData = _folder!.getIconData();
+        });
+      } else {
+        Navigator.of(context).pop();
+      }
     }
 
-    void save() {
-      _folder.displayName = displayName.text;
-      if (_iconData != null) {
-        if(widget.folder == null){
-          _folder.setIcon(codePoint: _iconData!.codePoint);
-        }else if(widget.iconCallback != null){
-          widget.iconCallback!(codePoint: _iconData!.codePoint);
+    Future<bool> save() async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? url = prefs.getString('url');
+      Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+      if (url != null) {
+        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        FoldersApi api = FoldersApi(apiClient);
+        if (_folder != null) {
+          _folder!.displayName = displayName.text;
+          if (_iconData != null) {
+            _folder!.setIcon(codePoint: _iconData!.codePoint);
+            if (widget.folder != null && widget.iconCallback != null) {
+              widget.iconCallback!(codePoint: _iconData!.codePoint);
+            }
+          }
+          await api.foldersUpdatePut(_folder!.updateFolderBody());
+        } else {
+          api.foldersCreatePost(FoldersCreateRequestBody(folder: FoldersCreateFolder(icon: _iconData!.codePoint, name: displayName.text))).then((value) {
+            _folder = Folder(displayName: displayName.text, iconData: _iconData!.codePoint, uuid: value!.folderUuid);
+          });
         }
       }
+      return true;
+    }
+
+    Future<bool> delete(bool recursive) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? url = prefs.getString('url');
+      Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+      if (url != null) {
+        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        FoldersApi api = FoldersApi(apiClient);
+        await api.foldersDeleteDelete(_folder!.uuid!, recursive).then((value) {});
+      }
+      if (widget.onDeleteCallback != null) widget.onDeleteCallback!(_folder!.uuid!);
+      return true;
+    }
+
+    showDeleteConfirmDialog(Folder folder) {
+      return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            // Retrieve the text the that user has entered by using the
+            // TextEditingController.
+            title: Text(AppLocalizations.of(context)!.confirmFolderDeleteTitle(folder.displayName)),
+            //content: Text('Are you sure you want to move Credential "${credential.getClearDisplayName()}" into the deleted Folder?'),
+            content: Text(AppLocalizations.of(context)!.confirmFolderDeleteText(folder.displayName)),
+            actions: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        print("Abort");
+                        Navigator.of(context).pop();
+                      },
+                      style: TextButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
+                      child: Text(AppLocalizations.of(context)!.abort),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20.0,
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        delete(true).then(
+                          (value) {
+                            print("Delete with Credentials");
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      },
+                      style: TextButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                      child: Text(AppLocalizations.of(context)!.deleteFolderWithCredentials),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20.0,
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        delete(false).then(
+                          (value) {
+                            print("Delete, keep Credentials");
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      },
+                      style: TextButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                      child: Text(AppLocalizations.of(context)!.deleteFolderKeepCredentials),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
     }
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: Text(_folder.displayName),
+        title: Text(_folder?.displayName ?? ""),
         actions: [
           if (!_enabled) IconButton(onPressed: () => enableFields(), icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary)),
           if (_enabled)
@@ -85,9 +190,12 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                 onPressed: () => {
                       if (_formkey.currentState!.validate())
                         {
-                          save(),
-                          disableFields(),
-                          if (widget.onSaveCallback != null) widget.onSaveCallback!(folderData: _folder),
+                          save().then(
+                            (value) {
+                              disableFields();
+                              if (widget.onSaveCallback != null && _folder != null) widget.onSaveCallback!(folderData: _folder!);
+                            },
+                          ),
                         },
                     },
                 icon: Icon(
@@ -109,6 +217,16 @@ class _FolderEditWidget extends State<FolderEditWidget> {
           ),
         ],
       ),
+      floatingActionButton: (_folder != null)
+          ? FloatingActionButton(
+              onPressed: () => showDeleteConfirmDialog(_folder!),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              child: Icon(
+                Icons.delete,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            )
+          : null,
       body: Form(
         key: _formkey,
         child: Padding(

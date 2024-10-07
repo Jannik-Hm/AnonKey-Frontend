@@ -30,5 +30,37 @@
   "changeToLogin": "Du hast schon einen Account? Hier einloggen",
   "@changeToLogin": {
     "description": "Text to change to login"
+  },
+  "confirmCredentialDeleteTitle": "Eintrag \"{displayName}\" löschen?",
+  "@confirmCredentialDeleteTitle": {
+    "description": ""
+  },
+  "confirmCredentialDeleteText": "Bist du sicher, dass du den Eintrag \"{displayName}\" in den gelöscht Ordner bewegen möchtest?",
+  "@confirmCredentialDeleteText": {
+    "description": ""
+  },
+  "abort": "Abbrechen",
+  "@abort": {
+    "description": ""
+  },
+  "confirm": "Bestätigen",
+  "@confirm": {
+    "description": ""
+  },
+  "confirmFolderDeleteTitle": "Ordner \"{displayName}\" löschen?",
+  "@confirmFolderDeleteTitle": {
+    "description": ""
+  },
+  "confirmFolderDeleteText": "Bist du sicher, dass du den Ordner \"{displayName}\" löschen möchtest?",
+  "@confirmFolderDeleteText": {
+    "description": ""
+  },
+  "deleteFolderWithCredentials": "Löschen samt Einträgen",
+  "@deleteFolderWithCredentials": {
+    "description": ""
+  },
+  "deleteFolderKeepCredentials": "Löschen, Einträge behalten",
+  "@deleteFolderKeepCredentials": {
+    "description": ""
   }
 }

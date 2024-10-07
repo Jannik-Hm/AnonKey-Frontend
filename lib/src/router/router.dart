@@ -1,8 +1,10 @@
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
-import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
-import 'package:anonkey_frontend/src/Credentials/list-entry/credential_detail_view.dart';
+import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
+/* import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
+import 'package:anonkey_frontend/src/Credentials/list-entry/credential_detail_view.dart'; */
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
+import 'package:anonkey_frontend/src/Folders/folder_view.dart';
 import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
 import 'package:anonkey_frontend/src/sample_feature/sample_item_details_view.dart';
 import 'package:anonkey_frontend/src/sample_feature/sample_item_list_view.dart';
@@ -53,12 +55,12 @@ class AppRouter {
               SettingsView(controller: settingsController),
         ),
         GoRoute(
-          path: '/credentialDetail',
+          path: '/folder',
           builder: (context, state) {
-            final credential =
-                state.extra as Credential; // Access the passed object
-            return CredentialDetailWidget(
-              credential: credential,
+            final data =
+                state.extra as CredentialListWidgetData; // Access the passed object
+            return FolderView(
+              data: data,
             );
           },
         ),

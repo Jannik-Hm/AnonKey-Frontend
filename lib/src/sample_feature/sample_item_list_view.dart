@@ -1,7 +1,20 @@
+import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
+import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
+import 'package:anonkey_frontend/src/Folders/folder_list.dart';
+import 'package:anonkey_frontend/src/Folders/folder_list_view_widget.dart';
+import 'package:anonkey_frontend/src/router/clear_and_navigate.dart';
+import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'sample_item.dart';
+
+class _CombinedData {
+  final CredentialList? credentials;
+  final FolderList? folders;
+
+  _CombinedData({required this.credentials, required this.folders});
+}
 
 /// Displays a list of SampleItems.
 class SampleItemListView extends StatelessWidget {
@@ -16,6 +29,11 @@ class SampleItemListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void _logout() async {
+      await AuthService.deleteAuthenticationCredentials();
+      if (!context.mounted) return;
+      GoRouter.of(context).clearStackAndNavigate("login");
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sample Items'),
@@ -38,7 +56,7 @@ class SampleItemListView extends StatelessWidget {
       // In contrast to the default ListView constructor, which requires
       // building all Widgets up front, the ListView.builder constructor lazily
       // builds Widgets as they’re scrolled into view.
-      body: ListView.builder(
+      /* body: ListView.builder(
         // Providing a restorationId allows the ListView to restore the
         // scroll position when a user leaves and returns to the app after it
         // has been killed while running in the background.
@@ -60,7 +78,67 @@ class SampleItemListView extends StatelessWidget {
                 context.pushNamed("items");
               });
         },
-      ),
+      ), */
+      body: Column(
+          children: [
+            Expanded(
+              child: FutureBuilder<_CombinedData>(
+                future: Future.wait([CredentialList.getFromAPIFull(), FolderList.getFromAPIFull()]).then(
+                  (results) {
+                    return _CombinedData(credentials: results[0] as CredentialList, folders: results[1] as FolderList);
+                  },
+                ),
+                builder: (context, snapshot) {
+                  List<Widget> children;
+                  if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                    children = <Widget>[
+                      CredentialListWidget(
+                        credentials: snapshot.data!.credentials!,
+                        availableFolders: snapshot.data!.folders,
+                        currentFolderUuid: "",
+                      ),
+                      FolderListWidget(folders: snapshot.data!.folders!, credentials: snapshot.data!.credentials!,),
+                    ];
+                  } else if (snapshot.hasError) {
+                    children = <Widget>[
+                      const Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                        size: 60,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text('Error: ${snapshot.error}'),
+                      ),
+                    ];
+                  } else {
+                    children = const <Widget>[
+                      SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CircularProgressIndicator(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 16),
+                        child: Text('Awaiting result...'),
+                      ),
+                    ];
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: children,
+                    ),
+                  );
+                },
+              ),
+            ),
+            TextButton(
+              onPressed: () => _logout(),
+              child: const Text("Logout"),
+            ),
+          ],
+        ),
     );
   }
 }

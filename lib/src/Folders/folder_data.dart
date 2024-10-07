@@ -8,6 +8,29 @@ class Folder {
 
   Folder({required int iconData, required this.displayName, required this.uuid}) : _iconData = iconData;
 
+  @override
+  String toString() {
+    return """
+
+    UUID: ${uuid},
+    Name: ${displayName},
+    IconCodePoint: ${_iconData}""";
+  }
+
+  static Folder fromJson(Map<String, dynamic> json) {
+    return Folder(
+      displayName: json["displayName"],
+      iconData: json["iconData"],
+      uuid: json["uuid"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'displayName': displayName,
+        'iconData': getIconCodePoint(),
+        'uuid': uuid,
+      };
+
   static Folder? fromSingleApi({required api.FoldersGetResponseBody response}) {
     api.FoldersGetFolder? folder = response.folder;
     if (folder == null) {
@@ -47,6 +70,10 @@ class Folder {
       icon: this._iconData,
       name: this.displayName,
     );
+  }
+
+  api.FoldersUpdateRequestBody updateFolderBody({api.FoldersUpdateFolder? requestdata}) {
+    return api.FoldersUpdateRequestBody(folder: requestdata ?? updateFolder());
   }
 
   api.FoldersUpdateFolder updateFolder() {
