@@ -1,8 +1,19 @@
+import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
+import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
+import 'package:anonkey_frontend/src/Folders/folder_list.dart';
+import 'package:anonkey_frontend/src/Folders/folder_list_view_widget.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../settings/settings_view.dart';
+
+class _CombinedData {
+  final CredentialList? credentials;
+  final FolderList? folders;
+
+  _CombinedData({required this.credentials, required this.folders});
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.controller, required this.index});
@@ -17,6 +28,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late int currentPageIndex;
   late final SettingsController _controller;
+  late Future<_CombinedData> combinedData;
 
   @override
   void initState() {
@@ -24,6 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
     _controller = widget.controller;
     currentPageIndex = widget.index;
     _initializeSettings();
+    combinedData = Future.wait([CredentialList.getFromAPIFull(), FolderList.getFromAPIFull()]).then(
+      (results) {
+        return _CombinedData(credentials: results[0] as CredentialList, folders: results[1] as FolderList);
+      },
+    );
   }
 
   Future<void> _initializeSettings() async {
@@ -40,15 +57,47 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('AnonKey'),
+        backgroundColor: theme.colorScheme.primary,
       ),
+      /* bottomNavigationBar: BottomNavigationBar(
+        onTap: (int index) {
+          setState(() {
+            currentPageIndex = index;
+          });
+        },
+        currentIndex: currentPageIndex,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.lock_outline),
+            activeIcon: Icon(Icons.lock),
+            label: 'Passwords',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_outlined),
+            activeIcon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        //unselectedItemColor: theme.colorScheme.,
+        backgroundColor: theme.colorScheme.tertiary,
+        selectedItemColor: theme.colorScheme.onTertiary,
+        selectedLabelStyle: TextStyle(color: theme.colorScheme.onPrimary),
+      ), */
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
           setState(() {
             currentPageIndex = index;
           });
         },
-        indicatorColor: const Color.fromARGB(255, 140, 156, 224),
+        backgroundColor: theme.colorScheme.tertiary,
+        indicatorColor: theme.colorScheme.onTertiary,
         selectedIndex: currentPageIndex,
+        animationDuration: const Duration(milliseconds: 200),
         destinations: const <Widget>[
           NavigationDestination(
             selectedIcon: Icon(Icons.home),
@@ -79,18 +128,45 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: theme.textTheme.headlineMedium,
               ),
               const SizedBox(height: 20),
-              Card(
-                margin: const EdgeInsets.all(8.0),
-                elevation: 3,
-                child: ListTile(
-                  leading: const Icon(Icons.shield),
-                  title: const Text('Total Passwords'),
-                  subtitle: const Text('You have 42 passwords saved'),
-                  trailing:
-                      Icon(Icons.visibility, color: theme.colorScheme.primary),
-                ),
-              ),
-              Card(
+              FutureBuilder<_CombinedData>(
+                future: combinedData,
+                builder: (context, snapshot) {
+                  List<Widget> children;
+                  if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                    children = <Widget>[
+                      Card(
+                        margin: const EdgeInsets.all(8.0),
+                        elevation: 3,
+                        color: theme.colorScheme.tertiary,
+                        child: InkWell(
+                          onTap: () => {
+                            setState(
+                              () {
+                                currentPageIndex = 1;
+                              },
+                            )
+                          },
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.shield,
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                            title: Text(
+                              'Total Passwords',
+                              style: TextStyle(color: theme.colorScheme.onPrimary),
+                            ),
+                            subtitle: Text(
+                              'You have ${snapshot.data!.credentials?.byIDList.length ?? 0} passwords saved',
+                              style: TextStyle(color: theme.colorScheme.onPrimary),
+                            ),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios,
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
+                      ),
+                      /* Card(
                 margin: const EdgeInsets.all(8.0),
                 elevation: 3,
                 child: ListTile(
@@ -101,22 +177,71 @@ class _HomeScreenState extends State<HomeScreen> {
                   trailing: Icon(Icons.arrow_forward_ios,
                       color: theme.colorScheme.primary),
                 ),
+              ), */
+                      const SizedBox(height: 20),
+                      /* CredentialListWidget(
+                        credentials: snapshot.data!.credentials!,
+                        availableFolders: snapshot.data!.folders,
+                        currentFolderUuid: "",
+                      ), */
+                      Text(
+                        'Folders',
+                        style: theme.textTheme.headlineSmall,
+                      ),
+                      const SizedBox(height: 10),
+                      FolderListWidget(
+                        folders: snapshot.data!.folders!,
+                        credentials: snapshot.data!.credentials!,
+                      ),
+                    ];
+                  } else if (snapshot.hasError) {
+                    children = <Widget>[
+                      Center(
+                        child: Column(
+                          children: [
+                            const Icon(
+                              Icons.error_outline,
+                              color: Colors.red,
+                              size: 60,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16),
+                              child: Text('Error: ${snapshot.error}'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ];
+                  } else {
+                    children = const <Widget>[
+                      SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CircularProgressIndicator(),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 16),
+                        child: Text('Awaiting result...'),
+                      ),
+                    ];
+                  }
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: children,
+                    ),
+                  );
+                },
               ),
-              const SizedBox(height: 20),
-              Text(
-                'Folders',
-                style: theme.textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 10),
-              Card(
+              /* Card(
                 margin: const EdgeInsets.all(8.0),
                 elevation: 3,
                 child: ListTile(
                   leading: const Icon(Icons.folder),
                   title: const Text('Work'),
                   subtitle: const Text('12 passwords'),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                      color: theme.colorScheme.primary),
+                  trailing: Icon(Icons.arrow_forward_ios, color: theme.colorScheme.primary),
                 ),
               ),
               Card(
@@ -126,8 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: const Icon(Icons.folder),
                   title: const Text('Google'),
                   subtitle: const Text('8 passwords'),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                      color: theme.colorScheme.primary),
+                  trailing: Icon(Icons.arrow_forward_ios, color: theme.colorScheme.primary),
                 ),
               ),
               Card(
@@ -137,11 +261,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: const Icon(Icons.folder),
                   title: const Text('Private'),
                   subtitle: const Text('22 passwords'),
-                  trailing: Icon(Icons.arrow_forward_ios,
-                      color: theme.colorScheme.primary),
+                  trailing: Icon(Icons.arrow_forward_ios, color: theme.colorScheme.primary),
                 ),
-              ),
-              const SizedBox(height: 20),
+              ), */
+              /* const SizedBox(height: 20),
               Text(
                 'Favorites',
                 style: theme.textTheme.headlineSmall,
@@ -157,7 +280,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   trailing:
                       Icon(Icons.more_vert, color: theme.colorScheme.primary),
                 ),
-              ),
+              ), */
             ],
           ),
         ),
@@ -171,11 +294,63 @@ class _HomeScreenState extends State<HomeScreen> {
               style: theme.textTheme.headlineMedium,
             ),
             const SizedBox(height: 10),
-            const ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text('Google Account'),
-              subtitle: Text('username@gmail.com'),
-              trailing: Icon(Icons.more_vert),
+            Column(
+              children: [
+                FutureBuilder<_CombinedData>(
+                  future: combinedData,
+                  builder: (context, snapshot) {
+                    List<Widget> children;
+                    if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                      children = <Widget>[
+                        SingleChildScrollView(
+                          child: CredentialListWidget(
+                            availableFolders: snapshot.data!.folders,
+                            credentials: snapshot.data!.credentials!,
+                            currentFolderUuid: null,
+                          ),
+                        ),
+                      ];
+                    } else if (snapshot.hasError) {
+                      children = <Widget>[
+                        Center(
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.error_outline,
+                                color: Colors.red,
+                                size: 60,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: Text('Error: ${snapshot.error}'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ];
+                    } else {
+                      children = const <Widget>[
+                        SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: CircularProgressIndicator(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 16),
+                          child: Text('Awaiting result...'),
+                        ),
+                      ];
+                    }
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: children,
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),
@@ -186,8 +361,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 800.0, // Set a valid height
               child: RepaintBoundary(
-                child: SettingsView(
-                    controller: _controller), // Replace with your actual widget
+                child: SettingsView(controller: _controller), // Replace with your actual widget
               ),
             )
           ],

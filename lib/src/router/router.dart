@@ -29,13 +29,13 @@ class AppRouter {
     return GoRouter(
       initialLocation: '/',
       routes: [
-        GoRoute(
+        /* GoRoute(
           path: '/:site',
           builder: (context, state) => HomeScreen(
             controller: settingsController,
             index: int.parse(state.pathParameters['site']!),
           ),
-        ),
+        ), */
         GoRoute(
           name: "home",
           path: '/',
