@@ -33,7 +33,7 @@ class AuthService {
       await authApi.authenticationLoginPost(loginBody).then((value) async => {
             if (value?.token != null)
               {
-                storeAuthenticationCredentials(
+                await storeAuthenticationCredentials(
                     value?.token, username, password),
               }
           });
@@ -72,7 +72,7 @@ class AuthService {
       await authApi.userCreatePost(registerBody).then((value) async => {
             if (value?.token != null)
               {
-                storeAuthenticationCredentials(
+                await storeAuthenticationCredentials(
                     value?.token, username, password),
               }
           });

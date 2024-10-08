@@ -13,6 +13,7 @@ class Cryptography {
 
     return base64Url.encode(values);
   }
+
   /// Async function to generate a KDF in byte form.
   static Future<Uint8List> getKDFBytes({required String masterPassword, required String salt}) async {
     return Pbkdf2(
@@ -35,28 +36,34 @@ class Cryptography {
   /// Returns an async String containing the encrypted content of [clearString] in base64.
   /// Needs the [masterPassword] and [kdfSalt] to generate the KDF and the [encryptedSalt] to encrypt.
   static Future<String> encryptString({required String masterPassword, required String kdfSalt, required String clearString, required String encryptedSalt}) async {
-    return getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
-      (value) => encrypt.Encrypter(encrypt.AES(value))
-          .encrypt(
-            clearString,
-            iv: encrypt.IV.fromUtf8(encryptedSalt),
-          )
-          .base64,
-    );
+    return (clearString.isEmpty)
+        ? ""
+        : await getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
+            (value) => encrypt.Encrypter(encrypt.AES(value))
+                .encrypt(
+                  clearString,
+                  iv: encrypt.IV.fromUtf8(encryptedSalt),
+                )
+                .base64,
+          );
   }
 
   /// Returns an async String containing the decrypted content of [encryptedString].
   /// Needs the [masterPassword] and [kdfSalt] to generate the KDF and the [encryptedSalt] to decrypt.
   static Future<String> getClearString({required String masterPassword, required String kdfSalt, required String encryptedString, required String encryptedSalt}) async {
-    try {
-      return getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
-        (value) => encrypt.Encrypter(encrypt.AES(value)).decrypt64(
-          encryptedString,
-          iv: encrypt.IV.fromUtf8(encryptedSalt),
-        ),
-      );
-    } catch (error) {
-      throw ArgumentError("Decryption Arguments do not match encrypted String");
+    if (encryptedString.isEmpty) {
+      return "";
+    } else {
+      try {
+        return getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
+          (value) => encrypt.Encrypter(encrypt.AES(value)).decrypt64(
+            encryptedString,
+            iv: encrypt.IV.fromUtf8(encryptedSalt),
+          ),
+        );
+      } catch (error) {
+        throw ArgumentError("Decryption Arguments do not match encrypted String");
+      }
     }
   }
 }
