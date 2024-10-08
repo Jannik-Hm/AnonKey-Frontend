@@ -69,8 +69,6 @@ class _CredentialListWidget extends State<CredentialListWidget> {
   @override
   Widget build(BuildContext context) {
     credentialList.sort((x, y) => x.getClearDisplayName().compareTo(y.getClearDisplayName()));
-    return Expanded(
-      child: Column(children: credentialList.map(_fromList).toList()),
-    );
+    return Column(children: credentialList.map(_fromList).toList());
   }
 }
