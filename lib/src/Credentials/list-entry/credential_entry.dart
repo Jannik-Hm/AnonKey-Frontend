@@ -82,13 +82,16 @@ class _CredentialEntry extends State<CredentialEntry> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensure even spacing
           children: [
             // Image on the left
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 70.0),
-              //child: Image.network("https://icons.duckduckgo.com/ip3/linustechtips.com.ico"),
-              child: getNetworkLogoFromUrl(_credential.getClearWebsiteUrl()),
+            SizedBox(
+              width: 40.0,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 40.0, maxHeight: 40.0),
+                //child: Image.network("https://icons.duckduckgo.com/ip3/linustechtips.com.ico"),
+                child: getNetworkLogoFromUrl(_credential.getClearWebsiteUrl()),
+              ),
             ),
             const SizedBox(
-              width: 20.0,
+              width: 10.0,
             ),
             // Vertically stacked texts in the middle
             Expanded(

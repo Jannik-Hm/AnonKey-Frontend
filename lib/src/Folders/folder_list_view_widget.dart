@@ -62,8 +62,9 @@ class _FolderListWidget extends State<FolderListWidget> {
   @override
   Widget build(BuildContext context) {
     folderList.sort((x, y) => x.displayName.compareTo(y.displayName));
-    return Expanded(
-      child: Column(children: folderList.map(_fromList).toList()),
-    );
+    return /* Expanded(
+      child: */ Column(children: folderList.map(_fromList).toList())//,
+    //)
+    ;
   }
 }
