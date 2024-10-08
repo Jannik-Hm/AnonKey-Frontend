@@ -90,7 +90,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
           }
           await api.foldersUpdatePut(_folder!.updateFolderBody());
         } else {
-          api.foldersCreatePost(FoldersCreateRequestBody(folder: FoldersCreateFolder(icon: _iconData!.codePoint, name: displayName.text))).then((value) {
+          await api.foldersCreatePost(FoldersCreateRequestBody(folder: FoldersCreateFolder(icon: _iconData!.codePoint, name: displayName.text))).then((value) {
             _folder = Folder(displayName: displayName.text, iconData: _iconData!.codePoint, uuid: value!.folderUuid);
           });
         }
