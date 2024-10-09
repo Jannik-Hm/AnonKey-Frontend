@@ -9,11 +9,24 @@ import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+/// Widget for Editing and Displaying Credential Data
+///
+/// [credential] Credential Data to display, `null` for creating New
+///
+/// [availableFolders] List of Folders for Folder Selector Dropdown
+///
+/// [onSaveCallback] Callback triggered on Save
+///
+/// [onSoftDeleteCallback] Callback triggered on Soft Delete
+///
+/// [currentFolderUuid] Uuid of current Folder in Selector Dropdown, only relevant when credential is `null`
+///
 class CredentialDetailWidget extends StatefulWidget {
   final Credential? credential;
   final List<Folder> availableFolders;
   final Function(Credential credential)? onSaveCallback;
   final Function(String uuid)? onSoftDeleteCallback;
+  final String? currentFolderUuid;
 
   const CredentialDetailWidget({
     super.key,
@@ -21,6 +34,7 @@ class CredentialDetailWidget extends StatefulWidget {
     this.onSaveCallback,
     this.onSoftDeleteCallback,
     required this.availableFolders,
+    this.currentFolderUuid,
   });
 
   @override
@@ -296,7 +310,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               key: UniqueKey(),
               folders: widget.availableFolders,
               enabled: _enabled,
-              currentFolderUuid: _credential?.folderUuid ?? "",
+              currentFolderUuid: (_credential == null) ? (widget.currentFolderUuid ?? "") : (_credential?.folderUuid ?? ""),
               onChangeCallback: (value) {
                 newFolderUUID = value ?? "";
               },

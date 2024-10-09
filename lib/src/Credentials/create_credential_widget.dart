@@ -8,12 +8,14 @@ class CreateCredentialWidget extends StatefulWidget {
   final List<Folder> availableFolders;
   final CredentialList credentials;
   final Function(Credential) addToCredentials;
+  final String? currentFolderUuid;
 
   const CreateCredentialWidget({
     super.key,
     required this.availableFolders,
     required this.credentials,
     required this.addToCredentials,
+    this.currentFolderUuid,
   });
 
   @override
@@ -50,6 +52,7 @@ class _CreateCredentialWidget extends State<CreateCredentialWidget> {
               credential: null,
               onSaveCallback: onSaveCallback,
               availableFolders: widget.availableFolders,
+              currentFolderUuid: widget.currentFolderUuid,
             ),
           ),
         )
