@@ -128,9 +128,9 @@ class AuthService {
     Duration difference = now.difference(timestamp);
 
     int minRange = (expire * 0.8).toInt();
-    int maxRange = (expire).toInt();
+    //int maxRange = (expire).toInt();
 
-    if (difference.inSeconds >= minRange && difference.inSeconds <= maxRange) {
+    if (difference.inSeconds >= minRange) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await AuthService.login(username, password, prefs.getString("url")!);
       return false;
