@@ -44,8 +44,8 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     super.initState();
     // Initialize the mutable object from the widget field
     _enabled = (widget.credential == null);
-    _obscurePassword = true;
-    _credential = widget.credential!;
+    _obscurePassword = !(widget.credential == null);
+    _credential = widget.credential;
     newFolderUUID = _credential?.folderUuid ?? "";
   }
 
@@ -72,12 +72,12 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     }
 
     void disableFields() {
-      if(_credential != null){
+      if (_credential != null) {
         setState(() {
           _enabled = false;
           _obscurePassword = true;
         });
-      }else{
+      } else {
         Navigator.of(context).pop();
       }
     }
@@ -116,6 +116,11 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             clearNote: note.text,
             folderUuid: newFolderUUID,
             createdTimeStamp: DateTime.now().microsecondsSinceEpoch ~/ 1000,
+          );
+          await api.credentialsCreatePost(
+            CredentialsCreateRequestBody(
+              credential: temp.createAPICredential(),
+            ),
           );
         }
         setState(() {
@@ -176,7 +181,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                         delete().then(
                           (value) {
                             print("Confirm");
-                            if(context.mounted){
+                            if (context.mounted) {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();
                             }
