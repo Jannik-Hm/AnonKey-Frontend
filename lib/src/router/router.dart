@@ -2,11 +2,10 @@ import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
 import 'package:anonkey_frontend/src/Auth/splash_screen_view.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
-/* import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
-import 'package:anonkey_frontend/src/Credentials/list-entry/credential_detail_view.dart'; */
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Folders/folder_view.dart';
 import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
+import 'package:anonkey_frontend/src/app_lifecycle_page.dart';
 import 'package:anonkey_frontend/src/sample_feature/sample_item_details_view.dart';
 import 'package:anonkey_frontend/src/sample_feature/sample_item_list_view.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
@@ -14,9 +13,8 @@ import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:anonkey_frontend/src/settings/settings_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../exception/auth_exception.dart';
 
 class AppRouter {
@@ -33,7 +31,8 @@ class AppRouter {
         GoRoute(
           name: "home",
           path: '/',
-          builder: (context, state) => const SampleItemListView(),
+          builder: (context, state) =>
+              const AppLifecyclePage(child: SampleItemListView()),
         ),
         GoRoute(
           name: "login",
@@ -94,21 +93,21 @@ class AppRouter {
           isAuthenticated = false;
         }
 
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        const storage = FlutterSecureStorage();
 
-        if (!isAuthenticated) {
-          String? path;
-          if (state.fullPath == "/login") {
-            path = "/login";
+        print(await AuthService.isSoftLogout());
+        print(!isAuthenticated);
+
+        if (!isAuthenticated || await AuthService.isSoftLogout()) {
+          if (await storage.containsKey(key: "password")) {
+            return "/splash";
+          } else if (state.fullPath == "/login") {
+            return "/login";
           } else if (state.fullPath == "/register") {
-            path = "/register";
+            return "/register";
           } else {
-            path = "/login";
+            return "/login";
           }
-          if (prefs.containsKey("url")) {
-            path = "/splash";
-          }
-          return path;
         } else {
           return null; // return "null" to display the intended route without redirecting
         }
