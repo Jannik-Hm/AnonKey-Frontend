@@ -14,6 +14,7 @@ import 'package:anonkey_frontend/src/settings/settings_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../exception/auth_exception.dart';
 
@@ -44,6 +45,10 @@ class AppRouter {
           builder: (context, state) => const RegisterView(),
         ),
         GoRoute(
+          path: "/splash",
+          builder: (context, state) => const CupertinoActivityIndicator(),
+        ),
+        GoRoute(
           name: "items",
           path: "/items",
           builder: (context, state) => const SampleItemDetailsView(),
@@ -57,8 +62,8 @@ class AppRouter {
         GoRoute(
           path: '/folder',
           builder: (context, state) {
-            final data =
-                state.extra as CredentialListWidgetData; // Access the passed object
+            final data = state.extra
+                as CredentialListWidgetData; // Access the passed object
             return FolderView(
               data: data,
             );
@@ -88,8 +93,21 @@ class AppRouter {
           isAuthenticated = false;
         }
 
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+
         if (!isAuthenticated) {
-          return state.fullPath == '/login' ? "/login" : '/register';
+          String? path;
+          if (state.fullPath == "/login") {
+            path = "/login";
+          } else if (state.fullPath == "/register") {
+            path = "/register";
+          } else {
+            path = "/login";
+          }
+          if (prefs.containsKey("url")) {
+            path = "/splash";
+          }
+          return path;
         } else {
           return null; // return "null" to display the intended route without redirecting
         }
