@@ -36,6 +36,7 @@ class CredentialList {
     Credential? credential = deletedList[credentialUUID];
     if (credential != null){
       deletedList.remove(credentialUUID);
+      credential.clearDeletedTimeStamp();
       add(credential);
     }
   }

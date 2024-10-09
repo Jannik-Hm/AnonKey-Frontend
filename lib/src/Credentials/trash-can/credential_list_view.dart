@@ -22,10 +22,28 @@ class _CredentialTrashListWidget extends State<CredentialTrashListWidget> {
 
   late List<Credential> credentialList;
 
+  void restoreCredential(Credential credential) {
+    print("Restore");
+    setState(() {
+      credentials.restore(credential.uuid);
+      credentialList = credentials.deletedList.values.toList();
+    });
+    print(credentials.deletedList);
+  }
+
+  void deleteForever(Credential credential) {
+    setState(() {
+      credentials.remove(credential.uuid);
+      credentialList = credentials.deletedList.values.toList();
+    });
+  }
+
   CredentialTrashEntry _fromList(Credential credential) {
     return CredentialTrashEntry(
       key: UniqueKey(),
       credential: credential,
+      onDeleteForeverCallback: deleteForever,
+      onRestoreCallback: restoreCredential,
     );
   }
 
@@ -40,6 +58,9 @@ class _CredentialTrashListWidget extends State<CredentialTrashListWidget> {
   @override
   Widget build(BuildContext context) {
     credentialList.sort((x, y) => x.getClearDisplayName().compareTo(y.getClearDisplayName()));
-    return Column(children: credentialList.map(_fromList).toList());
+    return Column(
+      key: UniqueKey(),
+      children: credentialList.map(_fromList).toList(),
+    );
   }
 }

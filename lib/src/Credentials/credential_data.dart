@@ -144,6 +144,11 @@ class Credential {
     return this._deletedTimeStamp;
   }
 
+  /// Use when Restoring Credential (Soft-Undelete)
+  void clearDeletedTimeStamp() {
+    this._deletedTimeStamp = null;
+  }
+
   @override
   String toString() {
     return """
