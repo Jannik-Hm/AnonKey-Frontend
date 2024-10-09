@@ -194,6 +194,9 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                             (value) {
                               disableFields();
                               if (widget.onSaveCallback != null && _folder != null) widget.onSaveCallback!(folderData: _folder!);
+                              if(context.mounted){
+                                Navigator.of(context).pop();
+                              }
                             },
                           ),
                         },
