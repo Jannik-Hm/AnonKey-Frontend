@@ -1,5 +1,6 @@
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
+import 'package:anonkey_frontend/src/Auth/splash_screen_view.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
 /* import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:anonkey_frontend/src/Credentials/list-entry/credential_detail_view.dart'; */
@@ -46,7 +47,7 @@ class AppRouter {
         ),
         GoRoute(
           path: "/splash",
-          builder: (context, state) => const CupertinoActivityIndicator(),
+          builder: (context, state) => const SplashScreenView(),
         ),
         GoRoute(
           name: "items",
