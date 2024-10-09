@@ -7,11 +7,13 @@ import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 class CreateCredentialWidget extends StatefulWidget {
   final List<Folder> availableFolders;
   final CredentialList credentials;
+  final Function(Credential) addToCredentials;
 
   const CreateCredentialWidget({
     super.key,
     required this.availableFolders,
     required this.credentials,
+    required this.addToCredentials,
   });
 
   @override
@@ -23,7 +25,7 @@ class _CreateCredentialWidget extends State<CreateCredentialWidget> {
 
   Future<void> onSaveCallback(Credential credential) async {
     if(!created) {
-      widget.credentials.add(credential);
+      widget.addToCredentials(credential);
       created = true;
     }
   }
