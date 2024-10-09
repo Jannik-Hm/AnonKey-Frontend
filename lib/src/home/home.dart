@@ -1,8 +1,7 @@
 import 'package:anonkey_frontend/Utility/combined_future_data.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
-import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
+import 'package:anonkey_frontend/src/Credentials/trash-can/credential_list_view.dart';
 import 'package:anonkey_frontend/src/Folders/folder_list.dart';
-import 'package:anonkey_frontend/src/Folders/folder_list_view_widget.dart';
 import 'package:anonkey_frontend/src/Widgets/home_all_credentials_display.dart';
 import 'package:anonkey_frontend/src/Widgets/home_folders_display.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
@@ -74,8 +73,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.lock),
-            icon: Icon(Icons.lock_outline),
+            icon: Icon(Icons.lock_outlined),
             label: 'Passwords',
+          ),
+          NavigationDestination(
+            selectedIcon: Icon(Icons.delete),
+            icon: Icon(Icons.delete_outlined),
+            label: 'Trash',
           ),
           NavigationDestination(
             selectedIcon: Icon(Icons.settings),
@@ -124,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(color: theme.colorScheme.onPrimary),
                             ),
                             subtitle: Text(
-                              'You have ${snapshot.data!.credentials?.byIDList.length ?? 0} passwords saved',
+                              'You have ${snapshot.data!.credentials?.byIDList.length ?? 0} password(s) saved',
                               style: TextStyle(color: theme.colorScheme.onPrimary),
                             ),
                             trailing: Icon(
@@ -146,6 +150,39 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: theme.colorScheme.primary),
                 ),
               ), */
+                      //const SizedBox(height: 0),
+                      Card(
+                        margin: const EdgeInsets.all(8.0),
+                        elevation: 3,
+                        color: theme.colorScheme.tertiary,
+                        child: InkWell(
+                          onTap: () => {
+                            setState(
+                              () {
+                                currentPageIndex = 2;
+                              },
+                            )
+                          },
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.delete,
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                            title: Text(
+                              'Deleted Passwords',
+                              style: TextStyle(color: theme.colorScheme.onPrimary),
+                            ),
+                            subtitle: Text(
+                              'You have ${snapshot.data!.credentials?.deletedList.length ?? 0} deleted password(s)',
+                              style: TextStyle(color: theme.colorScheme.onPrimary),
+                            ),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios,
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
+                      ),
                       const SizedBox(height: 20),
                       /* CredentialListWidget(
                         credentials: snapshot.data!.credentials!,
@@ -258,6 +295,60 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
                   children = <Widget>[
                     HomeCredentialsDisplayWidget(combinedData: snapshot.data!),
+                  ];
+                } else if (snapshot.hasError) {
+                  children = <Widget>[
+                    Center(
+                      child: Column(
+                        children: [
+                          const Icon(
+                            Icons.error_outline,
+                            color: Colors.red,
+                            size: 60,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Text('Error: ${snapshot.error}'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ];
+                } else {
+                  children = const <Widget>[
+                    SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: CircularProgressIndicator(),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 16),
+                      child: Text('Awaiting result...'),
+                    ),
+                  ];
+                }
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: children,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+
+        /// Trash
+        ListView(
+          children: [
+            FutureBuilder<CombinedListData>(
+              future: combinedData,
+              builder: (context, snapshot) {
+                List<Widget> children;
+                if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                  children = <Widget>[
+                    CredentialTrashListWidget(credentials: snapshot.data!.credentials!),
                   ];
                 } else if (snapshot.hasError) {
                   children = <Widget>[
