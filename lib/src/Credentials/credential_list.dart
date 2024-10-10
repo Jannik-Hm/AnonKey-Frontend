@@ -172,7 +172,7 @@ class CredentialList {
     return data;
   }
 
-  static Future<CredentialList?> getFromAPIFull() async {
+  static Future<api.CredentialsGetAllResponseBody?> _getResponseFromAllAPI() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('url');
     Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
@@ -181,11 +181,30 @@ class CredentialList {
       api.CredentialsApi credentialApi = api.CredentialsApi(apiClient);
       api.CredentialsGetAllResponseBody? response = await credentialApi.credentialsGetAllGet();
 
+      return response;
+    }
+    return null;
+  }
+
+  static Future<CredentialList?> getFromAPIFull() async {
+    api.CredentialsGetAllResponseBody? response = await _getResponseFromAllAPI();
+    Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+
       if (response != null) {
         CredentialList data = await CredentialList.getFromAPI(credentials: response, masterPassword: authdata["password"]!);
         return data;
       }
-    }
+    return null;
+  }
+
+  Future<CredentialList?> updateFromAPIFull() async {
+    api.CredentialsGetAllResponseBody? response = await _getResponseFromAllAPI();
+    Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+
+      if (response != null) {
+        CredentialList data = await updateFromAPI(credentials: response, masterPassword: authdata["password"]!);
+        return data;
+      }
     return null;
   }
 }
