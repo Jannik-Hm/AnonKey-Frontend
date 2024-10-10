@@ -4,6 +4,7 @@ import 'package:anonkey_frontend/src/Credentials/trash-can/credential_list_view.
 import 'package:anonkey_frontend/src/Folders/folder_list.dart';
 import 'package:anonkey_frontend/src/Widgets/home_all_credentials_display.dart';
 import 'package:anonkey_frontend/src/Widgets/home_folders_display.dart';
+import 'package:anonkey_frontend/src/Widgets/refresh_button.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,6 +47,18 @@ class _HomeScreenState extends State<HomeScreen> {
     prefs.remove("site");
   }
 
+  Future<void> onFolderDelete(bool recursive) async {
+    combinedData.then((data) {
+      setState(() {
+        combinedData = Future.wait([data.credentials!.updateFromAPIFull()]).then(
+          (results) {
+            return CombinedListData(credentials: results[0] as CredentialList, folders: data.folders);
+          },
+        );
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -53,7 +66,19 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('AnonKey'),
         backgroundColor: theme.colorScheme.primary,
-        //actions: //TODO: Refresh Button,
+        actions: [
+          RefreshButton(onRefreshCallback: () {
+            combinedData.then((data) {
+              setState(() {
+                combinedData = Future.wait([data.credentials!.updateFromAPIFull(), FolderList.getFromAPIFull()]).then(
+                  (results) {
+                    return CombinedListData(credentials: results[0] as CredentialList, folders: results[1] as FolderList);
+                  },
+                );
+              });
+            });
+          }),
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) {
@@ -191,6 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ), */
                       HomeFoldersDisplayWidget(
                         combinedData: snapshot.data!,
+                        onDeleteCallback: onFolderDelete,
                       ),
                     ];
                   } else if (snapshot.hasError) {

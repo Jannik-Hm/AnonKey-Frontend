@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 
 class HomeFoldersDisplayWidget extends StatefulWidget {
   final CombinedListData combinedData;
+  final Function(bool recursive) onDeleteCallback;
 
   const HomeFoldersDisplayWidget({
     super.key,
     required this.combinedData,
+    required this.onDeleteCallback,
   });
 
   @override
@@ -32,8 +34,6 @@ class _HomeFoldersDisplayWidget extends State<HomeFoldersDisplayWidget> {
     setState(() {_combinedData.folders!.add(folder);});
   }
 
-  // TODO: fix Update while staying in create folder view or do Navigation.pop?
-
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
@@ -55,6 +55,7 @@ class _HomeFoldersDisplayWidget extends State<HomeFoldersDisplayWidget> {
           key: UniqueKey(),
           folders: _combinedData.folders!,
           credentials: _combinedData.credentials!,
+          onDeleteCallback: widget.onDeleteCallback,
         ),
       ],
     );

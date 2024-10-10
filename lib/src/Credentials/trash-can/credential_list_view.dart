@@ -23,12 +23,10 @@ class _CredentialTrashListWidget extends State<CredentialTrashListWidget> {
   late List<Credential> credentialList;
 
   void restoreCredential(Credential credential) {
-    print("Restore");
     setState(() {
       credentials.restore(credential.uuid);
       credentialList = credentials.deletedList.values.toList();
     });
-    print(credentials.deletedList);
   }
 
   void deleteForever(Credential credential) {

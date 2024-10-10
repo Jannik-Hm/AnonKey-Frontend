@@ -97,7 +97,6 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     }
 
     Future<bool> save() async {
-      print(newFolderUUID);
       Credential temp;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? url = prefs.getString('url');
@@ -115,7 +114,6 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             clearNote: note.text,
             folderUuid: newFolderUUID,
           );
-          print(temp.updateAPICredentialRequestBody());
           await api.credentialsUpdatePut(temp.updateAPICredentialRequestBody());
         } else {
           UUIDApi uuidApi = UUIDApi(apiClient);
@@ -148,7 +146,6 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
 
     Future<bool> delete() async {
       if (_credential != null) {
-        print(_credential!.uuid);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? url = prefs.getString('url');
         Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
@@ -179,7 +176,6 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                   Expanded(
                     child: TextButton(
                       onPressed: () {
-                        print("Abort");
                         Navigator.of(context).pop();
                       },
                       style: TextButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
@@ -194,7 +190,6 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                       onPressed: () {
                         delete().then(
                           (value) {
-                            print("Confirm");
                             if (context.mounted) {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();

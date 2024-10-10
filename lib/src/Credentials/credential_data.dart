@@ -2,8 +2,7 @@ import 'package:anonkey_frontend/Utility/cryptography.dart';
 import 'package:anonkey_frontend/api/lib/api.dart' as api;
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 
-//TODO: Error Handling if Master Password or Salt is incorrect
-//TODO: Save encryptedPass as well to minimize AES runs by checking before de-/encrypting?
+//TODO: Error Handling if Master Password or Salt is incorrect -> Notify User -> Can only happen when manually changing things via API
 
 class Credential {
   final String uuid;
@@ -258,11 +257,6 @@ class Credential {
     final usernameSalt = Cryptography.createCryptoRandomString(16);
     final displayNameSalt = Cryptography.createCryptoRandomString(16);
     final noteSalt = Cryptography.createCryptoRandomString(16);
-    print(passwordSalt);
-    Cryptography.getKDFBase64(masterPassword: masterPassword, salt: uuid).then(print);
-    String tempString = await Cryptography.encryptString(masterPassword: masterPassword, kdfSalt: uuid, clearString: clearPassword, encryptedSalt: passwordSalt);
-    print(tempString);
-    Cryptography.getClearString(masterPassword: masterPassword, kdfSalt: uuid, encryptedString: tempString /* "0y9P8H+AzqfAQQuLGB/MhQ==" */, encryptedSalt: passwordSalt /* "IU0e-CSGD6QK7g==" */).then(print);
     return Credential(
       uuid: uuid,
       folderUuid: folderUuid,
@@ -336,7 +330,6 @@ class Credential {
     this.folderUuid = folderUuid;
     //
     if (this._encryptedWebsiteUrl != encryptedWebsiteUrl && this._websiteUrlSalt != websiteUrlSalt) {
-      print("updated URL");
       this._clearWebsiteUrl = await Cryptography.getClearString(
         masterPassword: masterPassword,
         kdfSalt: uuid,
@@ -348,7 +341,6 @@ class Credential {
     }
     //
     if (this._encryptedUsername != encryptedUsername && this._usernameSalt != usernameSalt) {
-      print("updated Username");
       this._clearUsername = await Cryptography.getClearString(
         masterPassword: masterPassword,
         kdfSalt: uuid,
@@ -360,7 +352,6 @@ class Credential {
     }
     //
     if (this._encryptedPassword != encryptedPassword && this._passwordSalt != passwordSalt) {
-      print("updated Password");
       this._clearPassword = await Cryptography.getClearString(
         masterPassword: masterPassword,
         kdfSalt: uuid,
@@ -372,7 +363,6 @@ class Credential {
     }
     //
     if (this._encryptedDisplayName != encryptedDisplayName && this._displayNameSalt != displayNameSalt) {
-      print("updated Display Name");
       this._clearDisplayName = await Cryptography.getClearString(
         masterPassword: masterPassword,
         kdfSalt: uuid,
@@ -384,7 +374,6 @@ class Credential {
     }
     //
     if (this._encryptedNote != encryptedNote && this._noteSalt != noteSalt) {
-      print("updated Note");
       this._clearNote = await Cryptography.getClearString(
         masterPassword: masterPassword,
         kdfSalt: uuid,
@@ -415,7 +404,6 @@ class Credential {
     this.folderUuid = folderUuid;
     //
     if (this._clearWebsiteUrl != clearWebsiteUrl) {
-      print("updated URL");
       this._clearWebsiteUrl = clearWebsiteUrl;
       this._encryptedWebsiteUrl = await Cryptography.encryptString(
         masterPassword: masterPassword,
@@ -426,7 +414,6 @@ class Credential {
     }
     //
     if (this._clearUsername != clearUsername) {
-      print("updated Username");
       this._clearUsername = clearUsername;
       this._encryptedUsername = await Cryptography.encryptString(
         masterPassword: masterPassword,
@@ -437,7 +424,6 @@ class Credential {
     }
     //
     if (this._clearPassword != clearPassword) {
-      print("updated Password");
       this._clearPassword = clearPassword;
       this._encryptedPassword = await Cryptography.encryptString(
         masterPassword: masterPassword,
@@ -448,7 +434,6 @@ class Credential {
     }
     //
     if (this._clearDisplayName != clearDisplayName) {
-      print("updated Display Name");
       this._clearDisplayName = clearDisplayName;
       this._encryptedDisplayName = await Cryptography.encryptString(
         masterPassword: masterPassword,
@@ -459,7 +444,6 @@ class Credential {
     }
     //
     if (this._clearNote != clearNote) {
-      print("updated Note");
       this._clearNote = clearNote;
       this._encryptedNote = await Cryptography.encryptString(
         masterPassword: masterPassword,
@@ -470,7 +454,6 @@ class Credential {
     }
     //
     this._changedTimeStamp = (changedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(changedTimeStamp);
-    print(this);
     return this;
   }
 

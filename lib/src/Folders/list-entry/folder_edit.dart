@@ -13,7 +13,7 @@ class FolderEditWidget extends StatefulWidget {
   final Folder? folder;
   final void Function({required int codePoint})? iconCallback;
   final Function({required Folder folderData})? onSaveCallback;
-  final Function(String uuid)? onDeleteCallback;
+  final Function({required String uuid, required bool recursive})? onDeleteCallback;
   final Function()? onAbortCallback;
 
   const FolderEditWidget({
@@ -107,7 +107,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
         FoldersApi api = FoldersApi(apiClient);
         await api.foldersDeleteDelete(_folder!.uuid!, recursive).then((value) {});
       }
-      if (widget.onDeleteCallback != null) widget.onDeleteCallback!(_folder!.uuid!);
+      if (widget.onDeleteCallback != null) widget.onDeleteCallback!(uuid: _folder!.uuid!, recursive: recursive);
       return true;
     }
 
@@ -127,7 +127,6 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                   Expanded(
                     child: TextButton(
                       onPressed: () {
-                        print("Abort");
                         Navigator.of(context).pop();
                       },
                       style: TextButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
@@ -142,7 +141,6 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                       onPressed: () {
                         delete(true).then(
                           (value) {
-                            print("Delete with Credentials");
                             Navigator.of(context).pop();
                             Navigator.of(context).pop();
                           },
@@ -160,7 +158,6 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                       onPressed: () {
                         delete(false).then(
                           (value) {
-                            print("Delete, keep Credentials");
                             Navigator.of(context).pop();
                             Navigator.of(context).pop();
                           },

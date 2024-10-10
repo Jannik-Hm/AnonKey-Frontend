@@ -128,9 +128,9 @@ class CredentialList {
   }
 
   Future<CredentialList> updateFromAPI({required api.CredentialsGetAllResponseBody credentials, required String masterPassword}) async {
-    CredentialList data = this;
+    CredentialList data = CredentialList._();
     for (var credential in credentials.credentials!) {
-      Credential? origin = data.byIDList[credential.uuid!];
+      Credential? origin = this.byIDList[credential.uuid!];
       Credential temp;
       if (origin != null) {
         temp = await origin.updateFromApi(
@@ -168,7 +168,7 @@ class CredentialList {
             changedTimeStamp: credential.changedTimestamp,
             deletedTimeStamp: credential.deletedTimestamp);
       }
-      data.updateFromLocalObject(credential: temp);
+      data.add(temp);
     }
     return data;
   }

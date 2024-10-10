@@ -12,7 +12,7 @@ class FolderEntry extends StatefulWidget {
   final Folder folder;
   final CredentialList credentials;
   final FolderList? availableFolders;
-  final Function(String uuid)? onDeleteCallback;
+  final Function({required String uuid, required bool recursive})? onDeleteCallback;
 
   const FolderEntry({
     super.key,
@@ -104,18 +104,3 @@ class _FolderEntry extends State<FolderEntry> {
     );
   }
 }
-
-//  TODO: add button for creation of new Folders
-//  with action:
-/*
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => FolderEditWidget(
-              onSaveCallback: ({required folderData}) {
-                //TODO: do something with created folderData
-              },
-            ),
-          ),
-        )
-*/

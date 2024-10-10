@@ -28,8 +28,6 @@ class _HomeCredentialsDisplayWidget extends State<HomeCredentialsDisplayWidget> 
     selectedValue = widget.preselectedValue; */
   }
 
-  //TODO: setState() callback like Folder Creation
-
   void addToCredentials(Credential credential) {
     setState(() {_combinedData.credentials!.add(credential);});
   }
