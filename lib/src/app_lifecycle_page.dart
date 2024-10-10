@@ -31,7 +31,7 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
-      context.replace('/splash');
+      context.go("/splash");
     }
     if (state == AppLifecycleState.paused) {
       await AuthService.softLogout();
