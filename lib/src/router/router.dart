@@ -1,11 +1,11 @@
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
+import 'package:anonkey_frontend/src/Auth/splash_screen_view.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
-/* import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
-import 'package:anonkey_frontend/src/Credentials/list-entry/credential_detail_view.dart'; */
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Folders/folder_view.dart';
 import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
+import 'package:anonkey_frontend/src/app_lifecycle_page.dart';
 import 'package:anonkey_frontend/src/sample_feature/sample_item_details_view.dart';
 import 'package:anonkey_frontend/src/sample_feature/sample_item_list_view.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
@@ -13,8 +13,8 @@ import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:anonkey_frontend/src/settings/settings_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-
 import '../exception/auth_exception.dart';
 
 class AppRouter {
@@ -31,7 +31,8 @@ class AppRouter {
         GoRoute(
           name: "home",
           path: '/',
-          builder: (context, state) => const SampleItemListView(),
+          builder: (context, state) =>
+              const AppLifecyclePage(child: SampleItemListView()),
         ),
         GoRoute(
           name: "login",
@@ -42,6 +43,10 @@ class AppRouter {
           name: "register",
           path: "/register",
           builder: (context, state) => const RegisterView(),
+        ),
+        GoRoute(
+          path: "/splash",
+          builder: (context, state) => const SplashScreenView(),
         ),
         GoRoute(
           name: "items",
@@ -57,8 +62,8 @@ class AppRouter {
         GoRoute(
           path: '/folder',
           builder: (context, state) {
-            final data =
-                state.extra as CredentialListWidgetData; // Access the passed object
+            final data = state.extra
+                as CredentialListWidgetData; // Access the passed object
             return FolderView(
               data: data,
             );
@@ -88,8 +93,21 @@ class AppRouter {
           isAuthenticated = false;
         }
 
-        if (!isAuthenticated) {
-          return state.fullPath == '/login' ? "/login" : '/register';
+        const storage = FlutterSecureStorage();
+
+        print(await AuthService.isSoftLogout());
+        print(!isAuthenticated);
+
+        if (!isAuthenticated || await AuthService.isSoftLogout()) {
+          if (await storage.containsKey(key: "password")) {
+            return "/splash";
+          } else if (state.fullPath == "/login") {
+            return "/login";
+          } else if (state.fullPath == "/register") {
+            return "/register";
+          } else {
+            return "/login";
+          }
         } else {
           return null; // return "null" to display the intended route without redirecting
         }

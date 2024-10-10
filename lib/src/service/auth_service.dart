@@ -117,6 +117,7 @@ class AuthService {
     await storage.write(key: "token", value: token);
     await storage.write(key: "password", value: password);
     await storage.write(key: "username", value: username);
+    await storage.write(key: "softLogout", value: false.toString());
   }
 
   static Future<void> deleteAuthenticationCredentials() async {
@@ -124,5 +125,26 @@ class AuthService {
     await storage.delete(key: "token");
     await storage.delete(key: "password");
     await storage.delete(key: "username");
+  }
+
+  /// softLogout is used to indicate that the user has logged out without deleting the authentication data.
+  /// This is useful to determine if the user should be redirected to the login page.
+  static Future<void> softLogout() async {
+    const storage = FlutterSecureStorage();
+    await storage.write(key: "softLogout", value: true.toString());
+  }
+
+  /// Checks if a soft logout is active.
+  /// \returns `true` if a soft logout is active, `false` otherwise.
+  ///
+  /// A soft logout is active if the user has logged out without deleting the authentication data.
+  /// This is useful to determine if the user should be redirected to the login page.
+  static Future<bool> isSoftLogout() async {
+    const storage = FlutterSecureStorage();
+    if (!(await storage.containsKey(key: "softLogout"))) {
+      return false;
+    }
+    String? softLogout = await storage.read(key: "softLogout");
+    return softLogout == "true";
   }
 }
