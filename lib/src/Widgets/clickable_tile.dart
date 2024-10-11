@@ -46,6 +46,7 @@ class _ClickableTile extends State<ClickableTile> {
       child: InkWell(
         onTap: widget.onTap,
         child: ListTile(
+          mouseCursor: SystemMouseCursors.click,
           leading: _leading,
           title: _title,
           subtitle: _subTitle,
