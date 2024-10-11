@@ -96,8 +96,8 @@ class AppRouter {
 
         const storage = FlutterSecureStorage();
 
-        print(await AuthService.isSoftLogout());
-        print(!isAuthenticated);
+        //print(await AuthService.isSoftLogout());
+        //print(!isAuthenticated);
 
         if (!isAuthenticated || await AuthService.isSoftLogout()) {
           if (await storage.containsKey(key: "password")) {
