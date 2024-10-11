@@ -33,20 +33,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseBody'
-  /authentication/logout:
-    delete:
-      tags:
-        - Authentication
-      summary: Invalidates an access token for user logout.
-      responses:
-        '200':
-          description: OK
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponseBody'
   /authentication/changePassword:
     put:
       tags:
@@ -454,6 +440,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UsersGetResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
         '404':
           description: Not Found
           content:
@@ -825,11 +817,6 @@ components:
         folderUuid:
           type: string
           description: "The UUID of the folder the credential is in.\r\nUse NULL for no folder."
-          nullable: true
-        deletedTimestamp:
-          type: integer
-          description: "The DeletedTimestamp of the credential in order to be able to recover a credential.\r\nUse NULL in oder to recover after deleting."
-          format: int64
           nullable: true
       additionalProperties: false
       description: The credential inside a credential update request.
