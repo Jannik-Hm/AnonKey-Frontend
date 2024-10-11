@@ -3,6 +3,10 @@
   "@appTitle": {
     "description": "The title of the application"
   },
+  "login": "Log In",
+  "@login": {
+    "description": "Login button text"
+  },
   "register": "Register",
   "@register": {
     "description": "Register button text"

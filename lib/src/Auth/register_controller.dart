@@ -1,4 +1,7 @@
+import 'package:anonkey_frontend/Utility/notification_popup.dart';
+import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
+import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -7,7 +10,6 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../service/auth_service.dart';
-import 'login_input.dart';
 
 class RegisterControllerState extends State<RegisterView> {
   final url = TextEditingController();
@@ -30,70 +32,78 @@ class RegisterControllerState extends State<RegisterView> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Image(
-                image: AssetImage('assets/images/Logo.png'),
-                width: 200,
-                height: 200),
+            const Image(image: AssetImage('assets/images/Logo.png'), width: 200, height: 200),
             const SizedBox(height: 16),
             Text(
               AppLocalizations.of(context)!.register,
               style: const TextStyle(fontSize: 24),
             ),
             Form(
-                key: _loginFormKey,
-                child: Column(
-                  children: [
-                    LoginInput(
-                        controller: url,
-                        label: "URL",
-                        obscureText: false,
-                        validator: (kDebugMode)
-                            ? null
-                            : ValidationBuilder().url().build(),
-                        focus: _urlFocus),
-                    const SizedBox(height: 16),
-                    LoginInput(
-                        controller: username,
-                        label: "Username",
-                        obscureText: false,
-                        validator: ValidationBuilder()
-                            .required()
-                            .minLength(5)
-                            .maxLength(128)
-                            .build(),
-                        focus: _usernameFocus),
-                    const SizedBox(height: 16),
-                    LoginInput(
-                        controller: displayName,
-                        label: "Display Name",
-                        obscureText: false,
-                        validator: ValidationBuilder().required().build(),
-                        focus: _displayName),
-                    const SizedBox(height: 16),
-                    LoginInput(
+              key: _loginFormKey,
+              child: Column(
+                children: [
+                  const SizedBox(height: 16),
+                  FractionallySizedBox(
+                    widthFactor: 0.6,
+                    child: EntryInput(
+                      controller: url,
+                      label: "URL",
+                      obscureText: false,
+                      focus: _urlFocus,
+                      validator: (kDebugMode) ? null : ValidationBuilder().url().build(),
+                      onEnterPressed: _usernameFocus.requestFocus,
+                    ),
+                  ),
+                  //LoginInput(controller: url, label: "URL", obscureText: false, validator: (kDebugMode) ? null : ValidationBuilder().url().build(), focus: _urlFocus),
+                  const SizedBox(height: 16),
+                  FractionallySizedBox(
+                    widthFactor: 0.6,
+                    child: EntryInput(
+                      controller: username,
+                      label: "Username",
+                      obscureText: false,
+                      focus: _usernameFocus,
+                      validator: ValidationBuilder().required().minLength(5).maxLength(128).build(),
+                      onEnterPressed: _displayName.requestFocus,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  FractionallySizedBox(
+                    widthFactor: 0.6,
+                    child: EntryInput(
+                      controller: displayName,
+                      label: "Display Name",
+                      obscureText: false,
+                      focus: _displayName,
+                      validator: ValidationBuilder().required().build(),
+                      onEnterPressed: _passwordFocus.requestFocus,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  FractionallySizedBox(
+                    widthFactor: 0.6,
+                    child: EntryInput(
                       controller: password,
                       label: "Password",
                       obscureText: true,
-                      validator:
-                          ValidationBuilder().required().minLength(5).build(),
-                      onEnterPressed: () => _register(),
                       focus: _passwordFocus,
+                      validator: ValidationBuilder().required().minLength(5).build(),
+                      onEnterPressed: () => _register,
                     ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          foregroundColor:
-                              Theme.of(context).colorScheme.onPrimary),
-                      onPressed: () => _register(),
-                      child: const Text('Fly me to the moon'),
-                    ),
-                    TextButton(
-                      onPressed: () => context.replaceNamed("login"),
-                      child: Text(AppLocalizations.of(context)!.changeToLogin),
-                    ),
-                  ],
-                ))
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextButton(
+              style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary, foregroundColor: Theme.of(context).colorScheme.onPrimary),
+              onPressed: () => _register(),
+              child: const Text('Fly me to the moon'),
+            ),
+            TextButton(
+              onPressed: () => context.replaceNamed("login"),
+              child: Text(AppLocalizations.of(context)!.changeToLogin),
+            ),
           ],
         ),
       ),
@@ -101,14 +111,19 @@ class RegisterControllerState extends State<RegisterView> {
   }
 
   _register() async {
-    if (_loginFormKey.currentState!.validate()) {
-      bool isRegistered = await AuthService.register(
-          username.text, password.text, displayName.text, url.text);
-      if (isRegistered) {
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('url', url.text);
-        if (!mounted) return;
-        Navigator.pushNamed(context, '/home');
+    try {
+      if (_loginFormKey.currentState!.validate()) {
+        bool isRegistered = await AuthService.register(username.text, password.text, displayName.text, url.text);
+        if (isRegistered) {
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString('url', url.text);
+          if (!mounted) return;
+          Navigator.pushNamed(context, '/home');
+        }
+      }
+    } on ApiException catch (e) {
+      if (context.mounted) {
+        NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
       }
     }
   }
