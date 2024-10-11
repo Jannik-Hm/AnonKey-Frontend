@@ -8,7 +8,6 @@ import 'package:anonkey_frontend/src/Folders/folder_view.dart';
 import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
 import 'package:anonkey_frontend/src/home/home.dart';
 import 'package:anonkey_frontend/src/sample_feature/sample_item_details_view.dart';
-import 'package:anonkey_frontend/src/sample_feature/sample_item_list_view.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:anonkey_frontend/src/settings/settings_view.dart';
