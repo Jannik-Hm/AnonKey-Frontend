@@ -1,10 +1,13 @@
-import 'package:anonkey_frontend/src/Auth/login_input.dart';
+import 'package:anonkey_frontend/Utility/notification_popup.dart';
+import 'package:anonkey_frontend/api/lib/api.dart';
+import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SplashScreenView extends StatefulWidget {
   const SplashScreenView({super.key});
@@ -32,12 +35,16 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                 key: _loginFormKey,
                 child: Column(
                   children: [
-                    LoginInput(
-                      controller: password,
-                      label: "Password",
-                      obscureText: true,
-                      validator: ValidationBuilder().required().build(),
-                      focus: _passwordFocus,
+                    FractionallySizedBox(
+                      widthFactor: 0.6,
+                      child: EntryInput(
+                        controller: password,
+                        label: AppLocalizations.of(context)!.password,
+                        obscureText: true,
+                        focus: _passwordFocus,
+                        validator: ValidationBuilder().required().build(),
+                        onEnterPressed: () => _loginWithoutUsername(context),
+                      ),
                     ),
                     const SizedBox(height: 16),
                   ],
@@ -71,11 +78,17 @@ class _SplashScreenViewState extends State<SplashScreenView> {
             }
           }
         } else {
-          print("Login failed");
+          if (context.mounted) {
+            NotificationPopup.popupErrorMessage(context: context, message: "Login failed");
+          }
         }
       } on NoCredentialException {
         if (context.mounted) {
           context.goNamed("login");
+        }
+      } on ApiException catch (e) {
+        if (context.mounted) {
+          NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
         }
       }
     }
