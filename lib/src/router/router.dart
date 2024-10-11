@@ -25,7 +25,7 @@ class AppRouter {
 
   GoRouter getRouter() {
     return GoRouter(
-      initialLocation: '/',
+      initialLocation: '/home',
       routes: [
         /* GoRoute(
           path: '/:site',
@@ -36,7 +36,7 @@ class AppRouter {
         ), */
         GoRoute(
           name: "home",
-          path: '/',
+          path: '/home',
           builder: (context, state) => AppLifecyclePage(
             child: HomeScreen(
               controller: settingsController,
