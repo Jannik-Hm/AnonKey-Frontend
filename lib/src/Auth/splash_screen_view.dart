@@ -26,28 +26,27 @@ class _SplashScreenViewState extends State<SplashScreenView> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Image(
-                image: AssetImage('assets/images/Logo.png'),
-                width: 200,
-                height: 200),
+            const Image(image: AssetImage('assets/images/Logo.png'), width: 200, height: 200),
             const SizedBox(height: 16),
             Form(
                 key: _loginFormKey,
                 child: Column(
                   children: [
                     LoginInput(
-                        controller: password,
-                        label: "Password",
-                        obscureText: true,
-                        validator: ValidationBuilder().required().build(),
-                        focus: _passwordFocus),
+                      controller: password,
+                      label: "Password",
+                      obscureText: true,
+                      validator: ValidationBuilder().required().build(),
+                      focus: _passwordFocus,
+                    ),
                     const SizedBox(height: 16),
                   ],
                 )),
             TextButton(
               style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              ),
               onPressed: () => _loginWithoutUsername(context),
               child: const Text('Fly me to the moon'),
             ),
@@ -61,21 +60,23 @@ class _SplashScreenViewState extends State<SplashScreenView> {
     if (_loginFormKey.currentState!.validate()) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       try {
-        final Map<String, String> credentials =
-            await AuthService.getAuthenticationCredentials();
-        bool req = await AuthService.login(credentials["username"]!,
-            password.text, prefs.getString("url") ?? "");
+        final Map<String, String> credentials = await AuthService.getAuthenticationCredentials();
+        bool req = await AuthService.login(credentials["username"]!, password.text, prefs.getString("url") ?? "");
         if (req) {
-          if (context.canPop()) {
-            context.pop();
-          } else {
-            context.go("/home");
+          if (context.mounted) {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.goNamed("home");
+            }
           }
         } else {
           print("Login failed");
         }
       } on NoCredentialException {
-        context.go("/login");
+        if (context.mounted) {
+          context.goNamed("login");
+        }
       }
     }
   }
