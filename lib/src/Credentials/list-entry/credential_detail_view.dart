@@ -60,7 +60,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     _enabled = (widget.credential == null);
     _obscurePassword = !(widget.credential == null);
     _credential = widget.credential;
-    newFolderUUID = _credential?.folderUuid ?? "";
+    newFolderUUID = (_credential == null) ? (widget.currentFolderUuid ?? "") : (_credential?.folderUuid ?? "");
   }
 
   @override
