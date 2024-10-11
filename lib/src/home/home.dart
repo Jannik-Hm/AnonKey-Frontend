@@ -2,6 +2,7 @@ import 'package:anonkey_frontend/Utility/combined_future_data.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
 import 'package:anonkey_frontend/src/Credentials/trash-can/credential_list_view.dart';
 import 'package:anonkey_frontend/src/Folders/folder_list.dart';
+import 'package:anonkey_frontend/src/Widgets/clickable_tile.dart';
 import 'package:anonkey_frontend/src/Widgets/home_all_credentials_display.dart';
 import 'package:anonkey_frontend/src/Widgets/home_folders_display.dart';
 import 'package:anonkey_frontend/src/Widgets/refresh_button.dart';
@@ -131,37 +132,30 @@ class _HomeScreenState extends State<HomeScreen> {
                   List<Widget> children;
                   if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
                     children = <Widget>[
-                      Card(
-                        margin: const EdgeInsets.all(8.0),
-                        elevation: 3,
-                        color: theme.colorScheme.tertiary,
-                        child: InkWell(
-                          onTap: () => {
-                            setState(
-                              () {
-                                currentPageIndex = 1;
-                              },
-                            )
-                          },
-                          child: ListTile(
-                            leading: Icon(
-                              Icons.shield,
-                              color: theme.colorScheme.onPrimary,
-                            ),
-                            title: Text(
-                              'Total Passwords',
-                              style: TextStyle(color: theme.colorScheme.onPrimary),
-                            ),
-                            subtitle: Text(
-                              'You have ${snapshot.data!.credentials?.byIDList.length ?? 0} password(s) saved',
-                              style: TextStyle(color: theme.colorScheme.onPrimary),
-                            ),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              color: theme.colorScheme.onPrimary,
-                            ),
-                          ),
+                      ClickableTile(
+                        leading: Icon(
+                          Icons.shield,
+                          color: theme.colorScheme.onPrimary,
                         ),
+                        title: Text(
+                          'Total Passwords',
+                          style: TextStyle(color: theme.colorScheme.onPrimary),
+                        ),
+                        subTitle: Text(
+                          'You have ${snapshot.data!.credentials?.byIDList.length ?? 0} password(s) saved',
+                          style: TextStyle(color: theme.colorScheme.onPrimary),
+                        ),
+                        trailing: Icon(
+                          Icons.arrow_forward_ios,
+                          color: theme.colorScheme.onPrimary,
+                        ),
+                        onTap: () => {
+                          setState(
+                            () {
+                              currentPageIndex = 1;
+                            },
+                          )
+                        },
                       ),
                       /* Card(
                 margin: const EdgeInsets.all(8.0),
@@ -176,37 +170,30 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ), */
                       //const SizedBox(height: 0),
-                      Card(
-                        margin: const EdgeInsets.all(8.0),
-                        elevation: 3,
-                        color: theme.colorScheme.tertiary,
-                        child: InkWell(
-                          onTap: () => {
+                      ClickableTile(
+                        leading: Icon(
+                          Icons.delete,
+                          color: theme.colorScheme.onPrimary,
+                        ),
+                        title: Text(
+                          'Deleted Passwords',
+                          style: TextStyle(color: theme.colorScheme.onPrimary),
+                        ),
+                        subTitle: Text(
+                          'You have ${snapshot.data!.credentials?.deletedList.length ?? 0} deleted password(s)',
+                          style: TextStyle(color: theme.colorScheme.onPrimary),
+                        ),
+                        trailing: Icon(
+                          Icons.arrow_forward_ios,
+                          color: theme.colorScheme.onPrimary,
+                        ),
+                        onTap: () => {
                             setState(
                               () {
                                 currentPageIndex = 2;
                               },
                             )
                           },
-                          child: ListTile(
-                            leading: Icon(
-                              Icons.delete,
-                              color: theme.colorScheme.onPrimary,
-                            ),
-                            title: Text(
-                              'Deleted Passwords',
-                              style: TextStyle(color: theme.colorScheme.onPrimary),
-                            ),
-                            subtitle: Text(
-                              'You have ${snapshot.data!.credentials?.deletedList.length ?? 0} deleted password(s)',
-                              style: TextStyle(color: theme.colorScheme.onPrimary),
-                            ),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              color: theme.colorScheme.onPrimary,
-                            ),
-                          ),
-                        ),
                       ),
                       const SizedBox(height: 20),
                       /* CredentialListWidget(
@@ -425,7 +412,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 800.0, // Set a valid height
               child: RepaintBoundary(
-                child: SettingsView(controller: _controller), // Replace with your actual widget
+                child: SettingsView(controller: _controller),
               ),
             )
           ],

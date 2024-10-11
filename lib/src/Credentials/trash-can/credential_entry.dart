@@ -1,6 +1,7 @@
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Credentials/list-entry/logo.dart';
+import 'package:anonkey_frontend/src/Widgets/clickable_tile.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
@@ -65,7 +66,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
                     onPressed: () {
                       restore().then((value) {
                         widget.onRestoreCallback(_credential);
-                        if(context.mounted){
+                        if (context.mounted) {
                           Navigator.of(context).pop();
                         }
                       });
@@ -82,7 +83,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
                     onPressed: () {
                       deleteForever().then((value) {
                         widget.onDeleteForeverCallback(_credential);
-                        if(context.mounted){
+                        if (context.mounted) {
                           Navigator.of(context).pop();
                         }
                       });
@@ -108,6 +109,34 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+    return ClickableTile(
+      onTap: () => {
+        showDeleteConfirmDialog(_credential),
+      },
+      leading: SizedBox(
+        width: 40.0,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 40.0, maxHeight: 40.0),
+          child: getNetworkLogoFromUrl(_credential.getClearWebsiteUrl()),
+        ),
+      ),
+      title: Text(
+        _credential.getClearDisplayName(),
+        style: TextStyle(
+          fontSize: 20.0,
+          color: theme.colorScheme.onPrimary,
+        ),
+      ),
+      subTitle: Text(
+        _credential.getClearUsername(),
+        style: TextStyle(
+          fontSize: 15.0,
+          color: theme.colorScheme.onPrimary,
+        ),
+      ),
+    );
+
     return InkWell(
       onTap: () => {
         showDeleteConfirmDialog(_credential),

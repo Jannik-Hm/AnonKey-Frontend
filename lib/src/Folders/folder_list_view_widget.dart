@@ -50,6 +50,11 @@ class _FolderListWidget extends State<FolderListWidget> {
           widget.onDeleteCallback(recursive);
         });
       },
+      onSaveCallback: ({required folderData}) {
+        setState(() {
+          widget.folders.updateFromLocalObject(folder: folderData);
+        });
+      },
     );
   }
 
