@@ -23,15 +23,10 @@ class CreateCredentialWidget extends StatefulWidget {
 }
 
 class _CreateCredentialWidget extends State<CreateCredentialWidget> {
-  bool created = false;
-
   Future<void> onSaveCallback(Credential credential) async {
-    if (!created) {
-      widget.addToCredentials(credential);
-      created = true;
-      if (context.mounted) {
-        Navigator.of(context).pop();
-      }
+    widget.addToCredentials(credential);
+    if (context.mounted) {
+      Navigator.of(context).pop();
     }
   }
 
