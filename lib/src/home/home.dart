@@ -118,46 +118,47 @@ class _HomeScreenState extends State<HomeScreen> {
         /// Home
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Welcome to AnonKey',
-                style: theme.textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 20),
-              FutureBuilder<CombinedListData>(
-                future: combinedData,
-                builder: (context, snapshot) {
-                  List<Widget> children;
-                  if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
-                    children = <Widget>[
-                      ClickableTile(
-                        leading: Icon(
-                          Icons.shield,
-                          color: theme.colorScheme.onPrimary,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Welcome to AnonKey',
+                  style: theme.textTheme.headlineMedium,
+                ),
+                const SizedBox(height: 20),
+                FutureBuilder<CombinedListData>(
+                  future: combinedData,
+                  builder: (context, snapshot) {
+                    List<Widget> children;
+                    if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                      children = <Widget>[
+                        ClickableTile(
+                          leading: Icon(
+                            Icons.shield,
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                          title: Text(
+                            'Total Passwords',
+                            style: TextStyle(color: theme.colorScheme.onPrimary),
+                          ),
+                          subTitle: Text(
+                            'You have ${snapshot.data!.credentials?.byIDList.length ?? 0} password(s) saved',
+                            style: TextStyle(color: theme.colorScheme.onPrimary),
+                          ),
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                          onTap: () => {
+                            setState(
+                              () {
+                                currentPageIndex = 1;
+                              },
+                            )
+                          },
                         ),
-                        title: Text(
-                          'Total Passwords',
-                          style: TextStyle(color: theme.colorScheme.onPrimary),
-                        ),
-                        subTitle: Text(
-                          'You have ${snapshot.data!.credentials?.byIDList.length ?? 0} password(s) saved',
-                          style: TextStyle(color: theme.colorScheme.onPrimary),
-                        ),
-                        trailing: Icon(
-                          Icons.arrow_forward_ios,
-                          color: theme.colorScheme.onPrimary,
-                        ),
-                        onTap: () => {
-                          setState(
-                            () {
-                              currentPageIndex = 1;
-                            },
-                          )
-                        },
-                      ),
-                      /* Card(
+                        /* Card(
                 margin: const EdgeInsets.all(8.0),
                 elevation: 3,
                 child: ListTile(
@@ -169,84 +170,84 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: theme.colorScheme.primary),
                 ),
               ), */
-                      //const SizedBox(height: 0),
-                      ClickableTile(
-                        leading: Icon(
-                          Icons.delete,
-                          color: theme.colorScheme.onPrimary,
-                        ),
-                        title: Text(
-                          'Deleted Passwords',
-                          style: TextStyle(color: theme.colorScheme.onPrimary),
-                        ),
-                        subTitle: Text(
-                          'You have ${snapshot.data!.credentials?.deletedList.length ?? 0} deleted password(s)',
-                          style: TextStyle(color: theme.colorScheme.onPrimary),
-                        ),
-                        trailing: Icon(
-                          Icons.arrow_forward_ios,
-                          color: theme.colorScheme.onPrimary,
-                        ),
-                        onTap: () => {
+                        //const SizedBox(height: 0),
+                        ClickableTile(
+                          leading: Icon(
+                            Icons.delete,
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                          title: Text(
+                            'Deleted Passwords',
+                            style: TextStyle(color: theme.colorScheme.onPrimary),
+                          ),
+                          subTitle: Text(
+                            'You have ${snapshot.data!.credentials?.deletedList.length ?? 0} deleted password(s)',
+                            style: TextStyle(color: theme.colorScheme.onPrimary),
+                          ),
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            color: theme.colorScheme.onPrimary,
+                          ),
+                          onTap: () => {
                             setState(
                               () {
                                 currentPageIndex = 2;
                               },
                             )
                           },
-                      ),
-                      const SizedBox(height: 20),
-                      /* CredentialListWidget(
+                        ),
+                        const SizedBox(height: 20),
+                        /* CredentialListWidget(
                         credentials: snapshot.data!.credentials!,
                         availableFolders: snapshot.data!.folders,
                         currentFolderUuid: "",
                       ), */
-                      HomeFoldersDisplayWidget(
-                        combinedData: snapshot.data!,
-                        onDeleteCallback: onFolderDelete,
-                      ),
-                    ];
-                  } else if (snapshot.hasError) {
-                    children = <Widget>[
-                      Center(
-                        child: Column(
-                          children: [
-                            const Icon(
-                              Icons.error_outline,
-                              color: Colors.red,
-                              size: 60,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 16),
-                              child: Text('Error: ${snapshot.error}'),
-                            ),
-                          ],
+                        HomeFoldersDisplayWidget(
+                          combinedData: snapshot.data!,
+                          onDeleteCallback: onFolderDelete,
                         ),
+                      ];
+                    } else if (snapshot.hasError) {
+                      children = <Widget>[
+                        Center(
+                          child: Column(
+                            children: [
+                              const Icon(
+                                Icons.error_outline,
+                                color: Colors.red,
+                                size: 60,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16),
+                                child: Text('Error: ${snapshot.error}'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ];
+                    } else {
+                      children = const <Widget>[
+                        SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: CircularProgressIndicator(),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 16),
+                          child: Text('Awaiting result...'),
+                        ),
+                      ];
+                    }
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: children,
                       ),
-                    ];
-                  } else {
-                    children = const <Widget>[
-                      SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: CircularProgressIndicator(),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 16),
-                        child: Text('Awaiting result...'),
-                      ),
-                    ];
-                  }
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: children,
-                    ),
-                  );
-                },
-              ),
-              /* Card(
+                    );
+                  },
+                ),
+                /* Card(
                 margin: const EdgeInsets.all(8.0),
                 elevation: 3,
                 child: ListTile(
@@ -276,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   trailing: Icon(Icons.arrow_forward_ios, color: theme.colorScheme.primary),
                 ),
               ), */
-              /* const SizedBox(height: 20),
+                /* const SizedBox(height: 20),
               Text(
                 'Favorites',
                 style: theme.textTheme.headlineSmall,
@@ -293,7 +294,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       Icon(Icons.more_vert, color: theme.colorScheme.primary),
                 ),
               ), */
-            ],
+              ],
+            ),
           ),
         ),
 
