@@ -66,7 +66,11 @@ class _SplashScreenViewState extends State<SplashScreenView> {
         bool req = await AuthService.login(credentials["username"]!,
             password.text, prefs.getString("url") ?? "");
         if (req) {
-          context.pop();
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go("/home");
+          }
         } else {
           print("Login failed");
         }
