@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
@@ -101,63 +102,85 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? url = prefs.getString('url');
       Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
-      if (url != null) {
-        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
-        CredentialsApi api = CredentialsApi(apiClient);
-        if (_credential != null) {
-          temp = await _credential!.updateFromLocal(
-            masterPassword: authdata["password"]!,
-            clearWebsiteUrl: websiteUrl.text,
-            clearUsername: username.text,
-            clearPassword: password.text,
-            clearDisplayName: displayName.text,
-            clearNote: note.text,
-            folderUuid: newFolderUUID,
-          );
-          await api.credentialsUpdatePut(temp.updateAPICredentialRequestBody());
-        } else {
-          UUIDApi uuidApi = UUIDApi(apiClient);
-          String? uuid = await uuidApi.uuidNewGet();
-          temp = await Credential.newEntry(
-            uuid: uuid!,
-            masterPassword: authdata["password"]!,
-            clearWebsiteUrl: websiteUrl.text,
-            clearUsername: username.text,
-            clearPassword: password.text,
-            clearDisplayName: displayName.text,
-            clearNote: note.text,
-            folderUuid: newFolderUUID,
-            createdTimeStamp: DateTime.now().microsecondsSinceEpoch ~/ 1000,
-          );
-          await api.credentialsCreatePost(
-            CredentialsCreateRequestBody(
-              credential: temp.createAPICredential(),
-            ),
-          );
-        }
-        setState(() {
-          _credential = temp;
-        });
-        if (widget.onSaveCallback != null) widget.onSaveCallback!(temp);
-        return true;
-      }
-      return false;
-    }
-
-    Future<bool> delete() async {
-      if (_credential != null) {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        String? url = prefs.getString('url');
-        Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+      try {
         if (url != null) {
           ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
           CredentialsApi api = CredentialsApi(apiClient);
-          await api.credentialsSoftDeletePut(_credential!.uuid);
+          if (_credential != null) {
+            temp = await _credential!.updateFromLocal(
+              masterPassword: authdata["password"]!,
+              clearWebsiteUrl: websiteUrl.text,
+              clearUsername: username.text,
+              clearPassword: password.text,
+              clearDisplayName: displayName.text,
+              clearNote: note.text,
+              folderUuid: newFolderUUID,
+            );
+            await api.credentialsUpdatePut(temp.updateAPICredentialRequestBody());
+          } else {
+            UUIDApi uuidApi = UUIDApi(apiClient);
+            String? uuid = await uuidApi.uuidNewGet();
+            temp = await Credential.newEntry(
+              uuid: uuid!,
+              masterPassword: authdata["password"]!,
+              clearWebsiteUrl: websiteUrl.text,
+              clearUsername: username.text,
+              clearPassword: password.text,
+              clearDisplayName: displayName.text,
+              clearNote: note.text,
+              folderUuid: newFolderUUID,
+              createdTimeStamp: DateTime.now().microsecondsSinceEpoch ~/ 1000,
+            );
+            await api.credentialsCreatePost(
+              CredentialsCreateRequestBody(
+                credential: temp.createAPICredential(),
+              ),
+            );
+          }
+          setState(() {
+            _credential = temp;
+          });
+          if (widget.onSaveCallback != null) widget.onSaveCallback!(temp);
+          return true;
+        } else {
+          if (context.mounted) {
+            NotificationPopup.apiError(context: context);
+          }
+          return false;
         }
-        if (widget.onSoftDeleteCallback != null) widget.onSoftDeleteCallback!(_credential!.uuid);
-        return true;
+      } on ApiException catch (e) {
+        if (context.mounted) {
+          NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+        }
+        return false;
       }
-      return false;
+    }
+
+    Future<bool> delete() async {
+      try {
+        if (_credential != null) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          String? url = prefs.getString('url');
+          Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+          if (url != null) {
+            ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+            CredentialsApi api = CredentialsApi(apiClient);
+            await api.credentialsSoftDeletePut(_credential!.uuid);
+          }
+          if (widget.onSoftDeleteCallback != null) widget.onSoftDeleteCallback!(_credential!.uuid);
+          return true;
+        } else {
+          if (context.mounted) {
+            NotificationPopup.apiError(context: context);
+          }
+          return false;
+        }
+      } on ApiException catch (e) {
+        if (context.mounted) {
+          NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+        }
+        return false;
+      }
     }
 
     showDeleteConfirmDialog(Credential credential) {
@@ -190,7 +213,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                       onPressed: () {
                         delete().then(
                           (value) {
-                            if (context.mounted) {
+                            if (value && context.mounted) {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();
                             }
@@ -221,7 +244,9 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                 onPressed: () => {
                       save().then(
                         (value) {
-                          disableFields();
+                          if (value) {
+                            disableFields();
+                          }
                         },
                       )
                     },

@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Credentials/list-entry/logo.dart';
@@ -26,25 +27,51 @@ class CredentialTrashEntry extends StatefulWidget {
 class _CredentialTrashEntry extends State<CredentialTrashEntry> {
   late Credential _credential;
 
-  Future<void> restore() async {
+  Future<bool> restore() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('url');
     Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
-    if (url != null) {
-      ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
-      CredentialsApi api = CredentialsApi(apiClient);
-      await api.credentialsSoftUndeletePut(_credential.uuid);
+    try {
+      if (url != null) {
+        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        CredentialsApi api = CredentialsApi(apiClient);
+        await api.credentialsSoftUndeletePut(_credential.uuid);
+        return true;
+      } else {
+        if (context.mounted) {
+          NotificationPopup.apiError(context: context);
+        }
+        return false;
+      }
+    } on ApiException catch (e) {
+      if (context.mounted) {
+        NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+      }
+      return false;
     }
   }
 
-  Future<void> deleteForever() async {
+  Future<bool> deleteForever() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('url');
     Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
-    if (url != null) {
-      ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
-      CredentialsApi api = CredentialsApi(apiClient);
-      await api.credentialsDeleteDelete(_credential.uuid);
+    try {
+      if (url != null) {
+        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        CredentialsApi api = CredentialsApi(apiClient);
+        await api.credentialsDeleteDelete(_credential.uuid);
+        return true;
+      } else {
+        if (context.mounted) {
+          NotificationPopup.apiError(context: context);
+        }
+        return false;
+      }
+    } on ApiException catch (e) {
+      if (context.mounted) {
+        NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+      }
+      return false;
     }
   }
 
@@ -65,9 +92,11 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
                   child: TextButton(
                     onPressed: () {
                       restore().then((value) {
-                        widget.onRestoreCallback(_credential);
-                        if (context.mounted) {
-                          Navigator.of(context).pop();
+                        if (value) {
+                          widget.onRestoreCallback(_credential);
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
                         }
                       });
                     },
@@ -82,9 +111,11 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
                   child: TextButton(
                     onPressed: () {
                       deleteForever().then((value) {
-                        widget.onDeleteForeverCallback(_credential);
-                        if (context.mounted) {
-                          Navigator.of(context).pop();
+                        if (value) {
+                          widget.onDeleteForeverCallback(_credential);
+                          if (context.mounted) {
+                            Navigator.of(context).pop();
+                          }
                         }
                       });
                     },
@@ -133,55 +164,6 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         style: TextStyle(
           fontSize: 15.0,
           color: theme.colorScheme.onPrimary,
-        ),
-      ),
-    );
-
-    return InkWell(
-      onTap: () => {
-        showDeleteConfirmDialog(_credential),
-      },
-      child: Ink(
-        padding: const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
-        color: Theme.of(context).colorScheme.tertiary,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween, // Ensure even spacing
-          children: [
-            // Image on the left
-            SizedBox(
-              width: 40.0,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 40.0, maxHeight: 40.0),
-                child: getNetworkLogoFromUrl(_credential.getClearWebsiteUrl()),
-              ),
-            ),
-            const SizedBox(
-              width: 10.0,
-            ),
-            // Vertically stacked texts in the middle
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0), // Add some spacing between the image and text
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
-                  children: [
-                    Text(
-                      _credential.getClearDisplayName(),
-                      style: const TextStyle(
-                        fontSize: 20.0,
-                      ),
-                    ),
-                    Text(
-                      _credential.getClearUsername(),
-                      style: const TextStyle(
-                        fontSize: 15.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

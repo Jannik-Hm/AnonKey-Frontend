@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
@@ -77,37 +78,61 @@ class _FolderEditWidget extends State<FolderEditWidget> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? url = prefs.getString('url');
       Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
-      if (url != null) {
-        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
-        FoldersApi api = FoldersApi(apiClient);
-        if (_folder != null) {
-          _folder!.displayName = displayName.text;
-          if (_iconData != null) {
-            _folder!.setIcon(codePoint: _iconData!.codePoint);
-            if (widget.folder != null && widget.iconCallback != null) {
-              widget.iconCallback!(codePoint: _iconData!.codePoint);
+      try {
+        if (url != null) {
+          ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+          FoldersApi api = FoldersApi(apiClient);
+          if (_folder != null) {
+            _folder!.displayName = displayName.text;
+            if (_iconData != null) {
+              _folder!.setIcon(codePoint: _iconData!.codePoint);
+              if (widget.folder != null && widget.iconCallback != null) {
+                widget.iconCallback!(codePoint: _iconData!.codePoint);
+              }
             }
+            await api.foldersUpdatePut(_folder!.updateFolderBody());
+          } else {
+            await api.foldersCreatePost(FoldersCreateRequestBody(folder: FoldersCreateFolder(icon: _iconData!.codePoint, name: displayName.text))).then((value) {
+              _folder = Folder(displayName: displayName.text, iconData: _iconData!.codePoint, uuid: value!.folderUuid);
+            });
           }
-          await api.foldersUpdatePut(_folder!.updateFolderBody());
+          return true;
         } else {
-          await api.foldersCreatePost(FoldersCreateRequestBody(folder: FoldersCreateFolder(icon: _iconData!.codePoint, name: displayName.text))).then((value) {
-            _folder = Folder(displayName: displayName.text, iconData: _iconData!.codePoint, uuid: value!.folderUuid);
-          });
+          if (context.mounted) {
+            NotificationPopup.apiError(context: context);
+          }
         }
+      } on ApiException catch (e) {
+        if (context.mounted) {
+          NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+        }
+        return false;
       }
-      return true;
+      return false;
     }
 
     Future<bool> delete(bool recursive) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? url = prefs.getString('url');
       Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
-      if (url != null) {
-        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
-        FoldersApi api = FoldersApi(apiClient);
-        await api.foldersDeleteDelete(_folder!.uuid!, recursive).then((value) {});
+      try {
+        if (url != null) {
+          ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+          FoldersApi api = FoldersApi(apiClient);
+          await api.foldersDeleteDelete(_folder!.uuid!, recursive).then((value) {});
+        } else {
+          if (context.mounted) {
+            NotificationPopup.apiError(context: context);
+          }
+          return false;
+        }
+        if (widget.onDeleteCallback != null) widget.onDeleteCallback!(uuid: _folder!.uuid!, recursive: recursive);
+      } on ApiException catch (e) {
+        if (context.mounted) {
+          NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+        }
+        return false;
       }
-      if (widget.onDeleteCallback != null) widget.onDeleteCallback!(uuid: _folder!.uuid!, recursive: recursive);
       return true;
     }
 
@@ -141,8 +166,10 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                       onPressed: () {
                         delete(true).then(
                           (value) {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
+                            if (value) {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            }
                           },
                         );
                       },
@@ -189,10 +216,12 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                         {
                           save().then(
                             (value) {
-                              disableFields();
-                              if (widget.onSaveCallback != null && _folder != null) widget.onSaveCallback!(folderData: _folder!);
-                              if(context.mounted){
-                                Navigator.of(context).pop();
+                              if (value) {
+                                disableFields();
+                                if (widget.onSaveCallback != null && _folder != null) widget.onSaveCallback!(folderData: _folder!);
+                                if (context.mounted) {
+                                  Navigator.of(context).pop();
+                                }
                               }
                             },
                           ),
