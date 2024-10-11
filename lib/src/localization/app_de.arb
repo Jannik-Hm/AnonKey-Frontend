@@ -11,13 +11,21 @@
   "@register": {
     "description": "Register button text"
   },
-  "username": "Username",
+  "username": "Nutzername",
   "@username": {
     "description": "Username input label"
   },
-  "password": "Password",
+  "password": "Passwort",
   "@password": {
     "description": "Password input label"
+  },
+  "displayName": "Anzeigename",
+  "@displayName": {
+    "description": ""
+  },
+  "notes": "Notizen",
+  "@notes": {
+    "description": ""
   },
   "url": "URL",
   "@url": {
@@ -35,12 +43,12 @@
   "@changeToLogin": {
     "description": "Text to change to login"
   },
-  "confirmCredentialDeleteTitle": "Eintrag \"{displayName}\" löschen?",
-  "@confirmCredentialDeleteTitle": {
+  "confirmCredentialSoftDeleteTitle": "Eintrag \"{displayName}\" löschen?",
+  "@confirmCredentialSoftDeleteTitle": {
     "description": ""
   },
-  "confirmCredentialDeleteText": "Bist du sicher, dass du den Eintrag \"{displayName}\" in den gelöscht Ordner bewegen möchtest?",
-  "@confirmCredentialDeleteText": {
+  "confirmCredentialSoftDeleteText": "Bist du sicher, dass du den Eintrag \"{displayName}\" in den gelöscht Ordner bewegen möchtest?",
+  "@confirmCredentialSoftDeleteText": {
     "description": ""
   },
   "abort": "Abbrechen",
@@ -65,6 +73,74 @@
   },
   "deleteFolderKeepCredentials": "Löschen, Einträge behalten",
   "@deleteFolderKeepCredentials": {
+    "description": ""
+  },
+  "homeMenu": "Home",
+  "@home": {
+    "description": ""
+  },
+  "passwordsMenu": "Passwörter",
+  "@home": {
+    "description": ""
+  },
+  "trashMenu": "Papierkorb",
+  "@home": {
+    "description": ""
+  },
+  "settingsMenu": "Einstellungen",
+  "@home": {
+    "description": ""
+  },
+  "welcomeText": "Willkommen bei Anonkey",
+  "@welcomeText": {
+    "description": ""
+  },
+  "totalPasswordsTitle": "Alle Passwörter",
+  "@totalPasswordsTitle": {
+    "description": ""
+  },
+  "totalPasswordsSubTitle": "Du hast {number} gespeicherte Passwört(er)",
+  "@totalPasswordsSubTitle": {
+    "description": ""
+  },
+  "trashPasswordsTitle": "Papierkorb",
+  "@trashPasswordsTitle": {
+    "description": ""
+  },
+  "trashPasswordsSubTitle": "Du hast {number} gelöschte(s) Passwört(er)",
+  "@trashPasswordsSubTitle": {
+    "description": ""
+  },
+  "awaitingResult": "Daten verarbeiten...",
+  "@awaitingResult": {
+    "description": ""
+  },
+  "folders": "Ordner",
+  "@folders": {
+    "description": ""
+  },
+  "confirmCredentialDeleteTitle": "Eintrag \"{displayName}\" wiederherstellen oder final löschen?",
+  "@confirmCredentialDeleteTitle": {
+    "description": ""
+  },
+  "confirmCredentialDeleteText": "Möchtest du \"{displayName}\" wiederherstellen oder für immer löschen?",
+  "@confirmCredentialDeleteText": {
+    "description": ""
+  },
+  "restore": "Wiederherstellen",
+  "@restore": {
+    "description": ""
+  },
+  "deleteForever": "Für immer löschen",
+  "@deleteForever": {
+    "description": ""
+  },
+  "copiedUsername": "Nutzername kopiert",
+  "@copiedUsername": {
+    "description": ""
+  },
+  "copiedPassword": "Passwort kopiert",
+  "@copiedUsername": {
     "description": ""
   }
 }

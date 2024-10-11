@@ -44,7 +44,7 @@ class LoginController extends State<LoginView> {
                     widthFactor: 0.6,
                     child: EntryInput(
                       controller: url,
-                      label: "URL",
+                      label: AppLocalizations.of(context)!.url,
                       obscureText: false,
                       focus: _urlFocus,
                       validator: (kDebugMode) ? null : ValidationBuilder().url().build(),
@@ -56,7 +56,7 @@ class LoginController extends State<LoginView> {
                     widthFactor: 0.6,
                     child: EntryInput(
                       controller: username,
-                      label: "Username",
+                      label: AppLocalizations.of(context)!.username,
                       obscureText: false,
                       focus: _usernameFocus,
                       validator: ValidationBuilder().required().build(),
@@ -68,7 +68,7 @@ class LoginController extends State<LoginView> {
                     widthFactor: 0.6,
                     child: EntryInput(
                       controller: password,
-                      label: "Password",
+                      label: AppLocalizations.of(context)!.password,
                       obscureText: true,
                       focus: _passwordFocus,
                       validator: ValidationBuilder().required().build(),

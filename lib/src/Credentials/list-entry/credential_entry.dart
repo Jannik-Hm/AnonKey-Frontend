@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import './logo.dart';
 import './credential_detail_view.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CredentialEntry extends StatefulWidget {
   final Credential credential;
@@ -103,7 +104,7 @@ class _CredentialEntry extends State<CredentialEntry> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
             ),
-            onPressed: () => copyToClipboard(message: 'Copied Username', value: _credential.getClearUsername()),
+            onPressed: () => copyToClipboard(message: AppLocalizations.of(context)!.copiedUsername, value: _credential.getClearUsername()),
             /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: _credential.username));
                 if (context.mounted) {
@@ -124,7 +125,7 @@ class _CredentialEntry extends State<CredentialEntry> {
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
             ),
-            onPressed: () => copyToClipboard(message: 'Copied Password', value: _credential.getClearPassword()),
+            onPressed: () => copyToClipboard(message: AppLocalizations.of(context)!.copiedPassword, value: _credential.getClearPassword()),
             /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: _credential.password));
                 if (context.mounted) {

@@ -190,9 +190,9 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
           return AlertDialog(
             // Retrieve the text the that user has entered by using the
             // TextEditingController.
-            title: Text(AppLocalizations.of(context)!.confirmCredentialDeleteTitle(credential.getClearDisplayName())),
+            title: Text(AppLocalizations.of(context)!.confirmCredentialSoftDeleteTitle(credential.getClearDisplayName())),
             //content: Text('Are you sure you want to move Credential "${credential.getClearDisplayName()}" into the deleted Folder?'),
-            content: Text(AppLocalizations.of(context)!.confirmCredentialDeleteText(credential.getClearDisplayName())),
+            content: Text(AppLocalizations.of(context)!.confirmCredentialSoftDeleteText(credential.getClearDisplayName())),
             actions: [
               Row(
                 children: [
@@ -283,7 +283,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             EntryInput(
               key: UniqueKey(),
               controller: displayName,
-              label: 'Display Name',
+              label: AppLocalizations.of(context)!.displayName,
               obscureText: false,
               focus: displayNameFocus,
               enabled: _enabled,
@@ -292,7 +292,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             EntryInput(
               key: UniqueKey(),
               controller: websiteUrl,
-              label: 'URL',
+              label: AppLocalizations.of(context)!.url,
               obscureText: false,
               focus: websiteUrlFocus,
               enabled: _enabled,
@@ -301,7 +301,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             EntryInput(
               key: UniqueKey(),
               controller: username,
-              label: 'Username',
+              label: AppLocalizations.of(context)!.username,
               obscureText: false,
               focus: usernameFocus,
               enabled: _enabled,
@@ -310,7 +310,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             EntryInput(
               key: UniqueKey(),
               controller: password,
-              label: 'Password',
+              label: AppLocalizations.of(context)!.password,
               obscureText: _obscurePassword,
               focus: passwordFocus,
               enabled: _enabled,
@@ -320,7 +320,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             EntryInput(
               key: UniqueKey(),
               controller: note,
-              label: 'Notes',
+              label: AppLocalizations.of(context)!.notes,
               obscureText: false,
               focus: noteFocus,
               enabled: _enabled,

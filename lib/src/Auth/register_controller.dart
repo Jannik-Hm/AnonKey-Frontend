@@ -47,20 +47,19 @@ class RegisterControllerState extends State<RegisterView> {
                     widthFactor: 0.6,
                     child: EntryInput(
                       controller: url,
-                      label: "URL",
+                      label: AppLocalizations.of(context)!.url,
                       obscureText: false,
                       focus: _urlFocus,
                       validator: (kDebugMode) ? null : ValidationBuilder().url().build(),
                       onEnterPressed: _usernameFocus.requestFocus,
                     ),
                   ),
-                  //LoginInput(controller: url, label: "URL", obscureText: false, validator: (kDebugMode) ? null : ValidationBuilder().url().build(), focus: _urlFocus),
                   const SizedBox(height: 16),
                   FractionallySizedBox(
                     widthFactor: 0.6,
                     child: EntryInput(
                       controller: username,
-                      label: "Username",
+                      label: AppLocalizations.of(context)!.username,
                       obscureText: false,
                       focus: _usernameFocus,
                       validator: ValidationBuilder().required().minLength(5).maxLength(128).build(),
@@ -72,7 +71,7 @@ class RegisterControllerState extends State<RegisterView> {
                     widthFactor: 0.6,
                     child: EntryInput(
                       controller: displayName,
-                      label: "Display Name",
+                      label: AppLocalizations.of(context)!.displayName,
                       obscureText: false,
                       focus: _displayName,
                       validator: ValidationBuilder().required().build(),
@@ -84,7 +83,7 @@ class RegisterControllerState extends State<RegisterView> {
                     widthFactor: 0.6,
                     child: EntryInput(
                       controller: password,
-                      label: "Password",
+                      label: AppLocalizations.of(context)!.password,
                       obscureText: true,
                       focus: _passwordFocus,
                       validator: ValidationBuilder().required().minLength(5).build(),

@@ -265,7 +265,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
               EntryInput(
                 key: UniqueKey(),
                 controller: displayName,
-                label: 'Display Name',
+                label: AppLocalizations.of(context)!.displayName,
                 focus: displayNameFocus,
                 validator: ValidationBuilder().required().build(),
                 obscureText: false,

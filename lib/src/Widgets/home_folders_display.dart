@@ -3,6 +3,7 @@ import 'package:anonkey_frontend/src/Folders/create_folder_widget.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Folders/folder_list_view_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeFoldersDisplayWidget extends StatefulWidget {
   final CombinedListData combinedData;
@@ -44,7 +45,7 @@ class _HomeFoldersDisplayWidget extends State<HomeFoldersDisplayWidget> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Folders',
+              AppLocalizations.of(context)!.folders,
               style: theme.textTheme.headlineSmall,
             ),
             CreateFolderWidget(addFolderToList: addFolderToList),

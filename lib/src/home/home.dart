@@ -9,6 +9,7 @@ import 'package:anonkey_frontend/src/Widgets/refresh_button.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../settings/settings_view.dart';
 
@@ -91,26 +92,26 @@ class _HomeScreenState extends State<HomeScreen> {
         indicatorColor: theme.colorScheme.onTertiary,
         selectedIndex: currentPageIndex,
         animationDuration: const Duration(milliseconds: 200),
-        destinations: const <Widget>[
+        destinations: <Widget>[
           NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
-            label: 'Home',
+            selectedIcon: const Icon(Icons.home),
+            icon: const Icon(Icons.home_outlined),
+            label: AppLocalizations.of(context)!.homeMenu,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.lock),
-            icon: Icon(Icons.lock_outlined),
-            label: 'Passwords',
+            selectedIcon: const Icon(Icons.lock),
+            icon: const Icon(Icons.lock_outlined),
+            label: AppLocalizations.of(context)!.passwordsMenu,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.delete),
-            icon: Icon(Icons.delete_outlined),
-            label: 'Trash',
+            selectedIcon: const Icon(Icons.delete),
+            icon: const Icon(Icons.delete_outlined),
+            label: AppLocalizations.of(context)!.trashMenu,
           ),
           NavigationDestination(
-            selectedIcon: Icon(Icons.settings),
-            icon: Icon(Icons.settings_outlined),
-            label: 'Settings',
+            selectedIcon: const Icon(Icons.settings),
+            icon: const Icon(Icons.settings_outlined),
+            label: AppLocalizations.of(context)!.settingsMenu,
           ),
         ],
       ),
@@ -123,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Welcome to AnonKey',
+                  AppLocalizations.of(context)!.welcomeText,
                   style: theme.textTheme.headlineMedium,
                 ),
                 const SizedBox(height: 20),
@@ -139,11 +140,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: theme.colorScheme.onPrimary,
                           ),
                           title: Text(
-                            'Total Passwords',
+                            AppLocalizations.of(context)!.totalPasswordsTitle,
                             style: TextStyle(color: theme.colorScheme.onPrimary),
                           ),
                           subTitle: Text(
-                            'You have ${snapshot.data!.credentials?.byIDList.length ?? 0} password(s) saved',
+                            AppLocalizations.of(context)!.totalPasswordsSubTitle(snapshot.data!.credentials?.byIDList.length ?? 0),
                             style: TextStyle(color: theme.colorScheme.onPrimary),
                           ),
                           trailing: Icon(
@@ -177,11 +178,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: theme.colorScheme.onPrimary,
                           ),
                           title: Text(
-                            'Deleted Passwords',
+                            AppLocalizations.of(context)!.trashPasswordsTitle,
                             style: TextStyle(color: theme.colorScheme.onPrimary),
                           ),
                           subTitle: Text(
-                            'You have ${snapshot.data!.credentials?.deletedList.length ?? 0} deleted password(s)',
+                            AppLocalizations.of(context)!.trashPasswordsSubTitle(snapshot.data!.credentials?.deletedList.length ?? 0),
                             style: TextStyle(color: theme.colorScheme.onPrimary),
                           ),
                           trailing: Icon(
@@ -226,15 +227,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ];
                     } else {
-                      children = const <Widget>[
-                        SizedBox(
-                          width: 60,
-                          height: 60,
-                          child: CircularProgressIndicator(),
+                      children = <Widget>[
+                        const Center(
+                          child: SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: CircularProgressIndicator(),
+                          ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 16),
-                          child: Text('Awaiting result...'),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 16),
+                            child: Text(AppLocalizations.of(context)!.awaitingResult),
+                          ),
                         ),
                       ];
                     }
@@ -330,15 +335,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ];
                 } else {
-                  children = const <Widget>[
-                    SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: CircularProgressIndicator(),
+                  children = <Widget>[
+                    const Center(
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CircularProgressIndicator(),
+                      ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text('Awaiting result...'),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text(AppLocalizations.of(context)!.awaitingResult),
+                      ),
                     ),
                   ];
                 }
@@ -356,7 +365,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
         /// Trash
         ListView(
+          padding: const EdgeInsets.all(8.0),
           children: [
+            Text(
+              AppLocalizations.of(context)!.trashMenu,
+              style: theme.textTheme.headlineMedium,
+            ),
+            const SizedBox(height: 10),
             FutureBuilder<CombinedListData>(
               future: combinedData,
               builder: (context, snapshot) {
@@ -384,15 +399,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ];
                 } else {
-                  children = const <Widget>[
-                    SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: CircularProgressIndicator(),
+                  children = <Widget>[
+                    const Center(
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: CircularProgressIndicator(),
+                      ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text('Awaiting result...'),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Text(AppLocalizations.of(context)!.awaitingResult),
+                      ),
                     ),
                   ];
                 }
@@ -410,6 +429,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         /// Settings
         ListView(
+          padding: const EdgeInsets.all(8.0),
           children: [
             SizedBox(
               height: 800.0, // Set a valid height

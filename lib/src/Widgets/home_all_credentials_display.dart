@@ -3,6 +3,7 @@ import 'package:anonkey_frontend/src/Credentials/create_credential_widget.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeCredentialsDisplayWidget extends StatefulWidget {
   final CombinedListData combinedData;
@@ -41,7 +42,7 @@ class _HomeCredentialsDisplayWidget extends State<HomeCredentialsDisplayWidget> 
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Passwords',
+              AppLocalizations.of(context)!.passwordsMenu,
               style: theme.textTheme.headlineMedium,
             ),
             CreateCredentialWidget(

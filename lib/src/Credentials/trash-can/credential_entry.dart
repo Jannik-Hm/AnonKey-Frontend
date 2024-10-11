@@ -7,6 +7,7 @@ import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CredentialTrashEntry extends StatefulWidget {
   final Credential credential;
@@ -82,9 +83,9 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         return AlertDialog(
           // Retrieve the text the that user has entered by using the
           // TextEditingController.
-          title: const Text("Restore or Delete forever?"),
+          title: Text(AppLocalizations.of(context)!.confirmCredentialDeleteTitle(credential.getClearDisplayName())),
           //content: Text('Are you sure you want to move Credential "${credential.getClearDisplayName()}" into the deleted Folder?'),
-          content: const Text("Do you want to restore this Credential or delete forever?"),
+          content: Text(AppLocalizations.of(context)!.confirmCredentialDeleteText(credential.getClearDisplayName())),
           actions: [
             Row(
               children: [
@@ -101,7 +102,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
                       });
                     },
                     style: TextButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
-                    child: const Text("Restore"),
+                    child: Text(AppLocalizations.of(context)!.restore),
                   ),
                 ),
                 const SizedBox(
@@ -120,7 +121,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
                       });
                     },
                     style: TextButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-                    child: const Text("Delete forever"),
+                    child: Text(AppLocalizations.of(context)!.deleteForever),
                   ),
                 ),
               ],
