@@ -14,12 +14,14 @@ class AppLifecyclePage extends StatefulWidget {
   State<AppLifecyclePage> createState() => _AppLifecyclePageState();
 }
 
-class _AppLifecyclePageState extends State<AppLifecyclePage>
-    with WidgetsBindingObserver {
+class _AppLifecyclePageState extends State<AppLifecyclePage> with WidgetsBindingObserver {
+  late bool isSplash;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    isSplash = false;
   }
 
   @override
@@ -31,7 +33,16 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
-      context.go("/splash");
+      if (!isSplash) {
+        isSplash = true;
+        context.push("/splash").then(
+          (didPop) {
+            if(didPop as bool){
+              isSplash = false;
+            }
+          },
+        );
+      }
     }
     if (state == AppLifecycleState.paused) {
       await AuthService.softLogout();
