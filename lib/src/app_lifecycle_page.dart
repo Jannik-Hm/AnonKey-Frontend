@@ -16,6 +16,8 @@ class AppLifecyclePage extends StatefulWidget {
 
 class _AppLifecyclePageState extends State<AppLifecyclePage>
     with WidgetsBindingObserver {
+  AppLifecycleState _notification = AppLifecycleState.resumed;
+
   @override
   void initState() {
     super.initState();
@@ -30,19 +32,42 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
+    setState(() {
+      _notification = state;
+    });
     if (state == AppLifecycleState.resumed) {
+      setState(() {
+        _notification = state;
+      });
       context.go("/splash");
     }
     if (state == AppLifecycleState.paused) {
+      setState(() {
+        _notification = state;
+      });
       await AuthService.softLogout();
     }
     if (state == AppLifecycleState.inactive) {
+      setState(() {
+        _notification = state;
+      });
       await AuthService.softLogout();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_notification == AppLifecycleState.inactive) {
+      return const Scaffold(
+        body: Center(
+          child: Image(
+            image: AssetImage('assets/images/Logo.png'),
+            width: 200,
+            height: 200,
+          ),
+        ),
+      );
+    }
     return widget.child;
   }
 }

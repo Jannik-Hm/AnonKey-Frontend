@@ -25,70 +25,79 @@ class LoginController extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Form(
-              key: _loginFormKey,
-              child: Column(
-                children: [
-                  const Image(image: AssetImage('assets/images/Logo.png'), width: 200, height: 200),
-                  const SizedBox(height: 16),
-                  Text(
-                    AppLocalizations.of(context)!.login,
-                    style: const TextStyle(fontSize: 24),
-                  ),
-                  const SizedBox(height: 16),
-                  FractionallySizedBox(
-                    widthFactor: 0.6,
-                    child: EntryInput(
-                      controller: url,
-                      label: AppLocalizations.of(context)!.url,
-                      obscureText: false,
-                      focus: _urlFocus,
-                      validator: (kDebugMode) ? null : ValidationBuilder().url().build(),
-                      onEnterPressed: () => _usernameFocus.requestFocus(),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Form(
+                key: _loginFormKey,
+                child: Column(
+                  children: [
+                    const Image(
+                        image: AssetImage('assets/images/Logo.png'),
+                        width: 200,
+                        height: 200),
+                    const SizedBox(height: 16),
+                    Text(
+                      AppLocalizations.of(context)!.login,
+                      style: const TextStyle(fontSize: 24),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  FractionallySizedBox(
-                    widthFactor: 0.6,
-                    child: EntryInput(
-                      controller: username,
-                      label: AppLocalizations.of(context)!.username,
-                      obscureText: false,
-                      focus: _usernameFocus,
-                      validator: ValidationBuilder().required().build(),
-                      onEnterPressed: () => _passwordFocus.requestFocus(),
+                    const SizedBox(height: 16),
+                    FractionallySizedBox(
+                      widthFactor: 0.6,
+                      child: EntryInput(
+                        controller: url,
+                        label: AppLocalizations.of(context)!.url,
+                        obscureText: false,
+                        focus: _urlFocus,
+                        validator: (kDebugMode)
+                            ? null
+                            : ValidationBuilder().url().build(),
+                        onEnterPressed: () => _usernameFocus.requestFocus(),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  FractionallySizedBox(
-                    widthFactor: 0.6,
-                    child: EntryInput(
-                      controller: password,
-                      label: AppLocalizations.of(context)!.password,
-                      obscureText: true,
-                      focus: _passwordFocus,
-                      validator: ValidationBuilder().required().build(),
-                      onEnterPressed: () => _showDialog,
+                    const SizedBox(height: 16),
+                    FractionallySizedBox(
+                      widthFactor: 0.6,
+                      child: EntryInput(
+                        controller: username,
+                        label: AppLocalizations.of(context)!.username,
+                        obscureText: false,
+                        focus: _usernameFocus,
+                        validator: ValidationBuilder().required().build(),
+                        onEnterPressed: () => _passwordFocus.requestFocus(),
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    FractionallySizedBox(
+                      widthFactor: 0.6,
+                      child: EntryInput(
+                        controller: password,
+                        label: AppLocalizations.of(context)!.password,
+                        obscureText: true,
+                        focus: _passwordFocus,
+                        validator: ValidationBuilder().required().build(),
+                        onEnterPressed: () => _showDialog,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            TextButton(
-              style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary, foregroundColor: Theme.of(context).colorScheme.onPrimary),
-              onPressed: () => _showDialog(),
-              child: const Text('Fly me to the moon'),
-            ),
-            TextButton(
-              onPressed: () => context.replaceNamed("register"),
-              child: Text(AppLocalizations.of(context)!.changeToRegister),
-            ),
-          ],
+              const SizedBox(height: 16),
+              TextButton(
+                style: TextButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary),
+                onPressed: () => _showDialog(),
+                child: const Text('Fly me to the moon'),
+              ),
+              TextButton(
+                onPressed: () => context.replaceNamed("register"),
+                child: Text(AppLocalizations.of(context)!.changeToRegister),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -97,7 +106,8 @@ class LoginController extends State<LoginView> {
   _showDialog() async {
     if (_loginFormKey.currentState!.validate()) {
       try {
-        bool test = await AuthService.login(username.text, password.text, url.text);
+        bool test =
+            await AuthService.login(username.text, password.text, url.text);
 
         if (test) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -119,7 +129,8 @@ class LoginController extends State<LoginView> {
         }
       } on ApiException catch (e) {
         if (context.mounted) {
-          NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+          NotificationPopup.apiError(
+              context: context, apiResponseMessage: e.message);
         }
       }
     }

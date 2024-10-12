@@ -21,11 +21,11 @@
   },
   "displayName": "Display Name",
   "@displayName": {
-    "description": ""
+    "description": "Display name input label"
   },
   "notes": "Notes",
   "@notes": {
-    "description": ""
+    "description": "Notes input label"
   },
   "url": "URL",
   "@url": {
@@ -35,112 +35,164 @@
   "@chooseIcon": {
     "description": "Click to select an Icon"
   },
-  "changeToRegister": "Du hast noch keinen Account? Hier registrieren",
+  "changeToRegister": "Don't have an account? Register here",
   "@changeToRegister": {
     "description": "Text to change to register"
   },
-  "changeToLogin": "Du hast schon einen Account? Hier einloggen",
+  "changeToLogin": "Already have an account? Log in here",
   "@changeToLogin": {
     "description": "Text to change to login"
   },
   "confirmCredentialSoftDeleteTitle": "Delete Credential \"{displayName}\"?",
   "@confirmCredentialSoftDeleteTitle": {
-    "description": ""
+    "description": "Title for soft delete confirmation dialog"
   },
-  "confirmCredentialSoftDeleteText": "Are you sure you want to move Credential \"{displayName}\" into the deleted Folder?",
+  "confirmCredentialSoftDeleteText": "Are you sure you want to move Credential \"{displayName}\" into the deleted folder?",
   "@confirmCredentialSoftDeleteText": {
-    "description": "Text to change to login"
+    "description": "Text for soft delete confirmation dialog"
   },
   "abort": "Abort",
   "@abort": {
-    "description": ""
+    "description": "Abort button text"
   },
   "confirm": "Confirm",
   "@confirm": {
-    "description": ""
+    "description": "Confirm button text"
   },
   "confirmFolderDeleteTitle": "Delete Folder \"{displayName}\"?",
   "@confirmFolderDeleteTitle": {
-    "description": ""
+    "description": "Title for folder delete confirmation dialog"
   },
   "confirmFolderDeleteText": "Are you sure you want to delete Folder \"{displayName}\"?",
   "@confirmFolderDeleteText": {
-    "description": ""
+    "description": "Text for folder delete confirmation dialog"
   },
   "deleteFolderWithCredentials": "Delete with Credentials",
   "@deleteFolderWithCredentials": {
-    "description": ""
+    "description": "Delete folder with credentials option"
   },
   "deleteFolderKeepCredentials": "Delete, keep Credentials",
   "@deleteFolderKeepCredentials": {
-    "description": ""
+    "description": "Delete folder keep credentials option"
   },
   "homeMenu": "Home",
-  "@home": {
-    "description": ""
+  "@homeMenu": {
+    "description": "Home menu item"
   },
   "passwordsMenu": "Passwords",
-  "@home": {
-    "description": ""
+  "@passwordsMenu": {
+    "description": "Passwords menu item"
   },
   "trashMenu": "Trash",
-  "@home": {
-    "description": ""
+  "@trashMenu": {
+    "description": "Trash menu item"
   },
   "settingsMenu": "Settings",
-  "@home": {
-    "description": ""
+  "@settingsMenu": {
+    "description": "Settings menu item"
   },
   "welcomeText": "Welcome to Anonkey",
   "@welcomeText": {
-    "description": ""
+    "description": "Welcome text"
   },
   "totalPasswordsTitle": "Total Passwords",
   "@totalPasswordsTitle": {
-    "description": ""
+    "description": "Total passwords title"
   },
   "totalPasswordsSubTitle": "You have {number} password(s) saved",
   "@totalPasswordsSubTitle": {
-    "description": ""
+    "description": "Total passwords subtitle"
   },
   "trashPasswordsTitle": "Deleted Passwords",
   "@trashPasswordsTitle": {
-    "description": ""
+    "description": "Trash passwords title"
   },
   "trashPasswordsSubTitle": "You have {number} deleted password(s)",
   "@trashPasswordsSubTitle": {
-    "description": ""
+    "description": "Trash passwords subtitle"
   },
   "awaitingResult": "Awaiting result...",
   "@awaitingResult": {
-    "description": ""
+    "description": "Awaiting result text"
   },
   "folders": "Folders",
   "@folders": {
-    "description": ""
+    "description": "Folders label"
   },
   "confirmCredentialDeleteTitle": "Restore or Delete \"{displayName}\" forever?",
   "@confirmCredentialDeleteTitle": {
-    "description": ""
+    "description": "Title for credential delete confirmation dialog"
   },
   "confirmCredentialDeleteText": "Do you want to restore \"{displayName}\" or delete forever?",
   "@confirmCredentialDeleteText": {
-    "description": "Text to change to login"
+    "description": "Text for credential delete confirmation dialog"
   },
   "restore": "Restore",
   "@restore": {
-    "description": ""
+    "description": "Restore button text"
   },
   "deleteForever": "Delete Forever",
   "@deleteForever": {
-    "description": ""
+    "description": "Delete forever button text"
   },
   "copiedUsername": "Copied Username",
   "@copiedUsername": {
-    "description": ""
+    "description": "Copied username notification"
   },
   "copiedPassword": "Copied Password",
-  "@copiedUsername": {
-    "description": ""
+  "@copiedPassword": {
+    "description": "Copied password notification"
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Settings page title"
+  },
+  "theme": "Theme",
+  "@theme": {
+    "description": "Theme section title"
+  },
+  "selectTheme": "Select Theme",
+  "@selectTheme": {
+    "description": "Select theme label"
+  },
+  "systemTheme": "System Theme",
+  "@systemTheme": {
+    "description": "System theme option"
+  },
+  "lightTheme": "Light Theme",
+  "@lightTheme": {
+    "description": "Light theme option"
+  },
+  "darkTheme": "Dark Theme",
+  "@darkTheme": {
+    "description": "Dark theme option"
+  },
+  "language": "Language",
+  "@language": {
+    "description": "Language section title"
+  },
+  "selectLanguage": "Select Language",
+  "@selectLanguage": {
+    "description": "Select language label"
+  },
+  "german": "German",
+  "@german": {
+    "description": "German language option"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+  "openSourceLicenses": "Open Source Licenses",
+  "@openSourceLicenses": {
+    "description": "Open source licenses section title"
+  },
+  "viewLicenses": "View Licenses",
+  "@viewLicenses": {
+    "description": "View licenses label"
+  },
+  "logout": "Log Out",
+  "@logout": {
+    "description": "Logout button text"
   }
 }

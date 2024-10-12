@@ -28,82 +28,96 @@ class RegisterControllerState extends State<RegisterView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Image(image: AssetImage('assets/images/Logo.png'), width: 200, height: 200),
-            const SizedBox(height: 16),
-            Text(
-              AppLocalizations.of(context)!.register,
-              style: const TextStyle(fontSize: 24),
-            ),
-            Form(
-              key: _loginFormKey,
-              child: Column(
-                children: [
-                  const SizedBox(height: 16),
-                  FractionallySizedBox(
-                    widthFactor: 0.6,
-                    child: EntryInput(
-                      controller: url,
-                      label: AppLocalizations.of(context)!.url,
-                      obscureText: false,
-                      focus: _urlFocus,
-                      validator: (kDebugMode) ? null : ValidationBuilder().url().build(),
-                      onEnterPressed: _usernameFocus.requestFocus,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  FractionallySizedBox(
-                    widthFactor: 0.6,
-                    child: EntryInput(
-                      controller: username,
-                      label: AppLocalizations.of(context)!.username,
-                      obscureText: false,
-                      focus: _usernameFocus,
-                      validator: ValidationBuilder().required().minLength(5).maxLength(128).build(),
-                      onEnterPressed: _displayName.requestFocus,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  FractionallySizedBox(
-                    widthFactor: 0.6,
-                    child: EntryInput(
-                      controller: displayName,
-                      label: AppLocalizations.of(context)!.displayName,
-                      obscureText: false,
-                      focus: _displayName,
-                      validator: ValidationBuilder().required().build(),
-                      onEnterPressed: _passwordFocus.requestFocus,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  FractionallySizedBox(
-                    widthFactor: 0.6,
-                    child: EntryInput(
-                      controller: password,
-                      label: AppLocalizations.of(context)!.password,
-                      obscureText: true,
-                      focus: _passwordFocus,
-                      validator: ValidationBuilder().required().minLength(5).build(),
-                      onEnterPressed: () => _register,
-                    ),
-                  ),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Image(
+                  image: AssetImage('assets/images/Logo.png'),
+                  width: 200,
+                  height: 200),
+              const SizedBox(height: 16),
+              Text(
+                AppLocalizations.of(context)!.register,
+                style: const TextStyle(fontSize: 24),
               ),
-            ),
-            const SizedBox(height: 16),
-            TextButton(
-              style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary, foregroundColor: Theme.of(context).colorScheme.onPrimary),
-              onPressed: () => _register(),
-              child: const Text('Fly me to the moon'),
-            ),
-            TextButton(
-              onPressed: () => context.replaceNamed("login"),
-              child: Text(AppLocalizations.of(context)!.changeToLogin),
-            ),
-          ],
+              Form(
+                key: _loginFormKey,
+                child: Column(
+                  children: [
+                    const SizedBox(height: 16),
+                    FractionallySizedBox(
+                      widthFactor: 0.6,
+                      child: EntryInput(
+                        controller: url,
+                        label: AppLocalizations.of(context)!.url,
+                        obscureText: false,
+                        focus: _urlFocus,
+                        validator: (kDebugMode)
+                            ? null
+                            : ValidationBuilder().url().build(),
+                        onEnterPressed: _usernameFocus.requestFocus,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    FractionallySizedBox(
+                      widthFactor: 0.6,
+                      child: EntryInput(
+                        controller: username,
+                        label: AppLocalizations.of(context)!.username,
+                        obscureText: false,
+                        focus: _usernameFocus,
+                        validator: ValidationBuilder()
+                            .required()
+                            .minLength(5)
+                            .maxLength(128)
+                            .build(),
+                        onEnterPressed: _displayName.requestFocus,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    FractionallySizedBox(
+                      widthFactor: 0.6,
+                      child: EntryInput(
+                        controller: displayName,
+                        label: AppLocalizations.of(context)!.displayName,
+                        obscureText: false,
+                        focus: _displayName,
+                        validator: ValidationBuilder().required().build(),
+                        onEnterPressed: _passwordFocus.requestFocus,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    FractionallySizedBox(
+                      widthFactor: 0.6,
+                      child: EntryInput(
+                        controller: password,
+                        label: AppLocalizations.of(context)!.password,
+                        obscureText: true,
+                        focus: _passwordFocus,
+                        validator:
+                            ValidationBuilder().required().minLength(5).build(),
+                        onEnterPressed: () => _register,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                style: TextButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary),
+                onPressed: () => _register(),
+                child: const Text('Fly me to the moon'),
+              ),
+              TextButton(
+                onPressed: () => context.replaceNamed("login"),
+                child: Text(AppLocalizations.of(context)!.changeToLogin),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -112,7 +126,8 @@ class RegisterControllerState extends State<RegisterView> {
   _register() async {
     try {
       if (_loginFormKey.currentState!.validate()) {
-        bool isRegistered = await AuthService.register(username.text, password.text, displayName.text, url.text);
+        bool isRegistered = await AuthService.register(
+            username.text, password.text, displayName.text, url.text);
         if (isRegistered) {
           final SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('url', url.text);
@@ -122,7 +137,8 @@ class RegisterControllerState extends State<RegisterView> {
       }
     } on ApiException catch (e) {
       if (context.mounted) {
-        NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+        NotificationPopup.apiError(
+            context: context, apiResponseMessage: e.message);
       }
     }
   }

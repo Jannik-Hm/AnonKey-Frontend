@@ -46,12 +46,15 @@ class MyApp extends StatelessWidget {
             Locale('de') // German, no country code
           ],
 
+          locale: settingsController.languageMode,
+
           // Use AppLocalizations to configure the correct application title
           // depending on the user's locale.
           //
           // The appTitle is defined in .arb files found in the localization
           // directory.
-          onGenerateTitle: (BuildContext context) => AppLocalizations.of(context)!.appTitle,
+          onGenerateTitle: (BuildContext context) =>
+              AppLocalizations.of(context)!.appTitle,
 
           // Define the routes for your application. The "/" route is the home
 
@@ -77,17 +80,25 @@ class MyApp extends StatelessWidget {
               ),
               navigationBarTheme: NavigationBarThemeData(
                 labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
-                  (Set<WidgetState> states) => states.contains(WidgetState.selected) ? TextStyle(color: Theme.of(context).colorScheme.onPrimary) : const TextStyle(color: Colors.black),
+                  (Set<WidgetState> states) =>
+                      states.contains(WidgetState.selected)
+                          ? TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary)
+                          : const TextStyle(color: Colors.black),
                 ),
                 iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
-                  (Set<WidgetState> states) => states.contains(WidgetState.selected) ? const IconThemeData(color: Colors.black) : const IconThemeData(color: Colors.black),
+                  (Set<WidgetState> states) =>
+                      states.contains(WidgetState.selected)
+                          ? const IconThemeData(color: Colors.black)
+                          : const IconThemeData(color: Colors.black),
                 ),
               )),
           themeMode: settingsController.themeMode,
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
-          routerConfig: (AppRouter(settingsController: settingsController)).getRouter(),
+          routerConfig:
+              (AppRouter(settingsController: settingsController)).getRouter(),
         );
       },
     );
