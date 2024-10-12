@@ -21,6 +21,6 @@ class SettingsService {
     // Use the shared_preferences package to persist settings locally or the
     // http package to persist settings over the network.
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('site', 2);
+    await prefs.setInt('site', 3);
   }
 }
