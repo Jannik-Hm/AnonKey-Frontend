@@ -55,14 +55,14 @@ class _FolderEntry extends State<FolderEntry> {
       leading: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 70.0),
         child: _folder.getIcon(
-          color: theme.colorScheme.onPrimary,
+          color: theme.colorScheme.onTertiary,
         ),
       ),
       title: Text(
         _folder.displayName,
         style: TextStyle(
           fontSize: 20.0,
-          color: theme.colorScheme.onPrimary,
+          color: theme.colorScheme.onTertiary,
         ),
       ),
       trailing: ElevatedButton(

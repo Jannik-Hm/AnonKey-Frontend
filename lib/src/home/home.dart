@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final ThemeData theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AnonKey'),
+        title: Text('AnonKey', style: TextStyle(color: theme.colorScheme.onPrimary)),
         backgroundColor: theme.colorScheme.primary,
         actions: [
           RefreshButton(onRefreshCallback: () {
@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         backgroundColor: theme.colorScheme.tertiary,
-        indicatorColor: theme.colorScheme.onTertiary,
+        indicatorColor: theme.colorScheme.primary,
         selectedIndex: currentPageIndex,
         animationDuration: const Duration(milliseconds: 200),
         destinations: <Widget>[
@@ -137,19 +137,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         ClickableTile(
                           leading: Icon(
                             Icons.shield,
-                            color: theme.colorScheme.onPrimary,
+                            color: theme.colorScheme.onTertiary,
                           ),
                           title: Text(
                             AppLocalizations.of(context)!.totalPasswordsTitle,
-                            style: TextStyle(color: theme.colorScheme.onPrimary),
+                            style: TextStyle(color: theme.colorScheme.onTertiary),
                           ),
                           subTitle: Text(
                             AppLocalizations.of(context)!.totalPasswordsSubTitle(snapshot.data!.credentials?.byIDList.length ?? 0),
-                            style: TextStyle(color: theme.colorScheme.onPrimary),
+                            style: TextStyle(color: theme.colorScheme.onTertiary),
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
-                            color: theme.colorScheme.onPrimary,
+                            color: theme.colorScheme.onTertiary,
                           ),
                           onTap: () => {
                             setState(
@@ -175,19 +175,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         ClickableTile(
                           leading: Icon(
                             Icons.delete,
-                            color: theme.colorScheme.onPrimary,
+                            color: theme.colorScheme.onTertiary,
                           ),
                           title: Text(
                             AppLocalizations.of(context)!.trashPasswordsTitle,
-                            style: TextStyle(color: theme.colorScheme.onPrimary),
+                            style: TextStyle(color: theme.colorScheme.onTertiary),
                           ),
                           subTitle: Text(
                             AppLocalizations.of(context)!.trashPasswordsSubTitle(snapshot.data!.credentials?.deletedList.length ?? 0),
-                            style: TextStyle(color: theme.colorScheme.onPrimary),
+                            style: TextStyle(color: theme.colorScheme.onTertiary),
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
-                            color: theme.colorScheme.onPrimary,
+                            color: theme.colorScheme.onTertiary,
                           ),
                           onTap: () => {
                             setState(

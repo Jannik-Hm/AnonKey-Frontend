@@ -60,33 +60,49 @@ class MyApp extends StatelessWidget {
           // SettingsController to display the correct theme.
           theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue.shade400,
+            seedColor: Colors.blue.shade600,
             surface: Colors.grey.shade50,
-            secondary: Colors.grey.shade100,
-            onSecondary: Colors.black,
-            tertiary: Colors.grey.shade300,
-            onTertiary: Colors.black,
-          )),
-          darkTheme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.blue.shade800,
-                surface: Colors.grey.shade900,
-                onSurface: Colors.white,
-                tertiary: Colors.grey.shade800,
-                onTertiary: Colors.grey.shade300,
-              ),
-              navigationBarTheme: NavigationBarThemeData(
+            secondary: Colors.grey.shade200,
+            onSecondary: Colors.grey.shade700,
+            tertiary: Colors.grey.shade100,
+            onTertiary: Colors.grey.shade800,
+          ),
+          navigationBarTheme: NavigationBarThemeData(
                 labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
                   (Set<WidgetState> states) =>
                       states.contains(WidgetState.selected)
-                          ? TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary)
+                          ? const TextStyle(color: Colors.black)
                           : const TextStyle(color: Colors.black),
                 ),
                 iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
                   (Set<WidgetState> states) =>
                       states.contains(WidgetState.selected)
-                          ? const IconThemeData(color: Colors.black)
+                          ? IconThemeData(color: Theme.of(context).colorScheme.onPrimary)
+                          : const IconThemeData(color: Colors.black),
+              ),
+            ),
+          ),
+          darkTheme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.blue.shade800,
+                surface: Colors.grey.shade900,
+                onSurface: Colors.white,
+                onPrimary: Colors.grey.shade100,
+                onSecondary: Colors.grey.shade100,
+                tertiary: Colors.grey.shade800,
+                onTertiary: Colors.grey.shade100,
+              ),
+              navigationBarTheme: NavigationBarThemeData(
+                labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
+                  (Set<WidgetState> states) =>
+                      states.contains(WidgetState.selected)
+                          ? TextStyle(color: Theme.of(context).colorScheme.onTertiary)
+                          : const TextStyle(color: Colors.black),
+                ),
+                iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
+                  (Set<WidgetState> states) =>
+                      states.contains(WidgetState.selected)
+                          ? IconThemeData(color: Theme.of(context).colorScheme.onPrimary)
                           : const IconThemeData(color: Colors.black),
                 ),
               )),
