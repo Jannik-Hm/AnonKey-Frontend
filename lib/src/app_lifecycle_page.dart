@@ -36,21 +36,12 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
       _notification = state;
     });
     if (state == AppLifecycleState.resumed) {
-      setState(() {
-        _notification = state;
-      });
       context.go("/splash");
     }
     if (state == AppLifecycleState.paused) {
-      setState(() {
-        _notification = state;
-      });
       await AuthService.softLogout();
     }
     if (state == AppLifecycleState.inactive) {
-      setState(() {
-        _notification = state;
-      });
       await AuthService.softLogout();
     }
   }
