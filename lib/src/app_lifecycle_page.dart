@@ -14,16 +14,18 @@ class AppLifecyclePage extends StatefulWidget {
   State<AppLifecyclePage> createState() => _AppLifecyclePageState();
 }
 
-class _AppLifecyclePageState extends State<AppLifecyclePage> with WidgetsBindingObserver {
+class _AppLifecyclePageState extends State<AppLifecyclePage>
+    with WidgetsBindingObserver {
   late bool isSplash;
 
-  AppLifecycleState _notification = AppLifecycleState.resumed;
+  late AppLifecycleState _notification;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     isSplash = false;
+    _notification = AppLifecycleState.resumed;
   }
 
   @override
@@ -42,7 +44,7 @@ class _AppLifecyclePageState extends State<AppLifecyclePage> with WidgetsBinding
         isSplash = true;
         context.push("/splash").then(
           (didPop) {
-            if(didPop as bool){
+            if (didPop as bool) {
               isSplash = false;
             }
           },
