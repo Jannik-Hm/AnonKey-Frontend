@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
@@ -9,11 +10,24 @@ import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+/// Widget for Editing and Displaying Credential Data
+///
+/// [credential] Credential Data to display, `null` for creating New
+///
+/// [availableFolders] List of Folders for Folder Selector Dropdown
+///
+/// [onSaveCallback] Callback triggered on Save
+///
+/// [onSoftDeleteCallback] Callback triggered on Soft Delete
+///
+/// [currentFolderUuid] Uuid of current Folder in Selector Dropdown, only relevant when credential is `null`
+///
 class CredentialDetailWidget extends StatefulWidget {
   final Credential? credential;
   final List<Folder> availableFolders;
   final Function(Credential credential)? onSaveCallback;
   final Function(String uuid)? onSoftDeleteCallback;
+  final String? currentFolderUuid;
 
   const CredentialDetailWidget({
     super.key,
@@ -21,6 +35,7 @@ class CredentialDetailWidget extends StatefulWidget {
     this.onSaveCallback,
     this.onSoftDeleteCallback,
     required this.availableFolders,
+    this.currentFolderUuid,
   });
 
   @override
@@ -46,7 +61,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     _enabled = (widget.credential == null);
     _obscurePassword = !(widget.credential == null);
     _credential = widget.credential;
-    newFolderUUID = _credential?.folderUuid ?? "";
+    newFolderUUID = (_credential == null) ? (widget.currentFolderUuid ?? "") : (_credential?.folderUuid ?? "");
   }
 
   @override
@@ -83,70 +98,89 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     }
 
     Future<bool> save() async {
-      print(newFolderUUID);
       Credential temp;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? url = prefs.getString('url');
       Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
-      if (url != null) {
-        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
-        CredentialsApi api = CredentialsApi(apiClient);
-        if (_credential != null) {
-          temp = await _credential!.updateFromLocal(
-            masterPassword: authdata["password"]!,
-            clearWebsiteUrl: websiteUrl.text,
-            clearUsername: username.text,
-            clearPassword: password.text,
-            clearDisplayName: displayName.text,
-            clearNote: note.text,
-            folderUuid: newFolderUUID,
-          );
-          print(temp.updateAPICredentialRequestBody());
-          await api.credentialsUpdatePut(temp.updateAPICredentialRequestBody());
-        } else {
-          UUIDApi uuidApi = UUIDApi(apiClient);
-          String? uuid = await uuidApi.uuidNewGet();
-          temp = await Credential.newEntry(
-            uuid: uuid!,
-            masterPassword: authdata["password"]!,
-            clearWebsiteUrl: websiteUrl.text,
-            clearUsername: username.text,
-            clearPassword: password.text,
-            clearDisplayName: displayName.text,
-            clearNote: note.text,
-            folderUuid: newFolderUUID,
-            createdTimeStamp: DateTime.now().microsecondsSinceEpoch ~/ 1000,
-          );
-          await api.credentialsCreatePost(
-            CredentialsCreateRequestBody(
-              credential: temp.createAPICredential(),
-            ),
-          );
-        }
-        setState(() {
-          _credential = temp;
-        });
-        if (widget.onSaveCallback != null) widget.onSaveCallback!(temp);
-        return true;
-      }
-      return false;
-    }
-
-    Future<bool> delete() async {
-      if (_credential != null) {
-        print(_credential!.uuid);
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        String? url = prefs.getString('url');
-        Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+      try {
         if (url != null) {
           ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
           CredentialsApi api = CredentialsApi(apiClient);
-          await api.credentialsSoftDeletePut(_credential!.uuid);
+          if (_credential != null) {
+            temp = await _credential!.updateFromLocal(
+              masterPassword: authdata["password"]!,
+              clearWebsiteUrl: websiteUrl.text,
+              clearUsername: username.text,
+              clearPassword: password.text,
+              clearDisplayName: displayName.text,
+              clearNote: note.text,
+              folderUuid: newFolderUUID,
+            );
+            await api.credentialsUpdatePut(temp.updateAPICredentialRequestBody());
+          } else {
+            UUIDApi uuidApi = UUIDApi(apiClient);
+            String? uuid = await uuidApi.uuidNewGet();
+            temp = await Credential.newEntry(
+              uuid: uuid!,
+              masterPassword: authdata["password"]!,
+              clearWebsiteUrl: websiteUrl.text,
+              clearUsername: username.text,
+              clearPassword: password.text,
+              clearDisplayName: displayName.text,
+              clearNote: note.text,
+              folderUuid: newFolderUUID,
+              createdTimeStamp: DateTime.now().microsecondsSinceEpoch ~/ 1000,
+            );
+            await api.credentialsCreatePost(
+              CredentialsCreateRequestBody(
+                credential: temp.createAPICredential(),
+              ),
+            );
+          }
+          setState(() {
+            _credential = temp;
+          });
+          if (widget.onSaveCallback != null) widget.onSaveCallback!(temp);
+          return true;
+        } else {
+          if (context.mounted) {
+            NotificationPopup.apiError(context: context);
+          }
+          return false;
         }
-        if (widget.onSoftDeleteCallback != null) widget.onSoftDeleteCallback!(_credential!.uuid);
-        return true;
+      } on ApiException catch (e) {
+        if (context.mounted) {
+          NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+        }
+        return false;
       }
-      return false;
+    }
+
+    Future<bool> delete() async {
+      try {
+        if (_credential != null) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          String? url = prefs.getString('url');
+          Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+          if (url != null) {
+            ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+            CredentialsApi api = CredentialsApi(apiClient);
+            await api.credentialsSoftDeletePut(_credential!.uuid);
+          }
+          if (widget.onSoftDeleteCallback != null) widget.onSoftDeleteCallback!(_credential!.uuid);
+          return true;
+        } else {
+          if (context.mounted) {
+            NotificationPopup.apiError(context: context);
+          }
+          return false;
+        }
+      } on ApiException catch (e) {
+        if (context.mounted) {
+          NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+        }
+        return false;
+      }
     }
 
     showDeleteConfirmDialog(Credential credential) {
@@ -156,16 +190,15 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
           return AlertDialog(
             // Retrieve the text the that user has entered by using the
             // TextEditingController.
-            title: Text(AppLocalizations.of(context)!.confirmCredentialDeleteTitle(credential.getClearDisplayName())),
+            title: Text(AppLocalizations.of(context)!.confirmCredentialSoftDeleteTitle(credential.getClearDisplayName())),
             //content: Text('Are you sure you want to move Credential "${credential.getClearDisplayName()}" into the deleted Folder?'),
-            content: Text(AppLocalizations.of(context)!.confirmCredentialDeleteText(credential.getClearDisplayName())),
+            content: Text(AppLocalizations.of(context)!.confirmCredentialSoftDeleteText(credential.getClearDisplayName())),
             actions: [
               Row(
                 children: [
                   Expanded(
                     child: TextButton(
                       onPressed: () {
-                        print("Abort");
                         Navigator.of(context).pop();
                       },
                       style: TextButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
@@ -180,8 +213,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                       onPressed: () {
                         delete().then(
                           (value) {
-                            print("Confirm");
-                            if (context.mounted) {
+                            if (value && context.mounted) {
                               Navigator.of(context).pop();
                               Navigator.of(context).pop();
                             }
@@ -212,7 +244,9 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                 onPressed: () => {
                       save().then(
                         (value) {
-                          disableFields();
+                          if (value) {
+                            disableFields();
+                          }
                         },
                       )
                     },
@@ -249,7 +283,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             EntryInput(
               key: UniqueKey(),
               controller: displayName,
-              label: 'Display Name',
+              label: AppLocalizations.of(context)!.displayName,
               obscureText: false,
               focus: displayNameFocus,
               enabled: _enabled,
@@ -258,7 +292,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             EntryInput(
               key: UniqueKey(),
               controller: websiteUrl,
-              label: 'URL',
+              label: AppLocalizations.of(context)!.url,
               obscureText: false,
               focus: websiteUrlFocus,
               enabled: _enabled,
@@ -267,7 +301,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             EntryInput(
               key: UniqueKey(),
               controller: username,
-              label: 'Username',
+              label: AppLocalizations.of(context)!.username,
               obscureText: false,
               focus: usernameFocus,
               enabled: _enabled,
@@ -276,7 +310,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             EntryInput(
               key: UniqueKey(),
               controller: password,
-              label: 'Password',
+              label: AppLocalizations.of(context)!.password,
               obscureText: _obscurePassword,
               focus: passwordFocus,
               enabled: _enabled,
@@ -286,7 +320,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             EntryInput(
               key: UniqueKey(),
               controller: note,
-              label: 'Notes',
+              label: AppLocalizations.of(context)!.notes,
               obscureText: false,
               focus: noteFocus,
               enabled: _enabled,
@@ -296,7 +330,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               key: UniqueKey(),
               folders: widget.availableFolders,
               enabled: _enabled,
-              currentFolderUuid: _credential?.folderUuid ?? "",
+              currentFolderUuid: (_credential == null) ? (widget.currentFolderUuid ?? "") : (_credential?.folderUuid ?? ""),
               onChangeCallback: (value) {
                 newFolderUUID = value ?? "";
               },

@@ -1,4 +1,6 @@
+import 'package:anonkey_frontend/src/Auth/login_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'settings_service.dart';
 
@@ -31,7 +33,7 @@ class SettingsController with ChangeNotifier {
   }
 
   /// Update and persist the ThemeMode based on the user's selection.
-  Future<void> updateThemeMode(ThemeMode? newThemeMode) async {
+  Future<void> updateThemeMode(ThemeMode? newThemeMode, BuildContext context) async {
     if (newThemeMode == null) return;
 
     // Do not perform any work if new and old ThemeMode are identical

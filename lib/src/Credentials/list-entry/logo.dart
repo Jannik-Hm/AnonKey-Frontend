@@ -26,8 +26,7 @@ Future<String?> _getBestLogoUrlFromUrl(String url) async {
 
 //TODO: Backend API to Scan for favicons to prevent CORS error
 Future<Uint8List> _getBestLogoFromUrl(String url) async {
-  var response = await http.get(
-      Uri.parse("https://icons.duckduckgo.com/ip3/${_extractDomain(url)}.ico"));
+  var response = await http.get(Uri.parse("https://icons.duckduckgo.com/ip3/${_extractDomain(url)}.ico"));
   return response.bodyBytes;
 }
 
@@ -41,12 +40,18 @@ StatefulWidget getNetworkLogoFromUrl(String url) {
         } else if (snapshot.hasError) {
           // If there's an error, show a fallback icon or error message
           // print(snapshot.error); // Debugging information
-          return const Icon(Icons.public);
+          return Icon(
+            Icons.public,
+            color: Theme.of(context).colorScheme.onPrimary,
+          );
         } else if (snapshot.hasData) {
           return Image.network(snapshot.data!);
         } else {
           // Fallback if no data is present
-          return const Icon(Icons.public);
+          return Icon(
+            Icons.public,
+            color: Theme.of(context).colorScheme.onPrimary,
+          );
         }
       });
 }

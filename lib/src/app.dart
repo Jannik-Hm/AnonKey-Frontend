@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           // background.
           restorationScopeId: 'app',
 
-          debugShowCheckedModeBanner: true,
+          debugShowCheckedModeBanner: false,
 
           // Provide the generated AppLocalizations to the MaterialApp. This
           // allows descendant Widgets to display the correct translations
@@ -51,8 +51,7 @@ class MyApp extends StatelessWidget {
           //
           // The appTitle is defined in .arb files found in the localization
           // directory.
-          onGenerateTitle: (BuildContext context) =>
-              AppLocalizations.of(context)!.appTitle,
+          onGenerateTitle: (BuildContext context) => AppLocalizations.of(context)!.appTitle,
 
           // Define the routes for your application. The "/" route is the home
 
@@ -69,20 +68,26 @@ class MyApp extends StatelessWidget {
             onTertiary: Colors.black,
           )),
           darkTheme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.blue.shade800,
-              surface: Colors.grey.shade900,
-              onSurface: Colors.white,
-              tertiary: Colors.grey.shade800,
-              onTertiary: Colors.grey.shade300,
-            ),
-          ),
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.blue.shade800,
+                surface: Colors.grey.shade900,
+                onSurface: Colors.white,
+                tertiary: Colors.grey.shade800,
+                onTertiary: Colors.grey.shade300,
+              ),
+              navigationBarTheme: NavigationBarThemeData(
+                labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
+                  (Set<WidgetState> states) => states.contains(WidgetState.selected) ? TextStyle(color: Theme.of(context).colorScheme.onPrimary) : const TextStyle(color: Colors.black),
+                ),
+                iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
+                  (Set<WidgetState> states) => states.contains(WidgetState.selected) ? const IconThemeData(color: Colors.black) : const IconThemeData(color: Colors.black),
+                ),
+              )),
           themeMode: settingsController.themeMode,
 
           // Define a function to handle named routes in order to support
           // Flutter web url navigation and deep linking.
-          routerConfig:
-              (AppRouter(settingsController: settingsController)).getRouter(),
+          routerConfig: (AppRouter(settingsController: settingsController)).getRouter(),
         );
       },
     );

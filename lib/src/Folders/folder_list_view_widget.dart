@@ -17,11 +17,13 @@ class FolderListWidgetData {
 class FolderListWidget extends StatefulWidget {
   final FolderList folders;
   final CredentialList credentials;
+  final Function(bool recursive) onDeleteCallback;
 
   const FolderListWidget({
     super.key,
     required this.folders,
     required this.credentials,
+    required this.onDeleteCallback,
   });
 
   @override
@@ -41,11 +43,16 @@ class _FolderListWidget extends State<FolderListWidget> {
       folder: folder,
       availableFolders: widget.folders,
       credentials: widget.credentials,
-      onDeleteCallback: (uuid) {
+      onDeleteCallback: ({required bool recursive, required String uuid}) {
         setState(() {
           folders.remove(uuid);
           folderList = folders.byIDList.values.toList();
-          //TODO: Update CredentialList --> Get from API or manually?
+          widget.onDeleteCallback(recursive);
+        });
+      },
+      onSaveCallback: ({required folderData}) {
+        setState(() {
+          widget.folders.updateFromLocalObject(folder: folderData);
         });
       },
     );
@@ -62,8 +69,9 @@ class _FolderListWidget extends State<FolderListWidget> {
   @override
   Widget build(BuildContext context) {
     folderList.sort((x, y) => x.displayName.compareTo(y.displayName));
-    return Expanded(
-      child: Column(children: folderList.map(_fromList).toList()),
-    );
+    return /* Expanded(
+      child: */ Column(children: folderList.map(_fromList).toList())//,
+    //)
+    ;
   }
 }

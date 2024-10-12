@@ -3,6 +3,7 @@ import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// The authentication service.
 ///
@@ -17,8 +18,7 @@ class AuthService {
   ///
   /// [password]: The password.
   ///
-  static Future<bool> login(
-      String username, String password, String url) async {
+  static Future<bool> login(String username, String password, String url) async {
     ApiClient apiClient = RequestUtility.getApiWithoutAuth(url);
     AuthenticationApi authApi = AuthenticationApi(apiClient);
     String masterKDF = await Cryptography.getKDFBase64(
@@ -33,8 +33,7 @@ class AuthService {
       await authApi.authenticationLoginPost(loginBody).then((value) async => {
             if (value?.token != null)
               {
-                await storeAuthenticationCredentials(
-                    value?.token, username, password),
+                await storeAuthenticationCredentials(value?.token, username, password, value!.expiresInSeconds!),
               }
           });
       return true;
@@ -53,8 +52,7 @@ class AuthService {
   ///
   /// [displayName]: The display name.
   ///
-  static Future<bool> register(
-      String username, String password, String? displayName, String url) async {
+  static Future<bool> register(String username, String password, String? displayName, String url) async {
     displayName = username;
 
     ApiClient apiClient = RequestUtility.getApiWithoutAuth(url);
@@ -72,8 +70,7 @@ class AuthService {
       await authApi.userCreatePost(registerBody).then((value) async => {
             if (value?.token != null)
               {
-                await storeAuthenticationCredentials(
-                    value?.token, username, password),
+                await storeAuthenticationCredentials(value?.token, username, password, value!.expiresInSeconds!),
               }
           });
       return true;
@@ -98,10 +95,47 @@ class AuthService {
     String? token = await storage.read(key: "token");
     String? username = await storage.read(key: "username");
     String? password = await storage.read(key: "password");
-    if (token == null || username == null || password == null) {
+    String? timestampStorage = await storage.read(key: "timestamp");
+    int expire = int.parse(await storage.read(key: "expire") ?? "0");
+    if (token == null || username == null || password == null || timestampStorage == null) {
       throw NoCredentialException();
     }
+    if (!(await validateToken(username, password, timestampStorage, expire))) {
+      return getAuthenticationCredentials();
+    }
     return {"token": token, "username": username, "password": password};
+  }
+
+  /// Validates the authentication token. If the token is invalid, the user is logged in again but only if the token is still in the valid range.
+  ///
+  /// \returns `true` if the token is invalid, `false` otherwise.
+  ///
+  /// [username]: The username.
+  ///
+  /// [password]: The password.
+  ///
+  /// [timestampStorage]: The timestamp when the token was stored.
+  ///
+  /// [expire]: The expiration time of the token.
+  static Future<bool> validateToken(
+    String username,
+    String password,
+    String timestampStorage,
+    int expire,
+  ) async {
+    DateTime timestamp = DateTime.parse(timestampStorage);
+    DateTime now = DateTime.now();
+    Duration difference = now.difference(timestamp);
+
+    int minRange = (expire * 0.8).toInt();
+    //int maxRange = (expire).toInt();
+
+    if (difference.inSeconds >= minRange) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await AuthService.login(username, password, prefs.getString("url")!);
+      return false;
+    }
+    return true;
   }
 
   /// Stores the authentication data in the secure storage.
@@ -111,19 +145,22 @@ class AuthService {
   /// [username]: The username.
   ///
   /// [password]: The password.
-  static Future<void> storeAuthenticationCredentials(
-      String? token, String username, String password) async {
+  static Future<void> storeAuthenticationCredentials(String? token, String username, String password, int expire) async {
     const storage = FlutterSecureStorage();
     await storage.write(key: "token", value: token);
+    await storage.write(key: "timestamp", value: DateTime.now().toIso8601String());
     await storage.write(key: "password", value: password);
     await storage.write(key: "username", value: username);
+    await storage.write(key: "expire", value: expire.toString());
     await storage.write(key: "softLogout", value: false.toString());
   }
 
   static Future<void> deleteAuthenticationCredentials() async {
     const storage = FlutterSecureStorage();
     await storage.delete(key: "token");
+    await storage.delete(key: "timestamp");
     await storage.delete(key: "password");
+    await storage.delete(key: "expire");
     await storage.delete(key: "username");
   }
 

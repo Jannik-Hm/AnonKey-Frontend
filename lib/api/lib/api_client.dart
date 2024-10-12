@@ -12,7 +12,7 @@ part of openapi.api;
 
 class ApiClient {
   ApiClient({
-    this.basePath = 'http://localhost',
+    this.basePath = 'https://api.beta.anonkey.lightjack.de',
     this.authentication,
   });
 

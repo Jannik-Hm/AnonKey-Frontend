@@ -3,6 +3,10 @@
   "@appTitle": {
     "description": "The title of the application"
   },
+  "login": "Log In",
+  "@login": {
+    "description": "Login button text"
+  },
   "register": "Register",
   "@register": {
     "description": "Register button text"
@@ -14,6 +18,14 @@
   "password": "Password",
   "@password": {
     "description": "Password input label"
+  },
+  "displayName": "Display Name",
+  "@displayName": {
+    "description": ""
+  },
+  "notes": "Notes",
+  "@notes": {
+    "description": ""
   },
   "url": "URL",
   "@url": {
@@ -31,12 +43,12 @@
   "@changeToLogin": {
     "description": "Text to change to login"
   },
-  "confirmCredentialDeleteTitle": "Delete Credential \"{displayName}\"?",
-  "@confirmCredentialDeleteTitle": {
+  "confirmCredentialSoftDeleteTitle": "Delete Credential \"{displayName}\"?",
+  "@confirmCredentialSoftDeleteTitle": {
     "description": ""
   },
-  "confirmCredentialDeleteText": "Are you sure you want to move Credential \"{displayName}\" into the deleted Folder?",
-  "@confirmCredentialDeleteText": {
+  "confirmCredentialSoftDeleteText": "Are you sure you want to move Credential \"{displayName}\" into the deleted Folder?",
+  "@confirmCredentialSoftDeleteText": {
     "description": "Text to change to login"
   },
   "abort": "Abort",
@@ -61,6 +73,74 @@
   },
   "deleteFolderKeepCredentials": "Delete, keep Credentials",
   "@deleteFolderKeepCredentials": {
+    "description": ""
+  },
+  "homeMenu": "Home",
+  "@home": {
+    "description": ""
+  },
+  "passwordsMenu": "Passwords",
+  "@home": {
+    "description": ""
+  },
+  "trashMenu": "Trash",
+  "@home": {
+    "description": ""
+  },
+  "settingsMenu": "Settings",
+  "@home": {
+    "description": ""
+  },
+  "welcomeText": "Welcome to Anonkey",
+  "@welcomeText": {
+    "description": ""
+  },
+  "totalPasswordsTitle": "Total Passwords",
+  "@totalPasswordsTitle": {
+    "description": ""
+  },
+  "totalPasswordsSubTitle": "You have {number} password(s) saved",
+  "@totalPasswordsSubTitle": {
+    "description": ""
+  },
+  "trashPasswordsTitle": "Deleted Passwords",
+  "@trashPasswordsTitle": {
+    "description": ""
+  },
+  "trashPasswordsSubTitle": "You have {number} deleted password(s)",
+  "@trashPasswordsSubTitle": {
+    "description": ""
+  },
+  "awaitingResult": "Awaiting result...",
+  "@awaitingResult": {
+    "description": ""
+  },
+  "folders": "Folders",
+  "@folders": {
+    "description": ""
+  },
+  "confirmCredentialDeleteTitle": "Restore or Delete \"{displayName}\" forever?",
+  "@confirmCredentialDeleteTitle": {
+    "description": ""
+  },
+  "confirmCredentialDeleteText": "Do you want to restore \"{displayName}\" or delete forever?",
+  "@confirmCredentialDeleteText": {
+    "description": "Text to change to login"
+  },
+  "restore": "Restore",
+  "@restore": {
+    "description": ""
+  },
+  "deleteForever": "Delete Forever",
+  "@deleteForever": {
+    "description": ""
+  },
+  "copiedUsername": "Copied Username",
+  "@copiedUsername": {
+    "description": ""
+  },
+  "copiedPassword": "Copied Password",
+  "@copiedUsername": {
     "description": ""
   }
 }

@@ -16,13 +16,9 @@ class CreateFolderWidget extends StatefulWidget {
 }
 
 class _CreateFolderWidget extends State<CreateFolderWidget> {
-  bool created = false;
 
   Future<void> onSaveCallback({required Folder folderData}) async {
-    if (!created) {
-      widget.addFolderToList(folderData);
-      created = true;
-    }
+    widget.addFolderToList(folderData);
   }
 
   @override

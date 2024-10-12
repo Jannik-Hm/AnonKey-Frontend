@@ -7,11 +7,15 @@ import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 class CreateCredentialWidget extends StatefulWidget {
   final List<Folder> availableFolders;
   final CredentialList credentials;
+  final Function(Credential) addToCredentials;
+  final String? currentFolderUuid;
 
   const CreateCredentialWidget({
     super.key,
     required this.availableFolders,
     required this.credentials,
+    required this.addToCredentials,
+    this.currentFolderUuid,
   });
 
   @override
@@ -19,12 +23,10 @@ class CreateCredentialWidget extends StatefulWidget {
 }
 
 class _CreateCredentialWidget extends State<CreateCredentialWidget> {
-  bool created = false;
-
   Future<void> onSaveCallback(Credential credential) async {
-    if(!created) {
-      widget.credentials.add(credential);
-      created = true;
+    widget.addToCredentials(credential);
+    if (context.mounted) {
+      Navigator.of(context).pop();
     }
   }
 
@@ -45,6 +47,7 @@ class _CreateCredentialWidget extends State<CreateCredentialWidget> {
               credential: null,
               onSaveCallback: onSaveCallback,
               availableFolders: widget.availableFolders,
+              currentFolderUuid: widget.currentFolderUuid,
             ),
           ),
         )

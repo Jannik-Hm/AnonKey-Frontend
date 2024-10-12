@@ -47,11 +47,13 @@ class _CredentialListWidget extends State<CredentialListWidget> {
       onSaveCallback: (credential) {
         setState(() {
           credentials = credentials.updateFromLocalObject(credential: credential);
+          credentialList = ((widget.currentFolderUuid == null) ? credentials.byIDList.values.toList() : (credentials.byFolderMap[widget.currentFolderUuid] ?? []));
         });
       },
       onSoftDeleteCallback: (uuid) {
         setState(() {
           credentials.softDelete(uuid);
+          credentialList = ((widget.currentFolderUuid == null) ? credentials.byIDList.values.toList() : (credentials.byFolderMap[widget.currentFolderUuid] ?? []));
         });
       },
       availableFolders: widget.availableFolders!.toList(),
@@ -69,8 +71,6 @@ class _CredentialListWidget extends State<CredentialListWidget> {
   @override
   Widget build(BuildContext context) {
     credentialList.sort((x, y) => x.getClearDisplayName().compareTo(y.getClearDisplayName()));
-    return Expanded(
-      child: Column(children: credentialList.map(_fromList).toList()),
-    );
+    return Column(children: credentialList.map(_fromList).toList());
   }
 }
