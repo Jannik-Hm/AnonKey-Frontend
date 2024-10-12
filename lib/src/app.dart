@@ -41,10 +41,7 @@ class MyApp extends StatelessWidget {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: const [
-            Locale('en'), // English, no country code
-            Locale('de') // German, no country code
-          ],
+          supportedLocales: Locales.supportedLocales,
 
           locale: settingsController.languageMode,
 
@@ -103,4 +100,11 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+}
+
+class Locales {
+  static const List<Locale> supportedLocales = [
+    Locale('en'), // English, no country code
+    Locale('de'), // German, no country code
+  ];
 }
