@@ -38,7 +38,7 @@ class SettingsView extends StatelessWidget {
             const SizedBox(height: 8),
             ListTile(
               leading: const Icon(Icons.brightness_6),
-              title: const Text('Select Theme'),
+              title: Text(AppLocalizations.of(context)!.selectTheme),
               trailing: DropdownButton<ThemeMode>(
                 value: controller.themeMode,
                 onChanged: (ThemeMode? newTheme) =>
