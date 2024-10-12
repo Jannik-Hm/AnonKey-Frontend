@@ -24,6 +24,9 @@ class _SplashScreenViewState extends State<SplashScreenView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false, // Remove 'Back' Button of context.push()
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -72,7 +75,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
         if (req) {
           if (context.mounted) {
             if (context.canPop()) {
-              context.pop();
+              context.pop(true);
             } else {
               context.goNamed("home");
             }
