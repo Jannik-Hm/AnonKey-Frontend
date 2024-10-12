@@ -21,11 +21,11 @@
   },
   "displayName": "Anzeigename",
   "@displayName": {
-    "description": ""
+    "description": "Display name input label"
   },
   "notes": "Notizen",
   "@notes": {
-    "description": ""
+    "description": "Notes input label"
   },
   "url": "URL",
   "@url": {
@@ -33,7 +33,7 @@
   },
   "chooseIcon": "Icon auswählen",
   "@chooseIcon": {
-    "description": "Klicken, um ein Icon auszuwählen"
+    "description": "Click to choose an icon"
   },
   "changeToRegister": "Du hast noch keinen Account? Hier registrieren",
   "@changeToRegister": {
@@ -45,102 +45,154 @@
   },
   "confirmCredentialSoftDeleteTitle": "Eintrag \"{displayName}\" löschen?",
   "@confirmCredentialSoftDeleteTitle": {
-    "description": ""
+    "description": "Title for soft delete confirmation dialog"
   },
   "confirmCredentialSoftDeleteText": "Bist du sicher, dass du den Eintrag \"{displayName}\" in den gelöscht Ordner bewegen möchtest?",
   "@confirmCredentialSoftDeleteText": {
-    "description": ""
+    "description": "Text for soft delete confirmation dialog"
   },
   "abort": "Abbrechen",
   "@abort": {
-    "description": ""
+    "description": "Abort button text"
   },
   "confirm": "Bestätigen",
   "@confirm": {
-    "description": ""
+    "description": "Confirm button text"
   },
   "confirmFolderDeleteTitle": "Ordner \"{displayName}\" löschen?",
   "@confirmFolderDeleteTitle": {
-    "description": ""
+    "description": "Title for folder delete confirmation dialog"
   },
   "confirmFolderDeleteText": "Bist du sicher, dass du den Ordner \"{displayName}\" löschen möchtest?",
   "@confirmFolderDeleteText": {
-    "description": ""
+    "description": "Text for folder delete confirmation dialog"
   },
   "deleteFolderWithCredentials": "Löschen samt Einträgen",
   "@deleteFolderWithCredentials": {
-    "description": ""
+    "description": "Delete folder with credentials option"
   },
   "deleteFolderKeepCredentials": "Löschen, Einträge behalten",
   "@deleteFolderKeepCredentials": {
-    "description": ""
+    "description": "Delete folder keep credentials option"
   },
   "homeMenu": "Home",
-  "@home": {
-    "description": ""
+  "@homeMenu": {
+    "description": "Home menu item"
   },
   "passwordsMenu": "Passwörter",
-  "@home": {
-    "description": ""
+  "@passwordsMenu": {
+    "description": "Passwords menu item"
   },
   "trashMenu": "Papierkorb",
-  "@home": {
-    "description": ""
+  "@trashMenu": {
+    "description": "Trash menu item"
   },
   "settingsMenu": "Einstellungen",
-  "@home": {
-    "description": ""
+  "@settingsMenu": {
+    "description": "Settings menu item"
   },
   "welcomeText": "Willkommen bei Anonkey",
   "@welcomeText": {
-    "description": ""
+    "description": "Welcome text"
   },
   "totalPasswordsTitle": "Alle Passwörter",
   "@totalPasswordsTitle": {
-    "description": ""
+    "description": "Total passwords title"
   },
   "totalPasswordsSubTitle": "Du hast {number} gespeicherte Passwört(er)",
   "@totalPasswordsSubTitle": {
-    "description": ""
+    "description": "Total passwords subtitle"
   },
   "trashPasswordsTitle": "Papierkorb",
   "@trashPasswordsTitle": {
-    "description": ""
+    "description": "Trash passwords title"
   },
   "trashPasswordsSubTitle": "Du hast {number} gelöschte(s) Passwört(er)",
   "@trashPasswordsSubTitle": {
-    "description": ""
+    "description": "Trash passwords subtitle"
   },
   "awaitingResult": "Daten verarbeiten...",
   "@awaitingResult": {
-    "description": ""
+    "description": "Awaiting result text"
   },
   "folders": "Ordner",
   "@folders": {
-    "description": ""
+    "description": "Folders label"
   },
   "confirmCredentialDeleteTitle": "Eintrag \"{displayName}\" wiederherstellen oder final löschen?",
   "@confirmCredentialDeleteTitle": {
-    "description": ""
+    "description": "Title for credential delete confirmation dialog"
   },
   "confirmCredentialDeleteText": "Möchtest du \"{displayName}\" wiederherstellen oder für immer löschen?",
   "@confirmCredentialDeleteText": {
-    "description": ""
+    "description": "Text for credential delete confirmation dialog"
   },
   "restore": "Wiederherstellen",
   "@restore": {
-    "description": ""
+    "description": "Restore button text"
   },
   "deleteForever": "Für immer löschen",
   "@deleteForever": {
-    "description": ""
+    "description": "Delete forever button text"
   },
   "copiedUsername": "Nutzername kopiert",
   "@copiedUsername": {
-    "description": ""
+    "description": "Copied username notification"
   },
   "copiedPassword": "Passwort kopiert",
-  "@copiedUsername": {
-    "description": ""
+  "@copiedPassword": {
+    "description": "Copied password notification"
+  },
+  "settingsTitle": "Einstellungen",
+  "@settingsTitle": {
+    "description": "Settings page title"
+  },
+  "theme": "Thema",
+  "@theme": {
+    "description": "Theme section title"
+  },
+  "selectTheme": "Thema auswählen",
+  "@selectTheme": {
+    "description": "Select theme label"
+  },
+  "systemTheme": "System Thema",
+  "@systemTheme": {
+    "description": "System theme option"
+  },
+  "lightTheme": "Helles Thema",
+  "@lightTheme": {
+    "description": "Light theme option"
+  },
+  "darkTheme": "Dunkles Thema",
+  "@darkTheme": {
+    "description": "Dark theme option"
+  },
+  "language": "Sprache",
+  "@language": {
+    "description": "Language section title"
+  },
+  "selectLanguage": "Sprache auswählen",
+  "@selectLanguage": {
+    "description": "Select language label"
+  },
+  "german": "Deutsch",
+  "@german": {
+    "description": "German language option"
+  },
+  "english": "Englisch",
+  "@english": {
+    "description": "English language option"
+  },
+  "openSourceLicenses": "Open Source Lizenzen",
+  "@openSourceLicenses": {
+    "description": "Open source licenses section title"
+  },
+  "viewLicenses": "Lizenzen anzeigen",
+  "@viewLicenses": {
+    "description": "View licenses label"
+  },
+  "logout": "Abmelden",
+  "@logout": {
+    "description": "Logout button text"
   }
 }

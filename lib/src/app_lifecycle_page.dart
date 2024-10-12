@@ -14,14 +14,18 @@ class AppLifecyclePage extends StatefulWidget {
   State<AppLifecyclePage> createState() => _AppLifecyclePageState();
 }
 
-class _AppLifecyclePageState extends State<AppLifecyclePage> with WidgetsBindingObserver {
+class _AppLifecyclePageState extends State<AppLifecyclePage>
+    with WidgetsBindingObserver {
   late bool isSplash;
+
+  late AppLifecycleState _notification;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     isSplash = false;
+    _notification = AppLifecycleState.resumed;
   }
 
   @override
@@ -32,12 +36,15 @@ class _AppLifecyclePageState extends State<AppLifecyclePage> with WidgetsBinding
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
+    setState(() {
+      _notification = state;
+    });
     if (state == AppLifecycleState.resumed) {
       if (!isSplash) {
         isSplash = true;
         context.push("/splash").then(
           (didPop) {
-            if(didPop as bool){
+            if (didPop as bool) {
               isSplash = false;
             }
           },
@@ -54,6 +61,17 @@ class _AppLifecyclePageState extends State<AppLifecyclePage> with WidgetsBinding
 
   @override
   Widget build(BuildContext context) {
+    if (_notification == AppLifecycleState.inactive) {
+      return const Scaffold(
+        body: Center(
+          child: Image(
+            image: AssetImage('assets/images/Logo.png'),
+            width: 200,
+            height: 200,
+          ),
+        ),
+      );
+    }
     return widget.child;
   }
 }
