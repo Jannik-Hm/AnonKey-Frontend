@@ -132,7 +132,7 @@ class RegisterControllerState extends State<RegisterView> {
           final SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('url', url.text);
           if (!mounted) return;
-          Navigator.pushNamed(context, 'home');
+          context.goNamed('home');
         }
       }
     } on ApiException catch (e) {

@@ -3,6 +3,7 @@ import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
+import 'package:anonkey_frontend/src/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -24,12 +25,14 @@ class _SplashScreenViewState extends State<SplashScreenView> {
   final _loginFormKey = GlobalKey<FormState>();
   final LocalAuthentication auth = LocalAuthentication();
   bool _isBiometricAvailable = false;
+  late bool notFirstTry;
 
   @override
   void initState() {
     super.initState();
     _checkBiometricAvailability();
     if (_isBiometricAvailable) _loginWithBiometrics(context);
+    notFirstTry = false;
   }
 
   Future<void> _checkBiometricAvailability() async {
@@ -96,6 +99,18 @@ class _SplashScreenViewState extends State<SplashScreenView> {
               onPressed: () => _loginWithoutUsername(context),
               child: const Text('Fly me to the moon'),
             ),
+            const SizedBox(height: 20),
+            if(notFirstTry)
+            ElevatedButton.icon(
+              key: UniqueKey(),
+              onPressed: () => UserService.logout(context),
+              icon: const Icon(Icons.logout),
+              label: Text(AppLocalizations.of(context)!.logout),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+              ),
+            ),
           ],
         ),
       ),
@@ -119,6 +134,9 @@ class _SplashScreenViewState extends State<SplashScreenView> {
             }
           }
         } else {
+          setState(() {
+            notFirstTry = true;
+          });
           if (context.mounted) {
             NotificationPopup.popupErrorMessage(
                 context: context, message: "Login failed");
@@ -171,6 +189,9 @@ class _SplashScreenViewState extends State<SplashScreenView> {
             }
           }
         } else {
+          setState(() {
+            notFirstTry = true;
+          });
           if (context.mounted) {
             NotificationPopup.popupErrorMessage(
                 context: context, message: "Login failed");
