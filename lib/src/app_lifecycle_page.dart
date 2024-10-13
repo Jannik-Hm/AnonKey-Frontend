@@ -1,5 +1,6 @@
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 
 class AppLifecyclePage extends StatefulWidget {
@@ -36,26 +37,31 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    setState(() {
-      _notification = state;
-    });
-    if (state == AppLifecycleState.resumed) {
-      if (!isSplash) {
-        isSplash = true;
-        context.push("/splash").then(
-          (didPop) {
-            if (didPop as bool) {
-              isSplash = false;
-            }
-          },
-        );
+    const FlutterSecureStorage storage = FlutterSecureStorage();
+    String? skipSplashScreen = await storage.read(key: "skipSplashScreen");
+
+    if (skipSplashScreen?.contains("false") ?? true) {
+      setState(() {
+        _notification = state;
+      });
+      if (state == AppLifecycleState.resumed) {
+        if (!isSplash) {
+          isSplash = true;
+          context.push("/splash").then(
+            (didPop) {
+              if (didPop as bool) {
+                isSplash = false;
+              }
+            },
+          );
+        }
       }
-    }
-    if (state == AppLifecycleState.paused) {
-      await AuthService.softLogout();
-    }
-    if (state == AppLifecycleState.inactive) {
-      await AuthService.softLogout();
+      if (state == AppLifecycleState.paused) {
+        await AuthService.softLogout();
+      }
+      if (state == AppLifecycleState.inactive) {
+        await AuthService.softLogout();
+      }
     }
   }
 

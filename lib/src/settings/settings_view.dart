@@ -5,6 +5,7 @@ import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../service/auth_service.dart';
@@ -17,6 +18,7 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final LocalAuthentication auth = LocalAuthentication();
     void logout() async {
       await AuthService.deleteAuthenticationCredentials();
       if (!context.mounted) return;
@@ -132,127 +134,140 @@ class SettingsView extends StatelessWidget {
                   title: Text(
                       AppLocalizations.of(context)!.biometricAuthentication),
                   value: isBiometricEnabled,
-                  onChanged: (bool value) {
-                    controller.updateBiometricSetting(value);
+                  onChanged: (bool value) async {
+                    try {
+                      await AuthService.setSkipSplashScreen(true);
+                      bool canCheckBiometrics = await auth.authenticate(
+                        localizedReason: "Authenticate to enable biometrics",
+                        options: const AuthenticationOptions(
+                          biometricOnly: true,
+                        ),
+                      );
+                      if (canCheckBiometrics) {
+                        controller.updateBiometricSetting(value);
+                      }
+                    } catch (e) {}
                   },
                 );
               },
             ),
             const SizedBox(height: 20),
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: logout,
-                icon: const Icon(Icons.logout),
-                label: Text(AppLocalizations.of(context)!.logout),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: logout,
+                  icon: const Icon(Icons.logout),
+                  label: Text(AppLocalizations.of(context)!.logout),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Center(
-              child: ElevatedButton.icon(
-                onPressed: () => {
-                  showModalBottomSheet<void>(
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (BuildContext context) {
-                      bool isDarkTheme;
-                      if (ThemeMode.system != controller.themeMode) {
-                        isDarkTheme = controller.themeMode == ThemeMode.dark
-                            ? true
-                            : false;
-                      } else {
-                        var brightness =
-                            MediaQuery.of(context).platformBrightness;
-                        isDarkTheme = brightness == Brightness.dark;
-                      }
-                      return ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(20)),
-                        child: Container(
-                          color: isDarkTheme
-                              ? ThemeData.dark().scaffoldBackgroundColor
-                              : ThemeData.light().scaffoldBackgroundColor,
-                          padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewInsets.bottom,
-                            left: 16,
-                            right: 16,
-                            top: 16,
-                          ),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  AppLocalizations.of(context)!.deleteUser,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                ElevatedButton.icon(
+                  onPressed: () => {
+                    showModalBottomSheet<void>(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        bool isDarkTheme;
+                        if (ThemeMode.system != controller.themeMode) {
+                          isDarkTheme = controller.themeMode == ThemeMode.dark
+                              ? true
+                              : false;
+                        } else {
+                          var brightness =
+                              MediaQuery.of(context).platformBrightness;
+                          isDarkTheme = brightness == Brightness.dark;
+                        }
+                        return ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(20)),
+                          child: Container(
+                            color: isDarkTheme
+                                ? ThemeData.dark().scaffoldBackgroundColor
+                                : ThemeData.light().scaffoldBackgroundColor,
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).viewInsets.bottom,
+                              left: 16,
+                              right: 16,
+                              top: 16,
+                            ),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.deleteUser,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 8),
-                                TextField(
-                                  controller: controller.password,
-                                  decoration: InputDecoration(
-                                    labelText:
-                                        AppLocalizations.of(context)!.password,
+                                  const SizedBox(height: 8),
+                                  TextField(
+                                    controller: controller.password,
+                                    decoration: InputDecoration(
+                                      labelText: AppLocalizations.of(context)!
+                                          .password,
+                                    ),
+                                    obscureText: true,
                                   ),
-                                  obscureText: true,
-                                ),
-                                const SizedBox(height: 20),
-                                ValueListenableBuilder<String?>(
-                                  valueListenable: controller.errorMessage,
-                                  builder: (context, errorMessage, child) {
-                                    return errorMessage != null
-                                        ? Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              errorMessage,
-                                              style: const TextStyle(
-                                                  color: Colors.red),
-                                            ),
-                                          )
-                                        : Container();
-                                  },
-                                ),
-                                const SizedBox(height: 20),
-                                ValueListenableBuilder<bool>(
-                                  valueListenable: controller.isPasswordEmpty,
-                                  builder: (context, isPasswordEmpty, child) {
-                                    return ElevatedButton(
-                                      onPressed:
-                                          isPasswordEmpty ? null : deleteUser,
-                                      style: ElevatedButton.styleFrom(
-                                        foregroundColor: Theme.of(context)
-                                            .colorScheme
-                                            .onPrimary,
-                                        backgroundColor:
-                                            Theme.of(context).colorScheme.error,
-                                      ),
-                                      child: Text(AppLocalizations.of(context)!
-                                          .deleteUser),
-                                    );
-                                  },
-                                ),
-                              ],
+                                  const SizedBox(height: 20),
+                                  ValueListenableBuilder<String?>(
+                                    valueListenable: controller.errorMessage,
+                                    builder: (context, errorMessage, child) {
+                                      return errorMessage != null
+                                          ? Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                errorMessage,
+                                                style: const TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                            )
+                                          : Container();
+                                    },
+                                  ),
+                                  const SizedBox(height: 20),
+                                  ValueListenableBuilder<bool>(
+                                    valueListenable: controller.isPasswordEmpty,
+                                    builder: (context, isPasswordEmpty, child) {
+                                      return ElevatedButton(
+                                        onPressed:
+                                            isPasswordEmpty ? null : deleteUser,
+                                        style: ElevatedButton.styleFrom(
+                                          foregroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .error,
+                                        ),
+                                        child: Text(
+                                            AppLocalizations.of(context)!
+                                                .deleteUser),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
+                  },
+                  icon: const Icon(Icons.delete),
+                  label: Text(AppLocalizations.of(context)!.deleteUser),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                    backgroundColor: Theme.of(context).colorScheme.error,
                   ),
-                },
-                icon: const Icon(Icons.delete),
-                label: Text(AppLocalizations.of(context)!.deleteUser),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  backgroundColor: Theme.of(context).colorScheme.error,
                 ),
-              ),
-            )
+              ],
+            ),
           ],
         ),
       ),

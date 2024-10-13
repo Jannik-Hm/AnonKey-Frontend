@@ -193,4 +193,9 @@ class AuthService {
     String? softLogout = await storage.read(key: "softLogout");
     return softLogout == "true";
   }
+
+  static Future<void> setSkipSplashScreen(bool isSkipped) async {
+    const storage = FlutterSecureStorage();
+    storage.write(key: 'skipSplashScreen', value: isSkipped.toString());
+  }
 }
