@@ -5,13 +5,18 @@ import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CredentialList {
+  // Map of all credentials, UUID as Key
   Map<String, Credential> byIDList = {};
+  // Map of all credentials, folderUuid as Key
   Map<String, List<Credential>> byFolderMap = {};
+  // Map of all soft-deleted credentials, UUID as Key
   Map<String, Credential> deletedList = {};
 
   CredentialList._();
 
+  /// add [credential] to this CredentialList
   void add(Credential credential) {
+    // check if soft deleted
     if(credential.getDeletedTimeStamp() != null){
       deletedList[credential.uuid] = credential;
     }else{
@@ -23,6 +28,7 @@ class CredentialList {
     }
   }
 
+  /// remove Credential with ID [credentialUUID] from this CredentialList
   void remove(String credentialUUID) {
     deletedList.remove(credentialUUID);
     Credential? credential = byIDList[credentialUUID];
@@ -32,6 +38,7 @@ class CredentialList {
     }
   }
 
+  /// restore soft-deleted Credential with ID [credentialUUID] from this CredentialList
   void restore(String credentialUUID) {
     Credential? credential = deletedList[credentialUUID];
     if (credential != null){
@@ -41,6 +48,7 @@ class CredentialList {
     }
   }
 
+  /// soft-delete Credential with ID [credentialUUID] from this CredentialList
   void softDelete(String credentialUUID) {
     Credential? credential = byIDList[credentialUUID];
     if (credential != null) {
@@ -51,9 +59,14 @@ class CredentialList {
 
   // TODO: save serialized (JSON) data in file storage as shared preferences will probably be too small and sqlite would be inefficient for this usecase
 
+  /// Function to deserialize CredentialList from Local Storage
+  ///
   /// How to use:
+  ///
   /// import 'dart:convert';
+  ///
   /// String test = jsonEncode(data);
+  ///
   /// CredentialList list = await CredentialList.fromJson(jsonDecode(test));
   static Future<CredentialList> fromJson(List<dynamic> json) async {
     CredentialList data = CredentialList._();
@@ -64,8 +77,10 @@ class CredentialList {
     return data;
   }
 
+  /// Function to serialize CredentialList to store in Local Storage
   List<dynamic> toJson() => byIDList.values.toList();
 
+  /// Function to get new CredentialList from `All` API endpoint response
   static Future<CredentialList> getFromAPI({required api.CredentialsGetAllResponseBody credentials, required String masterPassword}) async {
     CredentialList data = CredentialList._();
     for (var credential in credentials.credentials!) {
@@ -91,6 +106,7 @@ class CredentialList {
     return data;
   }
 
+  /// Function to update Credential Entry in CredentialList using parameters
   void updateFromLocal({
     required String uuid,
     required String masterPassword,
@@ -118,6 +134,7 @@ class CredentialList {
     }
   }
 
+  /// Function to update Credential Entry in CredentialList using Credential Object
   CredentialList updateFromLocalObject({required Credential credential}) {
     Credential? temp = byIDList[credential.uuid];
     if (temp != null) {
@@ -127,6 +144,7 @@ class CredentialList {
     return this;
   }
 
+  /// Function to update this entire CredentialList using `All` API endpoint (with minimal decryption)
   Future<CredentialList> updateFromAPI({required api.CredentialsGetAllResponseBody credentials, required String masterPassword}) async {
     CredentialList data = CredentialList._();
     for (var credential in credentials.credentials!) {
@@ -173,6 +191,7 @@ class CredentialList {
     return data;
   }
 
+  /// Helper to get `All` API endpoint
   static Future<api.CredentialsGetAllResponseBody?> _getResponseFromAllAPI() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('url');
@@ -187,6 +206,7 @@ class CredentialList {
     return null;
   }
 
+  /// Function to get entire CredentialList from Backend
   static Future<CredentialList?> getFromAPIFull() async {
     api.CredentialsGetAllResponseBody? response = await _getResponseFromAllAPI();
     Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
@@ -198,6 +218,7 @@ class CredentialList {
     return null;
   }
 
+  /// Function to update this entire CredentialList from Backend (with minimal decryption)
   Future<CredentialList?> updateFromAPIFull() async {
     api.CredentialsGetAllResponseBody? response = await _getResponseFromAllAPI();
     Map<String, String> authdata = await AuthService.getAuthenticationCredentials();

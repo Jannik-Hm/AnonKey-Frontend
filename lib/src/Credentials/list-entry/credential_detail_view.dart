@@ -100,7 +100,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     Future<bool> save() async {
       Credential temp;
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? url = prefs.getString('url');
+      String? url = prefs.getString('url'); // Get Backend URL
       Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
       try {
         if (url != null) {
@@ -160,7 +160,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       try {
         if (_credential != null) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          String? url = prefs.getString('url');
+          String? url = prefs.getString('url'); // Get Backend URL
           Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
           if (url != null) {
             ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
@@ -183,6 +183,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       }
     }
 
+    /// Popup to confirm deletion
     showDeleteConfirmDialog(Credential credential) {
       return showDialog(
         context: context,

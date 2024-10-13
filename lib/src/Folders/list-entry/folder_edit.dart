@@ -76,7 +76,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
 
     Future<bool> save() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? url = prefs.getString('url');
+      String? url = prefs.getString('url'); // Get Backend URL
       Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
       try {
         if (url != null) {
@@ -113,7 +113,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
 
     Future<bool> delete(bool recursive) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? url = prefs.getString('url');
+      String? url = prefs.getString('url'); // Get Backend URL
       Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
       try {
         if (url != null) {

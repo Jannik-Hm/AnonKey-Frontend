@@ -26,7 +26,7 @@ class _CreateCredentialWidget extends State<CreateCredentialWidget> {
   Future<void> onSaveCallback(Credential credential) async {
     widget.addToCredentials(credential);
     if (context.mounted) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(); // Close create Window
     }
   }
 
