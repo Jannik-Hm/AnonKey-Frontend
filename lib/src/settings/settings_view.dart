@@ -32,7 +32,7 @@ class SettingsView extends StatelessWidget {
       bool res =
           await UserService.deleteUser(url, token, controller.password.text);
       if (res) {
-        GoRouter.of(context).clearStackAndNavigate("login");
+        GoRouter.of(context).clearStackAndNavigate("/login");
       } else {
         controller.errorMessage.value =
             AppLocalizations.of(context)!.deleteUserFailed;

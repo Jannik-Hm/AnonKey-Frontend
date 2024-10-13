@@ -87,6 +87,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                   backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
               ),
+            const SizedBox(height: 16),
             TextButton(
               style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,

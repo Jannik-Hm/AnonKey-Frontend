@@ -8,7 +8,6 @@ import 'package:anonkey_frontend/src/Widgets/home_folders_display.dart';
 import 'package:anonkey_frontend/src/Widgets/refresh_button.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -73,7 +72,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final ThemeData theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('AnonKey', style: TextStyle(color: theme.colorScheme.onPrimary)),
+        title: Text('AnonKey',
+            style: TextStyle(color: theme.colorScheme.onPrimary)),
         backgroundColor: theme.colorScheme.primary,
         actions: [
           RefreshButton(onRefreshCallback: () {
@@ -144,7 +144,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   future: combinedData,
                   builder: (context, snapshot) {
                     List<Widget> children;
-                    if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData &&
+                        snapshot.connectionState == ConnectionState.done) {
                       children = <Widget>[
                         ClickableTile(
                           leading: Icon(
@@ -153,11 +154,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           title: Text(
                             AppLocalizations.of(context)!.totalPasswordsTitle,
-                            style: TextStyle(color: theme.colorScheme.onTertiary),
+                            style:
+                                TextStyle(color: theme.colorScheme.onTertiary),
                           ),
                           subTitle: Text(
-                            AppLocalizations.of(context)!.totalPasswordsSubTitle(snapshot.data!.credentials?.byIDList.length ?? 0),
-                            style: TextStyle(color: theme.colorScheme.onTertiary),
+                            AppLocalizations.of(context)!
+                                .totalPasswordsSubTitle(snapshot
+                                        .data!.credentials?.byIDList.length ??
+                                    0),
+                            style:
+                                TextStyle(color: theme.colorScheme.onTertiary),
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
@@ -191,15 +197,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           title: Text(
                             AppLocalizations.of(context)!.trashPasswordsTitle,
-                            style: TextStyle(color: theme.colorScheme.onTertiary),
+                            style:
+                                TextStyle(color: theme.colorScheme.onTertiary),
                           ),
                           subTitle: Text(
-                            AppLocalizations.of(context)!.trashPasswordsSubTitle(snapshot.data!.credentials?.deletedList.length ?? 0),
-                            style: TextStyle(color: theme.colorScheme.onTertiary),
+                            AppLocalizations.of(context)!
+                                .trashPasswordsSubTitle(snapshot.data!
+                                        .credentials?.deletedList.length ??
+                                    0),
+                            style:
+                                TextStyle(color: theme.colorScheme.onTertiary),
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
-                            color: theme.colorScheme.onPrimary,
+                            color: theme.colorScheme.onTertiary,
                           ),
                           onTap: () => {
                             setState(
@@ -250,7 +261,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         Center(
                           child: Padding(
                             padding: const EdgeInsets.only(top: 16),
-                            child: Text(AppLocalizations.of(context)!.awaitingResult),
+                            child: Text(
+                                AppLocalizations.of(context)!.awaitingResult),
                           ),
                         ),
                       ];
@@ -324,7 +336,8 @@ class _HomeScreenState extends State<HomeScreen> {
               future: combinedData,
               builder: (context, snapshot) {
                 List<Widget> children;
-                if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData &&
+                    snapshot.connectionState == ConnectionState.done) {
                   children = <Widget>[
                     HomeCredentialsDisplayWidget(combinedData: snapshot.data!),
                   ];
@@ -358,7 +371,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 16),
-                        child: Text(AppLocalizations.of(context)!.awaitingResult),
+                        child:
+                            Text(AppLocalizations.of(context)!.awaitingResult),
                       ),
                     ),
                   ];
@@ -388,9 +402,11 @@ class _HomeScreenState extends State<HomeScreen> {
               future: combinedData,
               builder: (context, snapshot) {
                 List<Widget> children;
-                if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData &&
+                    snapshot.connectionState == ConnectionState.done) {
                   children = <Widget>[
-                    CredentialTrashListWidget(credentials: snapshot.data!.credentials!),
+                    CredentialTrashListWidget(
+                        credentials: snapshot.data!.credentials!),
                   ];
                 } else if (snapshot.hasError) {
                   children = <Widget>[
@@ -422,7 +438,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 16),
-                        child: Text(AppLocalizations.of(context)!.awaitingResult),
+                        child:
+                            Text(AppLocalizations.of(context)!.awaitingResult),
                       ),
                     ),
                   ];

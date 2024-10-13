@@ -214,5 +214,9 @@
   "biometricAuthentication": "Biometrische Authentifizierung",
   "@biometricAuthentication": {
     "description": "Biometric authentication section title"
+  },
+  "biometricNotAvailable": "Biometrische Authentifizierung nicht verfügbar",
+  "@biometricNotAvailable": {
+    "description": "Biometric not available notification"
   }
 }
