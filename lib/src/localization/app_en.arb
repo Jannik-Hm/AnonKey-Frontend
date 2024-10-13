@@ -202,5 +202,21 @@
   "deleteUserFailed": "Failed to delete user",
   "@deleteUserFailed": {
     "description": "Delete user failed notification"
+  },
+  "biometricNotAvailable": "Biometric authentication is not available.",
+  "@biometricNotAvailable": {
+    "description": "Biometric not available notification"
+  },
+  "biometricFailed": "Biometric authentication failed.",
+  "@biometricFailed": {
+    "description": "Biometric failed notification"
+  },
+  "loginWithBiometrics": "Login with Biometrics",
+  "@loginWithBiometrics": {
+    "description": "Login with biometrics button text"
+  },
+  "biometricAuthentication": "Biometric Authentication",
+  "@biometricAuthentication": {
+    "description": "Biometric authentication title"
   }
 }

@@ -202,5 +202,17 @@
   "deleteUserFailed": "Account konnte nicht gelöscht werden",
   "@deleteUserFailed": {
     "description": "Delete user failed notification"
+  },
+  "biometricFailed": "Biometrische Registrierung fehlgeschlagen.",
+  "@biometricFailed": {
+    "description": "Biometric failed notification"
+  },
+  "loginWithBiometrics": "Login mit Biometrie",
+  "@loginWithBiometrics": {
+    "description": "Login with biometrics button text"
+  },
+  "biometricAuthentication": "Biometrische Authentifizierung",
+  "@biometricAuthentication": {
+    "description": "Biometric authentication section title"
   }
 }

@@ -10,6 +10,7 @@ import 'settings_service.dart';
 /// uses the SettingsService to store and retrieve user settings.
 class SettingsController with ChangeNotifier {
   SettingsController(this._settingsService) {
+    _loadBiometricSetting();
     password.addListener(() {
       isPasswordEmpty.value = password.text.isEmpty;
     });
@@ -21,6 +22,7 @@ class SettingsController with ChangeNotifier {
   final TextEditingController password = TextEditingController();
   final ValueNotifier<bool> isPasswordEmpty = ValueNotifier<bool>(true);
   final ValueNotifier<String?> errorMessage = ValueNotifier<String?>(null);
+  final ValueNotifier<bool> isBiometricEnabled = ValueNotifier<bool>(false);
 
   // Make ThemeMode a private variable so it is not updated directly without
   // also persisting the changes with the SettingsService.
@@ -86,5 +88,16 @@ class SettingsController with ChangeNotifier {
     }
     await prefs.setInt('site', 3);
     notifyListeners();
+  }
+
+  Future<void> _loadBiometricSetting() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    isBiometricEnabled.value = prefs.getBool('isBiometricEnabled') ?? false;
+  }
+
+  Future<void> updateBiometricSetting(bool isEnabled) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isBiometricEnabled', isEnabled);
+    isBiometricEnabled.value = isEnabled;
   }
 }

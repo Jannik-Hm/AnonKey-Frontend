@@ -116,6 +116,20 @@ class SettingsView extends StatelessWidget {
             onTap: () => showLicensePage(context: context),
           ),
           const SizedBox(height: 20),
+          ValueListenableBuilder<bool>(
+            valueListenable: controller.isBiometricEnabled,
+            builder: (context, isBiometricEnabled, child) {
+              return SwitchListTile(
+                title:
+                    Text(AppLocalizations.of(context)!.biometricAuthentication),
+                value: isBiometricEnabled,
+                onChanged: (bool value) {
+                  controller.updateBiometricSetting(value);
+                },
+              );
+            },
+          ),
+          const SizedBox(height: 20),
           Center(
             child: ElevatedButton.icon(
               onPressed: logout,
@@ -135,7 +149,15 @@ class SettingsView extends StatelessWidget {
                   context: context,
                   isScrollControlled: true,
                   builder: (BuildContext context) {
-                    final isDarkTheme = ThemeMode.dark == controller.themeMode;
+                    bool isDarkTheme;
+                    if (ThemeMode.system != controller.themeMode) {
+                      isDarkTheme =
+                          controller.themeMode == ThemeMode.dark ? true : false;
+                    } else {
+                      var brightness =
+                          MediaQuery.of(context).platformBrightness;
+                      isDarkTheme = brightness == Brightness.dark;
+                    }
                     return ClipRRect(
                       borderRadius:
                           const BorderRadius.vertical(top: Radius.circular(20)),
