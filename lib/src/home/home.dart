@@ -8,8 +8,8 @@ import 'package:anonkey_frontend/src/Widgets/home_folders_display.dart';
 import 'package:anonkey_frontend/src/Widgets/refresh_button.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../settings/settings_view.dart';
 
@@ -34,9 +34,12 @@ class _HomeScreenState extends State<HomeScreen> {
     _controller = widget.controller;
     currentPageIndex = widget.index;
     _initializeSettings();
-    combinedData = Future.wait([CredentialList.getFromAPIFull(), FolderList.getFromAPIFull()]).then(
+    combinedData = Future.wait(
+        [CredentialList.getFromAPIFull(), FolderList.getFromAPIFull()]).then(
       (results) {
-        return CombinedListData(credentials: results[0] as CredentialList, folders: results[1] as FolderList);
+        return CombinedListData(
+            credentials: results[0] as CredentialList,
+            folders: results[1] as FolderList);
       },
     );
   }
@@ -52,9 +55,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> onFolderDelete(bool recursive) async {
     combinedData.then((data) {
       setState(() {
-        combinedData = Future.wait([data.credentials!.updateFromAPIFull()]).then(
+        combinedData =
+            Future.wait([data.credentials!.updateFromAPIFull()]).then(
           (results) {
-            return CombinedListData(credentials: results[0] as CredentialList, folders: data.folders);
+            return CombinedListData(
+                credentials: results[0] as CredentialList,
+                folders: data.folders);
           },
         );
       });
@@ -72,9 +78,14 @@ class _HomeScreenState extends State<HomeScreen> {
           RefreshButton(onRefreshCallback: () {
             combinedData.then((data) {
               setState(() {
-                combinedData = Future.wait([data.credentials!.updateFromAPIFull(), FolderList.getFromAPIFull()]).then(
+                combinedData = Future.wait([
+                  data.credentials!.updateFromAPIFull(),
+                  FolderList.getFromAPIFull()
+                ]).then(
                   (results) {
-                    return CombinedListData(credentials: results[0] as CredentialList, folders: results[1] as FolderList);
+                    return CombinedListData(
+                        credentials: results[0] as CredentialList,
+                        folders: results[1] as FolderList);
                   },
                 );
               });
@@ -132,7 +143,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   future: combinedData,
                   builder: (context, snapshot) {
                     List<Widget> children;
-                    if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData &&
+                        snapshot.connectionState == ConnectionState.done) {
                       children = <Widget>[
                         ClickableTile(
                           leading: Icon(
@@ -141,11 +153,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           title: Text(
                             AppLocalizations.of(context)!.totalPasswordsTitle,
-                            style: TextStyle(color: theme.colorScheme.onPrimary),
+                            style:
+                                TextStyle(color: theme.colorScheme.onPrimary),
                           ),
                           subTitle: Text(
-                            AppLocalizations.of(context)!.totalPasswordsSubTitle(snapshot.data!.credentials?.byIDList.length ?? 0),
-                            style: TextStyle(color: theme.colorScheme.onPrimary),
+                            AppLocalizations.of(context)!
+                                .totalPasswordsSubTitle(snapshot
+                                        .data!.credentials?.byIDList.length ??
+                                    0),
+                            style:
+                                TextStyle(color: theme.colorScheme.onPrimary),
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
@@ -179,11 +196,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           title: Text(
                             AppLocalizations.of(context)!.trashPasswordsTitle,
-                            style: TextStyle(color: theme.colorScheme.onPrimary),
+                            style:
+                                TextStyle(color: theme.colorScheme.onPrimary),
                           ),
                           subTitle: Text(
-                            AppLocalizations.of(context)!.trashPasswordsSubTitle(snapshot.data!.credentials?.deletedList.length ?? 0),
-                            style: TextStyle(color: theme.colorScheme.onPrimary),
+                            AppLocalizations.of(context)!
+                                .trashPasswordsSubTitle(snapshot.data!
+                                        .credentials?.deletedList.length ??
+                                    0),
+                            style:
+                                TextStyle(color: theme.colorScheme.onPrimary),
                           ),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
@@ -238,7 +260,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         Center(
                           child: Padding(
                             padding: const EdgeInsets.only(top: 16),
-                            child: Text(AppLocalizations.of(context)!.awaitingResult),
+                            child: Text(
+                                AppLocalizations.of(context)!.awaitingResult),
                           ),
                         ),
                       ];
@@ -312,7 +335,8 @@ class _HomeScreenState extends State<HomeScreen> {
               future: combinedData,
               builder: (context, snapshot) {
                 List<Widget> children;
-                if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData &&
+                    snapshot.connectionState == ConnectionState.done) {
                   children = <Widget>[
                     HomeCredentialsDisplayWidget(combinedData: snapshot.data!),
                   ];
@@ -346,7 +370,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 16),
-                        child: Text(AppLocalizations.of(context)!.awaitingResult),
+                        child:
+                            Text(AppLocalizations.of(context)!.awaitingResult),
                       ),
                     ),
                   ];
@@ -376,9 +401,11 @@ class _HomeScreenState extends State<HomeScreen> {
               future: combinedData,
               builder: (context, snapshot) {
                 List<Widget> children;
-                if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData &&
+                    snapshot.connectionState == ConnectionState.done) {
                   children = <Widget>[
-                    CredentialTrashListWidget(credentials: snapshot.data!.credentials!),
+                    CredentialTrashListWidget(
+                        credentials: snapshot.data!.credentials!),
                   ];
                 } else if (snapshot.hasError) {
                   children = <Widget>[
@@ -410,7 +437,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 16),
-                        child: Text(AppLocalizations.of(context)!.awaitingResult),
+                        child:
+                            Text(AppLocalizations.of(context)!.awaitingResult),
                       ),
                     ),
                   ];

@@ -194,5 +194,13 @@
   "logout": "Abmelden",
   "@logout": {
     "description": "Logout button text"
+  },
+  "deleteUser": "Account löschen",
+  "@deleteUser": {
+    "description": "Delete user button text"
+  },
+  "deleteUserFailed": "Account konnte nicht gelöscht werden",
+  "@deleteUserFailed": {
+    "description": "Delete user failed notification"
   }
 }

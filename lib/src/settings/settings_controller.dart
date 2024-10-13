@@ -9,10 +9,18 @@ import 'settings_service.dart';
 /// Controllers glue Data Services to Flutter Widgets. The SettingsController
 /// uses the SettingsService to store and retrieve user settings.
 class SettingsController with ChangeNotifier {
-  SettingsController(this._settingsService);
+  SettingsController(this._settingsService) {
+    password.addListener(() {
+      isPasswordEmpty.value = password.text.isEmpty;
+    });
+  }
 
   // Make SettingsService a private variable so it is not used directly.
   final SettingsService _settingsService;
+
+  final TextEditingController password = TextEditingController();
+  final ValueNotifier<bool> isPasswordEmpty = ValueNotifier<bool>(true);
+  final ValueNotifier<String?> errorMessage = ValueNotifier<String?>(null);
 
   // Make ThemeMode a private variable so it is not updated directly without
   // also persisting the changes with the SettingsService.
@@ -76,6 +84,7 @@ class SettingsController with ChangeNotifier {
       await prefs.setString('language_code', 'en');
       await prefs.setString('countryCode', 'US');
     }
+    await prefs.setInt('site', 3);
     notifyListeners();
   }
 }

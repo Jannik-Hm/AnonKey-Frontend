@@ -194,5 +194,13 @@
   "logout": "Log Out",
   "@logout": {
     "description": "Logout button text"
+  },
+  "deleteUser": "Delete User",
+  "@deleteUser": {
+    "description": "Delete user button text"
+  },
+  "deleteUserFailed": "Failed to delete user",
+  "@deleteUserFailed": {
+    "description": "Delete user failed notification"
   }
 }
