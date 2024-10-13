@@ -27,7 +27,7 @@ dependencies:
   rxdart: any
   intl: any
   flutter_iconpicker: ^4.0.0
-  flutter_dotenv: ^5.1.0
+  # flutter_dotenv: ^5.1.0
   flutter_secure_storage: ^9.2.2
   go_router: ^14.2.8
 
@@ -46,5 +46,5 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/images/
-    - .env
-    - .env.development
+    # - .env
+    # - .env.development
