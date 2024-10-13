@@ -17,12 +17,6 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void logout() async {
-      await AuthService.deleteAuthenticationCredentials();
-      if (!context.mounted) return;
-      GoRouter.of(context).clearStackAndNavigate("login");
-    }
-
     void deleteUser() async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String url = prefs.getString("url")!;
@@ -141,7 +135,7 @@ class SettingsView extends StatelessWidget {
             const SizedBox(height: 20),
             Center(
               child: ElevatedButton.icon(
-                onPressed: logout,
+                onPressed: () => UserService.logout(context),
                 icon: const Icon(Icons.logout),
                 label: Text(AppLocalizations.of(context)!.logout),
                 style: ElevatedButton.styleFrom(
