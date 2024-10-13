@@ -86,14 +86,14 @@ class _CredentialEntry extends State<CredentialEntry> {
       title: Text(
         _credential.getClearDisplayName(),
         style: TextStyle(
-          color: theme.colorScheme.onPrimary,
+          color: theme.colorScheme.onTertiary,
           fontSize: 20.0,
         ),
       ),
       subTitle: Text(
         _credential.getClearUsername(),
         style: TextStyle(
-          color: theme.colorScheme.onPrimary,
+          color: theme.colorScheme.onTertiary,
           fontSize: 15.0,
         ),
       ),

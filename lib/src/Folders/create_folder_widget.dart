@@ -43,7 +43,7 @@ class _CreateFolderWidget extends State<CreateFolderWidget> {
       },
       icon: Icon(
         Icons.add,
-        color: Theme.of(context).colorScheme.onPrimary,
+        color: Theme.of(context).colorScheme.onSurface,
       ),
     );
   }

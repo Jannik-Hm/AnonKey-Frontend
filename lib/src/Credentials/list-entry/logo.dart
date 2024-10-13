@@ -42,7 +42,7 @@ StatefulWidget getNetworkLogoFromUrl(String url) {
           // print(snapshot.error); // Debugging information
           return Icon(
             Icons.public,
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: Theme.of(context).colorScheme.onTertiary,
           );
         } else if (snapshot.hasData) {
           return Image.network(snapshot.data!);
@@ -50,7 +50,7 @@ StatefulWidget getNetworkLogoFromUrl(String url) {
           // Fallback if no data is present
           return Icon(
             Icons.public,
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: Theme.of(context).colorScheme.onTertiary,
           );
         }
       });

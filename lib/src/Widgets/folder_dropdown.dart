@@ -28,7 +28,7 @@ class _FolderDropdown extends State<FolderDropdown> {
     List<DropdownMenuItem<String>>? items = [];
     items.add(DropdownTile.normal(value: "", displayText: ""));
     for (var element in widget.folders) {
-      items.add(DropdownTile.fromFolder(folder: element, fontColor: Theme.of(context).colorScheme.onPrimary));
+      items.add(DropdownTile.fromFolder(folder: element, fontColor: Theme.of(context).colorScheme.onSecondary));
     }
     return items;
   }

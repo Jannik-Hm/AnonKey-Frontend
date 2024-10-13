@@ -54,7 +54,7 @@ class _CreateCredentialWidget extends State<CreateCredentialWidget> {
       },
       icon: Icon(
         Icons.add,
-        color: Theme.of(context).colorScheme.onPrimary,
+        color: Theme.of(context).colorScheme.onSurface,
       ),
     );
   }

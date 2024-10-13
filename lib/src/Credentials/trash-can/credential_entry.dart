@@ -157,14 +157,14 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         _credential.getClearDisplayName(),
         style: TextStyle(
           fontSize: 20.0,
-          color: theme.colorScheme.onPrimary,
+          color: theme.colorScheme.onTertiary,
         ),
       ),
       subTitle: Text(
         _credential.getClearUsername(),
         style: TextStyle(
           fontSize: 15.0,
-          color: theme.colorScheme.onPrimary,
+          color: theme.colorScheme.onTertiary,
         ),
       ),
     );
