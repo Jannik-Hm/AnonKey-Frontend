@@ -19,6 +19,8 @@ class SettingsView extends StatelessWidget {
       GoRouter.of(context).clearStackAndNavigate("login");
     }
 
+    ThemeData theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.settingsTitle),
@@ -28,17 +30,18 @@ class SettingsView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Theme',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface
               ),
             ),
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.brightness_6),
-              title: Text(AppLocalizations.of(context)!.selectTheme),
+              leading: Icon(Icons.brightness_6, color: theme.colorScheme.onSurface),
+              title: Text(AppLocalizations.of(context)!.selectTheme, style: TextStyle(color: theme.colorScheme.onSurface)),
               trailing: DropdownButton<ThemeMode>(
                 value: controller.themeMode,
                 onChanged: (ThemeMode? newTheme) =>
@@ -61,8 +64,8 @@ class SettingsView extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.language),
-              title: Text(AppLocalizations.of(context)!.language),
+              leading: Icon(Icons.language, color: theme.colorScheme.onSurface),
+              title: Text(AppLocalizations.of(context)!.language, style: TextStyle(color: theme.colorScheme.onSurface)),
               trailing: DropdownButton<Locale>(
                 value: controller.languageMode,
                 onChanged: (Locale? newLanguage) =>
@@ -82,15 +85,16 @@ class SettingsView extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               AppLocalizations.of(context)!.openSourceLicenses,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.info),
-              title: Text(AppLocalizations.of(context)!.viewLicenses),
+              leading: Icon(Icons.info, color: theme.colorScheme.onSurface),
+              title: Text(AppLocalizations.of(context)!.viewLicenses, style: TextStyle(color: theme.colorScheme.onSurface)),
               onTap: () => showLicensePage(context: context),
             ),
             const SizedBox(height: 20),

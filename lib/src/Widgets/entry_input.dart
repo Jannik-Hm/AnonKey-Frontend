@@ -78,10 +78,10 @@ class _EntryInput extends State<EntryInput> {
             IconButton(
               icon: Icon(
                 (_obscure) ? Icons.visibility : Icons.visibility_off,
-                color: Theme.of(context).colorScheme.onPrimary,
+                color: Theme.of(context).colorScheme.onSecondary,
               ),
               onPressed: () => (_obscure) ? _show() : _hide(),
-              style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary, foregroundColor: Theme.of(context).colorScheme.onPrimary),
+              style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary, foregroundColor: Theme.of(context).colorScheme.onSecondary),
             ),
         ],
       ),
