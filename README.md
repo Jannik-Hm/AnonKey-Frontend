@@ -1,39 +1,57 @@
-# keyshare_frontend
+# Anonkey Frontend
 
-A new Flutter project.
+Flutter project files for the AnonKey Frontend.
 
-## Getting Started
+## Flutter Installation
 
-This project is a starting point for a Flutter application that follows the
-[simple app state management
-tutorial](https://flutter.dev/docs/development/data-and-backend/state-mgmt/simple).
+Please install the Flutter IDE and SDK using [this Guide](https://docs.flutter.dev/get-started/install) after reading the following.
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Currently tested platforms for running and testing the app:
+- Android (recommended on Windows)
+- iOS
+- MacOS (needs a Signing Certificate in Xcode -> Open `/macos/Runner.xcodeproj` -> `Signing & Capabilities` -> `Select Team` and `Enable Development Signing`)
 
-## Assets
+### !!!Not working due to CORS: Web (Chrome)!!!
 
-The `assets` directory houses images, fonts, and any other files you want to
-include with your application.
+Other platforms may work but aren't tested by the development Team.
+<br>
+<br>
+After installation please run the following command to generate the IconPack for the IconPicker used in the Folder Create and Update page.
 
-The `assets/images` directory contains [resolution-aware
-images](https://flutter.dev/docs/development/ui/assets-and-images#resolution-aware).
+Otherwise it will remain empty.
+
+```bash
+dart run flutter_iconpicker:generate_packs --packs material
+```
+<br>
+
+To start the app execute `flutter run` in your terminal at the project root and select the (virtual) device you want to run the app on.
+<br>
+<br>
+
+In debug mode, the Backend URL is overriden in the file `/lib/Utility/request_utility.dart` using the variable `basePath`.
+<br>
+When using your own backend server, please update this string.
+<br>
+<br>
+In case of problems, please feel free to open an issue or contact the development team in another way.
+
+## File Structure
+
+The dart files containing the cross-platform code are located in `/lib`.
 
 ## Localization
 
 This project generates localized messages based on arb files found in
-the `lib/src/localization` directory.
+the `/lib/src/localization` directory.
 
-To support additional languages, please visit the tutorial on
-[Internationalizing Flutter
-apps](https://flutter.dev/docs/development/accessibility-and-localization/internationalization)
+## Usage of Swagger
 
-## Useage of Swagger
+### Perform this only when something changed in the backend.
 
-you have to run the following command to generate the api client
+The API endpoints interfaces are auto-generated using swagger and located in `/lib/api`. <br>
+To update the API Client paste the new `swagger.yaml` in `/openapi/` and run:
 
 ```bash
 dart run build_runner build --delete-conflicting-outputs
 ```
-
