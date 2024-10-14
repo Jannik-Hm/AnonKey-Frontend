@@ -50,5 +50,7 @@
 		<string>de</string>
 		<string>en</string>
 	</array>
+<key>NSFaceIDUsageDescription</key>
+<string>We use Face ID to quickly and securely authenticate your identity, ensuring that only you can access your account.</string>
 </dict>
 </plist>

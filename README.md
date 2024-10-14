@@ -40,6 +40,24 @@ In case of problems, please feel free to open an issue or contact the developmen
 
 The dart files containing the cross-platform code are located in `/lib`.
 
+## Testing Biometrics
+
+### Android Emulator
+
+1. SetUp Finger Print in `Security & Privacy` -> `Device Unlock`-> `add Fingerprint`
+2. Authenticate via Finger Print using `...` in the Side Menu und navigating to `Fingerprint`
+
+### iOS
+
+Note: iOS 18.0 Simulator is bugged. Use 18.1 or <18.0
+
+1. Mac Top Bar `Features` -> `Face ID` or `Touch ID` -> `Enable`
+2. Authenticate via Finger Print using same Menu with `Matching Face`
+
+### Mac
+
+Nothing to set up. Uses System Biometrics.
+
 ## Localization
 
 This project generates localized messages based on arb files found in

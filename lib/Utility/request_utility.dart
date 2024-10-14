@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 
 class RequestUtility {
   static ApiClient getApiWithAuth(String authentication, String basePath) {
-    if (kDebugMode) {
+    if (kDebugMode && basePath.isEmpty) {
       basePath = "https://api.beta.anonkey.lightjack.de";
     }
     ApiClient client = ApiClient(basePath: basePath);
@@ -12,7 +12,7 @@ class RequestUtility {
   }
 
   static ApiClient getApiWithoutAuth(String basePath) {
-    if (kDebugMode) {
+    if (kDebugMode && basePath.isEmpty) {
       basePath = "https://api.beta.anonkey.lightjack.de";
     }
     return ApiClient(basePath: basePath);

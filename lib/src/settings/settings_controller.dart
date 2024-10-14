@@ -1,3 +1,5 @@
+import 'package:anonkey_frontend/Utility/auth_utils.dart';
+import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,10 +11,20 @@ import 'settings_service.dart';
 /// Controllers glue Data Services to Flutter Widgets. The SettingsController
 /// uses the SettingsService to store and retrieve user settings.
 class SettingsController with ChangeNotifier {
-  SettingsController(this._settingsService);
+  SettingsController(this._settingsService) {
+    _loadBiometricSetting();
+    password.addListener(() {
+      isPasswordEmpty.value = password.text.isEmpty;
+    });
+  }
 
   // Make SettingsService a private variable so it is not used directly.
   final SettingsService _settingsService;
+
+  final TextEditingController password = TextEditingController();
+  final ValueNotifier<bool> isPasswordEmpty = ValueNotifier<bool>(true);
+  final ValueNotifier<String?> errorMessage = ValueNotifier<String?>(null);
+  final ValueNotifier<bool> isBiometricEnabled = ValueNotifier<bool>(false);
 
   // Make ThemeMode a private variable so it is not updated directly without
   // also persisting the changes with the SettingsService.
@@ -58,7 +70,6 @@ class SettingsController with ChangeNotifier {
   Future<Locale> language() async {
     final prefs = await SharedPreferences.getInstance();
     final languageCode = prefs.getString('language_code') ?? 'en';
-    print(languageCode);
     return Locale(languageCode);
   }
 
@@ -76,6 +87,33 @@ class SettingsController with ChangeNotifier {
       await prefs.setString('language_code', 'en');
       await prefs.setString('countryCode', 'US');
     }
+    await prefs.setInt('site', 3);
     notifyListeners();
+  }
+
+  Future<void> _loadBiometricSetting() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    isBiometricEnabled.value = prefs.getBool('isBiometricEnabled') ?? false;
+  }
+
+  Future<void> updateBiometricSetting(
+      BuildContext context, bool isEnabled) async {
+    bool success = false;
+    try {
+      await AuthService.setSkipSplashScreen(true);
+      if(context.mounted){
+        success = await AuthUtils.loginWithBiometrics(context);
+      }
+      await Future.delayed(const Duration(milliseconds: 50), () {
+        AuthService.setSkipSplashScreen(false);
+      });
+      if(success){
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isBiometricEnabled', isEnabled);
+        isBiometricEnabled.value = isEnabled;
+      }
+    } catch (e) {
+      errorMessage.value = e.toString();
+    }
   }
 }

@@ -29,6 +29,10 @@ class SettingsService {
   Future<void> updateThemeMode(ThemeMode theme) async {
     // Use the shared_preferences package to persist settings locally or the
     // http package to persist settings over the network.
+    goToSettingsAgain();
+  }
+
+  Future<void> goToSettingsAgain() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('site', 3);
   }
