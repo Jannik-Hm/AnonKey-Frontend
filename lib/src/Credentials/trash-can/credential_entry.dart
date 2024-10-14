@@ -30,7 +30,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
 
   Future<bool> restore() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? url = prefs.getString('url');
+    String? url = prefs.getString('url'); // Get Backend URL
     Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
     try {
       if (url != null) {
@@ -54,7 +54,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
 
   Future<bool> deleteForever() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? url = prefs.getString('url');
+    String? url = prefs.getString('url'); // Get Backend URL
     Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
     try {
       if (url != null) {
@@ -76,6 +76,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
     }
   }
 
+  /// show Popup to delete forever or restore Credential
   showDeleteConfirmDialog(Credential credential) {
     return showDialog(
       context: context,

@@ -7,6 +7,7 @@ import 'package:encrypt/encrypt.dart' as encrypt;
 class Cryptography {
   static final Random _random = Random.secure();
 
+  /// function to generate pseudo Random String for Random Salt generation
   static String createCryptoRandomString([int length = 32]) {
     int byteLength = 3 * (length ~/ 4) - 2;
     var values = List<int>.generate(byteLength, (i) => _random.nextInt(256));
@@ -34,6 +35,21 @@ class Cryptography {
   }
 
   /// Returns an async String containing the encrypted content of [clearString] in base64.
+  ///
+  /// Needs the [kdfKey] as Key and the [encryptedSalt] to encrypt.
+  static Future<String> encryptStringWithKey({required encrypt.Key kdfKey, required String clearString, required String encryptedSalt}) async {
+    return (clearString.isEmpty)
+        ? ""
+        : encrypt.Encrypter(encrypt.AES(kdfKey))
+            .encrypt(
+              clearString,
+              iv: encrypt.IV.fromUtf8(encryptedSalt),
+            )
+            .base64;
+  }
+
+  /// Returns an async String containing the encrypted content of [clearString] in base64.
+  ///
   /// Needs the [masterPassword] and [kdfSalt] to generate the KDF and the [encryptedSalt] to encrypt.
   static Future<String> encryptString({required String masterPassword, required String kdfSalt, required String clearString, required String encryptedSalt}) async {
     return (clearString.isEmpty)
@@ -49,6 +65,25 @@ class Cryptography {
   }
 
   /// Returns an async String containing the decrypted content of [encryptedString].
+  ///
+  /// Needs the [kdfKey] as Key and the [encryptedSalt] to decrypt.
+  static Future<String> getClearStringWithKey({required encrypt.Key kdfKey, required String encryptedString, required String encryptedSalt}) async {
+    if (encryptedString.isEmpty) {
+      return "";
+    } else {
+      try {
+        return encrypt.Encrypter(encrypt.AES(kdfKey)).decrypt64(
+          encryptedString,
+          iv: encrypt.IV.fromUtf8(encryptedSalt),
+        );
+      } catch (error) {
+        throw ArgumentError("Decryption Arguments do not match encrypted String");
+      }
+    }
+  }
+
+  /// Returns an async String containing the decrypted content of [encryptedString].
+  ///
   /// Needs the [masterPassword] and [kdfSalt] to generate the KDF and the [encryptedSalt] to decrypt.
   static Future<String> getClearString({required String masterPassword, required String kdfSalt, required String encryptedString, required String encryptedSalt}) async {
     if (encryptedString.isEmpty) {
