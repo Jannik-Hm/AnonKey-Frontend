@@ -49,7 +49,7 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
           isSplash = true;
           context.push("/splash").then(
             (didPop) {
-              if (didPop as bool) {
+              if (didPop != null && didPop as bool) {
                 isSplash = false;
               }
             },
