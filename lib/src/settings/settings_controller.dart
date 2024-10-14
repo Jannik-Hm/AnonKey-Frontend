@@ -98,19 +98,22 @@ class SettingsController with ChangeNotifier {
 
   Future<void> updateBiometricSetting(
       BuildContext context, bool isEnabled) async {
+    bool success = false;
     try {
       await AuthService.setSkipSplashScreen(true);
       if(context.mounted){
-        await AuthUtils.loginWithBiometrics(context);
+        success = await AuthUtils.loginWithBiometrics(context);
       }
       await Future.delayed(const Duration(milliseconds: 50), () {
         AuthService.setSkipSplashScreen(false);
       });
+      if(success){
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isBiometricEnabled', isEnabled);
+        isBiometricEnabled.value = isEnabled;
+      }
     } catch (e) {
       errorMessage.value = e.toString();
     }
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isBiometricEnabled', isEnabled);
-    isBiometricEnabled.value = isEnabled;
   }
 }

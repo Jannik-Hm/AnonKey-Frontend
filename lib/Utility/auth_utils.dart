@@ -26,7 +26,7 @@ class AuthUtils {
     return isBiometric && canCheckBiometrics;
   }
 
-  static Future<void> loginWithBiometrics(BuildContext context) async {
+  static Future<bool> loginWithBiometrics(BuildContext context) async {
     try {
       bool canCheckBiometrics = await _auth.canCheckBiometrics;
       if (!canCheckBiometrics) {
@@ -35,7 +35,7 @@ class AuthUtils {
               content:
                   Text(AppLocalizations.of(context)!.biometricNotAvailable)),
         );
-        return;
+        return false;
       }
 
       bool authenticated = await _auth.authenticate(
@@ -66,17 +66,20 @@ class AuthUtils {
                 context: context, message: "Login failed");
           }
         }
+        return true;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(AppLocalizations.of(context)!.biometricFailed)),
         );
+        return false;
       }
-    } on PlatformException catch (e) {
+    } on PlatformException catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(AppLocalizations.of(context)!.biometricNotAvailable)),
       );
+      return false;
     }
   }
 }
