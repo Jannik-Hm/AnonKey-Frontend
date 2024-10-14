@@ -28,14 +28,6 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
     WidgetsBinding.instance.addObserver(this);
     isSplash = false;
     _notification = AppLifecycleState.resumed;
-    getSplash();
-  }
-
-  Future<void> getSplash() async {
-    bool tempSplash = await AuthService.isSoftLogout();
-    setState(() {
-      isSplash = !tempSplash;
-    });
   }
 
   @override
@@ -73,7 +65,6 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
       if (state == AppLifecycleState.paused ||
           state == AppLifecycleState.inactive) {
         await AuthService.softLogout();
-        getSplash();
       }
     }
   }
