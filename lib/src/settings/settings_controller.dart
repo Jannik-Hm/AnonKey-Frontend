@@ -100,7 +100,12 @@ class SettingsController with ChangeNotifier {
       BuildContext context, bool isEnabled) async {
     try {
       await AuthService.setSkipSplashScreen(true);
-      await AuthUtils.loginWithBiometrics(context);
+      if(context.mounted){
+        await AuthUtils.loginWithBiometrics(context);
+      }
+      await Future.delayed(const Duration(milliseconds: 50), () {
+        AuthService.setSkipSplashScreen(false);
+      });
     } catch (e) {
       errorMessage.value = e.toString();
     }
