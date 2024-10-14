@@ -203,7 +203,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
               content: Text(AppLocalizations.of(context)!.biometricFailed)),
         );
       }
-    } on PlatformException catch (e) {
+    } on PlatformException catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text(AppLocalizations.of(context)!.biometricNotAvailable)),
