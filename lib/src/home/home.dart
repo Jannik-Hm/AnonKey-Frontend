@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ClickableTile(
                           leading: Icon(
                             Icons.shield,
-                            color: theme.colorScheme.onPrimary,
+                            color: theme.colorScheme.onTertiary,
                           ),
                           title: Text(
                             AppLocalizations.of(context)!.totalPasswordsTitle,
@@ -193,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ClickableTile(
                           leading: Icon(
                             Icons.delete,
-                            color: theme.colorScheme.onPrimary,
+                            color: theme.colorScheme.onTertiary,
                           ),
                           title: Text(
                             AppLocalizations.of(context)!.trashPasswordsTitle,

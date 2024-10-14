@@ -42,6 +42,7 @@ class AuthUtils {
         localizedReason: AppLocalizations.of(context)!.loginWithBiometrics,
         options: const AuthenticationOptions(
           biometricOnly: true,
+          stickyAuth: true,
         ),
       );
 

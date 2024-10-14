@@ -1,3 +1,5 @@
+import 'package:anonkey_frontend/Utility/auth_utils.dart';
+import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -68,7 +70,6 @@ class SettingsController with ChangeNotifier {
   Future<Locale> language() async {
     final prefs = await SharedPreferences.getInstance();
     final languageCode = prefs.getString('language_code') ?? 'en';
-    print(languageCode);
     return Locale(languageCode);
   }
 
@@ -95,7 +96,14 @@ class SettingsController with ChangeNotifier {
     isBiometricEnabled.value = prefs.getBool('isBiometricEnabled') ?? false;
   }
 
-  Future<void> updateBiometricSetting(bool isEnabled) async {
+  Future<void> updateBiometricSetting(
+      BuildContext context, bool isEnabled) async {
+    try {
+      await AuthService.setSkipSplashScreen(true);
+      await AuthUtils.loginWithBiometrics(context);
+    } catch (e) {
+      errorMessage.value = e.toString();
+    }
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isBiometricEnabled', isEnabled);
     isBiometricEnabled.value = isEnabled;

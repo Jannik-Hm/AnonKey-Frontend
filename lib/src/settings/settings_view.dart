@@ -127,7 +127,7 @@ class SettingsView extends StatelessWidget {
                       AppLocalizations.of(context)!.biometricAuthentication),
                   value: isBiometricEnabled,
                   onChanged: (bool value) {
-                    controller.updateBiometricSetting(value);
+                    controller.updateBiometricSetting(context, value);
                   },
                 );
               },

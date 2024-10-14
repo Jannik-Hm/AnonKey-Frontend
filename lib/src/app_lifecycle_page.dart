@@ -1,4 +1,5 @@
 import 'package:anonkey_frontend/src/service/auth_service.dart';
+import 'package:ansi_styles/ansi_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +28,14 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
     WidgetsBinding.instance.addObserver(this);
     isSplash = false;
     _notification = AppLifecycleState.resumed;
+    getSplash();
+  }
+
+  Future<void> getSplash() async {
+    bool tempSplash = await AuthService.isSoftLogout();
+    setState(() {
+      isSplash = !tempSplash;
+    });
   }
 
   @override
@@ -40,12 +49,17 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
     const FlutterSecureStorage storage = FlutterSecureStorage();
     String? skipSplashScreen = await storage.read(key: "skipSplashScreen");
 
-    if (skipSplashScreen?.contains("false") ?? true) {
+    if (skipSplashScreen == "true" && state == AppLifecycleState.resumed) {
+      await storage.write(key: "skipSplashScreen", value: "false");
+    }
+
+    if (skipSplashScreen == "false") {
       setState(() {
         _notification = state;
       });
       if (state == AppLifecycleState.resumed) {
         if (!isSplash) {
+          print(AnsiStyles.red("Pushing to Splash"));
           isSplash = true;
           context.push("/splash").then(
             (didPop) {
@@ -56,11 +70,10 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
           );
         }
       }
-      if (state == AppLifecycleState.paused) {
+      if (state == AppLifecycleState.paused ||
+          state == AppLifecycleState.inactive) {
         await AuthService.softLogout();
-      }
-      if (state == AppLifecycleState.inactive) {
-        await AuthService.softLogout();
+        getSplash();
       }
     }
   }
