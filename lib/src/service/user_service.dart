@@ -45,8 +45,8 @@ class UserService {
   }
 
   static void logout(BuildContext context) async {
-      await AuthService.deleteAuthenticationCredentials();
-      if (!context.mounted) return;
-      GoRouter.of(context).clearStackAndNavigate("login");
-    }
+    await AuthService.deleteAuthenticationCredentials();
+    if (!context.mounted) return;
+    GoRouter.of(context).clearStackAndNavigate("/login");
+  }
 }

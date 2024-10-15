@@ -162,6 +162,7 @@ class AuthService {
     await storage.write(key: "username", value: username);
     await storage.write(key: "expire", value: expire.toString());
     await storage.write(key: "softLogout", value: false.toString());
+    await storage.write(key: "skipSplashScreen", value: "false");
   }
 
   static Future<void> deleteAuthenticationCredentials() async {

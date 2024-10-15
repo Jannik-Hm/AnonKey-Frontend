@@ -1,5 +1,4 @@
 // lib/src/utils/auth_utils.dart
-import 'package:anonkey_frontend/src/router/clear_and_navigate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -12,12 +11,6 @@ import 'notification_popup.dart';
 
 class AuthUtils {
   static final LocalAuthentication _auth = LocalAuthentication();
-
-  static Future<void> logout(BuildContext context) async {
-    await AuthService.deleteAuthenticationCredentials();
-    if (!context.mounted) return;
-    GoRouter.of(context).clearStackAndNavigate("/login");
-  }
 
   static Future<bool> checkBiometricAvailability() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
