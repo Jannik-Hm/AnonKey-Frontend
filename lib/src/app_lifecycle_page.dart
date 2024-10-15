@@ -58,6 +58,7 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
       }
       if (state == AppLifecycleState.paused ||
           state == AppLifecycleState.inactive) {
+        await storage.write(key: "skipSplashScreen", value: "false");
         await AuthService.softLogout();
       }
     }
