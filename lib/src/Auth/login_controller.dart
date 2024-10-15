@@ -53,7 +53,13 @@ class LoginController extends State<LoginView> {
                         focus: _urlFocus,
                         validator: (kDebugMode)
                             ? null
-                            : ValidationBuilder().url().build(),
+                            : ValidationBuilder().url().add((value) {
+                                if (value != null &&
+                                    !value.startsWith('https://')) {
+                                  return 'Only HTTPS URLs are allowed';
+                                }
+                                return null;
+                              }).build(),
                         onEnterPressed: () => _usernameFocus.requestFocus(),
                       ),
                     ),
