@@ -16,6 +16,9 @@ Currently tested platforms for running and testing the app:
 Other platforms may work but aren't tested by the development Team.
 <br>
 <br>
+
+Run `flutter pub get` in project root as well as `/lib/api/` to get all dependencies.
+
 After installation please run the following command to generate the IconPack for the IconPicker used in the Folder Create and Update page.
 
 Otherwise it will remain empty.
