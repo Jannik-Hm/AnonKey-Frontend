@@ -1,4 +1,4 @@
-package com.example.keyshare_frontend
+package com.anonkey.password_manager
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 
