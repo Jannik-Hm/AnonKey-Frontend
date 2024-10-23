@@ -1,6 +1,12 @@
 # Anonkey Frontend
 
-Flutter project files for the AnonKey Frontend.
+AnonKey is a zero-knowledge password manager, designed for self hosting.
+
+This repository contains the Flutter project files for the AnonKey Frontend, which is currently WIP.
+
+## Backend
+
+The repository containing the backend code can be found [here](https://github.com/LightJack05/AnonKey-Backend).
 
 ## Flutter Installation
 
