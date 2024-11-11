@@ -20,7 +20,7 @@ dependencies:
   form_validator: ^2.1.1
   http: ^1.2.2
   openapi_generator: ^5.0.2
-  openapi_generator_annotations: ^5.0.2
+  openapi_generator_annotations: ^6.0.0
   shared_preferences: ^2.3.2
   rxdart: any
   intl: any
