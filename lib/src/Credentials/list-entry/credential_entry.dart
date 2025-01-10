@@ -1,12 +1,14 @@
 import 'dart:async';
+
+import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Widgets/clickable_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import './logo.dart';
-import './credential_detail_view.dart';
-import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import './credential_detail_view.dart';
+import './logo.dart';
 
 class CredentialEntry extends StatefulWidget {
   final Credential credential;
@@ -45,7 +47,7 @@ class _CredentialEntry extends State<CredentialEntry> {
         _timer = Timer(const Duration(seconds: 10), () async {
           ClipboardData? current = await Clipboard.getData('text/plain');
           if (current != null && current.text == value) {
-            Clipboard.setData(const ClipboardData(text: ''));
+            await Clipboard.setData(const ClipboardData(text: ''));
           }
         });
         if (context.mounted) {
@@ -102,9 +104,13 @@ class _CredentialEntry extends State<CredentialEntry> {
         children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
+              backgroundColor: Theme.of(context)
+                  .colorScheme
+                  .primary, // Set the primary color from ColorScheme
             ),
-            onPressed: () => copyToClipboard(message: AppLocalizations.of(context)!.copiedUsername, value: _credential.getClearUsername()),
+            onPressed: () => copyToClipboard(
+                message: AppLocalizations.of(context)!.copiedUsername,
+                value: _credential.getClearUsername()),
             /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: _credential.username));
                 if (context.mounted) {
@@ -123,9 +129,13 @@ class _CredentialEntry extends State<CredentialEntry> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
+              backgroundColor: Theme.of(context)
+                  .colorScheme
+                  .primary, // Set the primary color from ColorScheme
             ),
-            onPressed: () => copyToClipboard(message: AppLocalizations.of(context)!.copiedPassword, value: _credential.getClearPassword()),
+            onPressed: () => copyToClipboard(
+                message: AppLocalizations.of(context)!.copiedPassword,
+                value: _credential.getClearPassword()),
             /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: _credential.password));
                 if (context.mounted) {
