@@ -108,7 +108,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
           CredentialsApi api = CredentialsApi(apiClient);
           if (_credential != null) {
             temp = await _credential!.updateFromLocal(
-              masterPassword: authdata["password"]!,
+              masterPassword: authdata["encryptionKDF"]!,
               clearWebsiteUrl: websiteUrl.text,
               clearUsername: username.text,
               clearPassword: password.text,
@@ -122,7 +122,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             String? uuid = await uuidApi.uuidNewGet();
             temp = await Credential.newEntry(
               uuid: uuid!,
-              masterPassword: authdata["password"]!,
+              masterPassword: authdata["encryptionKDF"]!,
               clearWebsiteUrl: websiteUrl.text,
               clearUsername: username.text,
               clearPassword: password.text,

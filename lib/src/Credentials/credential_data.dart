@@ -78,7 +78,7 @@ class Credential {
   static Future<Credential> fromJson(Map<String, dynamic> json) async {
     return Credential.fromApi(
       uuid: json["uuid"],
-      masterPassword: (await AuthService.getAuthenticationCredentials())["password"]!,
+      masterPassword: (await AuthService.getAuthenticationCredentials())["encryptionKDF"]!,
       encryptedWebsiteUrl: json["encryptedWebsiteUrl"],
       websiteUrlSalt: json["websiteUrlSalt"],
       encryptedUsername: json["encryptedUsername"],

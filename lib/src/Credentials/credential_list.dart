@@ -222,7 +222,7 @@ class CredentialList {
     Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
 
       if (response != null) {
-        CredentialList data = await CredentialList.getFromAPI(credentials: response, masterPassword: authdata["password"]!);
+        CredentialList data = await CredentialList.getFromAPI(credentials: response, masterPassword: authdata["encryptionKDF"]!);
         return data;
       }
     return null;
@@ -234,7 +234,7 @@ class CredentialList {
     Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
 
       if (response != null) {
-        CredentialList data = await updateFromAPI(credentials: response, masterPassword: authdata["password"]!);
+        CredentialList data = await updateFromAPI(credentials: response, masterPassword: authdata["encryptionKDF"]!);
         return data;
       }
     return null;
