@@ -4,8 +4,13 @@ import 'package:cryptography/cryptography.dart';
 import 'dart:convert';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
+enum KDFMode {credential, master}
+
 class Cryptography {
   static final Random _random = Random.secure();
+
+  static final Pbkdf2 _credentialKDF = Pbkdf2(macAlgorithm: Hmac.sha256(), iterations: 1000, bits: 256);
+  static final Pbkdf2 _masterKDF = Pbkdf2(macAlgorithm: Hmac.sha256(), iterations: 20000, bits: 256);
 
   /// function to generate pseudo Random String for Random Salt generation
   static String createCryptoRandomString([int length = 32]) {
@@ -15,13 +20,19 @@ class Cryptography {
     return base64Url.encode(values);
   }
 
-  /// Async function to generate a KDF in byte form.
-  static Future<Uint8List> getKDFBytes({required String masterPassword, required String salt}) async {
-    return Pbkdf2(
-      macAlgorithm: Hmac.sha256(),
-      iterations: 10000, // 20k iterations
-      bits: 256, // 256 bits = 32 bytes output
-    ).deriveKeyFromPassword(password: masterPassword, nonce: utf8.encode(salt)).then((kdf) => kdf.extractBytes().then((value) => Uint8List.fromList(value)));
+  static Future<Uint8List> getKDFBytes({required String masterPassword, required String salt, KDFMode kdfMode = KDFMode.master}) async {
+    Pbkdf2 kdfObject;
+    switch (kdfMode) {
+      case KDFMode.credential:
+        kdfObject = _credentialKDF;
+        break;
+      case KDFMode.master:
+        kdfObject = _masterKDF;
+        break;
+      default:
+        kdfObject = _masterKDF;
+    }
+    return kdfObject.deriveKeyFromPassword(password: masterPassword, nonce: utf8.encode(salt)).then((kdf) => kdf.extractBytes().then((value) => Uint8List.fromList(value)));
   }
 
   /// Async function to generate a KDF in encrypt.key form for AES de-/encryption.
