@@ -4,13 +4,21 @@ import 'package:cryptography/cryptography.dart';
 import 'dart:convert';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
-enum KDFMode {credential, master}
+enum KDFMode { credential, master }
 
 class Cryptography {
   static final Random _random = Random.secure();
 
-  static final Pbkdf2 _credentialKDF = Pbkdf2(macAlgorithm: Hmac.sha256(), iterations: 1000, bits: 256);
-  static final Pbkdf2 _masterKDF = Pbkdf2(macAlgorithm: Hmac.sha256(), iterations: 20000, bits: 256);
+  static final Pbkdf2 _credentialKDF = Pbkdf2(
+    macAlgorithm: Hmac.sha256(),
+    iterations: 1000, // 1k iterations for credentials
+    bits: 256,
+  );
+  static final Pbkdf2 _masterKDF = Pbkdf2(
+    macAlgorithm: Hmac.sha256(),
+    iterations: 20000, // 20k iterations for auth, etc.
+    bits: 256,
+  );
 
   /// function to generate pseudo Random String for Random Salt generation
   static String createCryptoRandomString([int length = 32]) {
@@ -36,13 +44,13 @@ class Cryptography {
   }
 
   /// Async function to generate a KDF in encrypt.key form for AES de-/encryption.
-  static Future<encrypt.Key> getKDFKey({required String masterPassword, required String salt}) async {
-    return getKDFBytes(masterPassword: masterPassword, salt: salt).then((value) => encrypt.Key(value));
+  static Future<encrypt.Key> getKDFKey({required String masterPassword, required String salt, KDFMode kdfMode = KDFMode.master}) async {
+    return getKDFBytes(masterPassword: masterPassword, salt: salt, kdfMode: kdfMode).then((value) => encrypt.Key(value));
   }
 
   /// Async function to generate a KDF in base64 form.
-  static Future<String> getKDFBase64({required String masterPassword, required String salt}) async {
-    return getKDFBytes(masterPassword: masterPassword, salt: salt).then((value) => base64Encode(value));
+  static Future<String> getKDFBase64({required String masterPassword, required String salt, KDFMode kdfMode = KDFMode.master}) async {
+    return getKDFBytes(masterPassword: masterPassword, salt: salt, kdfMode: kdfMode).then((value) => base64Encode(value));
   }
 
   /// Returns an async String containing the encrypted content of [clearString] in base64.
@@ -62,10 +70,10 @@ class Cryptography {
   /// Returns an async String containing the encrypted content of [clearString] in base64.
   ///
   /// Needs the [masterPassword] and [kdfSalt] to generate the KDF and the [encryptedSalt] to encrypt.
-  static Future<String> encryptString({required String masterPassword, required String kdfSalt, required String clearString, required String encryptedSalt}) async {
+  static Future<String> encryptString({required String masterPassword, required String kdfSalt, required String clearString, required String encryptedSalt, KDFMode kdfMode = KDFMode.master}) async {
     return (clearString.isEmpty)
         ? ""
-        : await getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
+        : await getKDFKey(masterPassword: masterPassword, salt: kdfSalt, kdfMode: kdfMode).then(
             (value) => encrypt.Encrypter(encrypt.AES(value))
                 .encrypt(
                   clearString,
@@ -96,12 +104,12 @@ class Cryptography {
   /// Returns an async String containing the decrypted content of [encryptedString].
   ///
   /// Needs the [masterPassword] and [kdfSalt] to generate the KDF and the [encryptedSalt] to decrypt.
-  static Future<String> getClearString({required String masterPassword, required String kdfSalt, required String encryptedString, required String encryptedSalt}) async {
+  static Future<String> getClearString({required String masterPassword, required String kdfSalt, required String encryptedString, required String encryptedSalt, KDFMode kdfMode = KDFMode.master}) async {
     if (encryptedString.isEmpty) {
       return "";
     } else {
       try {
-        return getKDFKey(masterPassword: masterPassword, salt: kdfSalt).then(
+        return getKDFKey(masterPassword: masterPassword, salt: kdfSalt, kdfMode: kdfMode).then(
           (value) => encrypt.Encrypter(encrypt.AES(value)).decrypt64(
             encryptedString,
             iv: encrypt.IV.fromUtf8(encryptedSalt),
