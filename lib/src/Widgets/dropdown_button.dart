@@ -42,24 +42,23 @@ class _DropDownButton extends State<DropDownButton> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          DropdownButton(
-            onChanged: (value) {
-              if (_enabled) {
+          IgnorePointer(
+            ignoring: !_enabled,
+            child: DropdownButton(
+              onChanged: (value) {
                 setState(() {
                   selectedValue = value;
                 });
-                if(widget.onChangeCallback != null) widget.onChangeCallback!(value);
-              } else {
-                null;
-              }
-            },
-            dropdownColor: Theme.of(context).colorScheme.secondary,
-            enableFeedback: true,
-            iconEnabledColor: Theme.of(context).colorScheme.onSecondary,
-            value: selectedValue,
-            borderRadius: BorderRadius.circular(15),
-            items: widget.items,
-          ),
+                if (widget.onChangeCallback != null) widget.onChangeCallback!(value);
+              },
+              dropdownColor: Theme.of(context).colorScheme.secondary,
+              enableFeedback: true,
+              iconEnabledColor: Theme.of(context).colorScheme.onSecondary,
+              value: selectedValue,
+              borderRadius: BorderRadius.circular(15),
+              items: widget.items,
+            ),
+          )
         ],
       ),
     );
