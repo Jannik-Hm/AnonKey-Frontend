@@ -188,7 +188,7 @@ class Credential {
     required int? changedTimeStamp,
     required int? deletedTimeStamp,
   }) async {
-    encrypt.Key kdfKey = await Cryptography.getKDFKey(masterPassword: masterPassword, salt: uuid);
+    encrypt.Key kdfKey = await Cryptography.getKDFKey(masterPassword: masterPassword, salt: uuid, kdfMode: KDFMode.credential);
     return Credential(
       uuid: uuid,
       folderUuid: folderUuid,
@@ -256,7 +256,7 @@ class Credential {
     final usernameSalt = Cryptography.createCryptoRandomString(16);
     final displayNameSalt = Cryptography.createCryptoRandomString(16);
     final noteSalt = Cryptography.createCryptoRandomString(16);
-    encrypt.Key kdfKey = await Cryptography.getKDFKey(masterPassword: masterPassword, salt: uuid);
+    encrypt.Key kdfKey = await Cryptography.getKDFKey(masterPassword: masterPassword, salt: uuid, kdfMode: KDFMode.credential);
     return Credential(
       uuid: uuid,
       folderUuid: folderUuid,
@@ -332,7 +332,7 @@ class Credential {
       this._encryptedDisplayName != encryptedDisplayName && this._displayNameSalt != displayNameSalt ||
       this._encryptedNote != encryptedNote && this._noteSalt != noteSalt
       ) {
-      kdfKey = await Cryptography.getKDFKey(masterPassword: masterPassword, salt: uuid);
+      kdfKey = await Cryptography.getKDFKey(masterPassword: masterPassword, salt: uuid, kdfMode: KDFMode.credential);
     }
     //
     if (this._encryptedWebsiteUrl != encryptedWebsiteUrl && this._websiteUrlSalt != websiteUrlSalt) {
@@ -412,7 +412,7 @@ class Credential {
       this._clearDisplayName != clearDisplayName ||
       this._clearNote != clearNote
       ) {
-      kdfKey = await Cryptography.getKDFKey(masterPassword: masterPassword, salt: uuid);
+      kdfKey = await Cryptography.getKDFKey(masterPassword: masterPassword, salt: uuid, kdfMode: KDFMode.credential);
     }
     //
     if (this._clearWebsiteUrl != clearWebsiteUrl) {
