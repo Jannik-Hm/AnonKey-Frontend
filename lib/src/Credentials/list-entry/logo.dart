@@ -46,11 +46,13 @@ StatefulWidget getNetworkLogoFromUrl(String url) {
           );
         } else if (snapshot.hasData) {
           return Image.network(snapshot.data!);
+
         } else {
           // Fallback if no data is present
           return Icon(
             Icons.public,
             color: Theme.of(context).colorScheme.onTertiary,
+
           );
         }
       });
