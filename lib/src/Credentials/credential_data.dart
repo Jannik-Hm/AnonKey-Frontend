@@ -117,10 +117,12 @@ class Credential {
 
   String getClearDisplayName() {
     return this._clearDisplayName;
+
   }
 
   String getClearWebsiteUrl() {
     return this._clearWebsiteUrl;
+
   }
 
   String getClearUsername() {
