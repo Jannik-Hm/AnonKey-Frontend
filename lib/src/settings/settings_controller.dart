@@ -101,13 +101,13 @@ class SettingsController with ChangeNotifier {
     bool success = false;
     try {
       await AuthService.setSkipSplashScreen(true);
-      if(context.mounted){
+      if (context.mounted) {
         success = await AuthUtils.loginWithBiometrics(context);
       }
       await Future.delayed(const Duration(milliseconds: 50), () {
         AuthService.setSkipSplashScreen(false);
       });
-      if(success){
+      if (success) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isBiometricEnabled', isEnabled);
         isBiometricEnabled.value = isEnabled;

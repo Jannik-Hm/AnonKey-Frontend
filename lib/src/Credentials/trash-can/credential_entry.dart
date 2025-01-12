@@ -31,10 +31,12 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
   Future<bool> restore() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('url'); // Get Backend URL
-    Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+    Map<String, String> authdata =
+        await AuthService.getAuthenticationCredentials();
     try {
       if (url != null) {
-        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        ApiClient apiClient =
+            RequestUtility.getApiWithAuth(authdata["token"]!, url);
         CredentialsApi api = CredentialsApi(apiClient);
         await api.credentialsSoftUndeletePut(_credential.uuid);
         return true;
@@ -46,7 +48,8 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
       }
     } on ApiException catch (e) {
       if (context.mounted) {
-        NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+        NotificationPopup.apiError(
+            context: context, apiResponseMessage: e.message);
       }
       return false;
     }
@@ -55,10 +58,12 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
   Future<bool> deleteForever() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('url'); // Get Backend URL
-    Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+    Map<String, String> authdata =
+        await AuthService.getAuthenticationCredentials();
     try {
       if (url != null) {
-        ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        ApiClient apiClient =
+            RequestUtility.getApiWithAuth(authdata["token"]!, url);
         CredentialsApi api = CredentialsApi(apiClient);
         await api.credentialsDeleteDelete(_credential.uuid);
         return true;
@@ -70,7 +75,8 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
       }
     } on ApiException catch (e) {
       if (context.mounted) {
-        NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+        NotificationPopup.apiError(
+            context: context, apiResponseMessage: e.message);
       }
       return false;
     }
@@ -84,9 +90,11 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         return AlertDialog(
           // Retrieve the text the that user has entered by using the
           // TextEditingController.
-          title: Text(AppLocalizations.of(context)!.confirmCredentialDeleteTitle(credential.getClearDisplayName())),
+          title: Text(AppLocalizations.of(context)!
+              .confirmCredentialDeleteTitle(credential.getClearDisplayName())),
           //content: Text('Are you sure you want to move Credential "${credential.getClearDisplayName()}" into the deleted Folder?'),
-          content: Text(AppLocalizations.of(context)!.confirmCredentialDeleteText(credential.getClearDisplayName())),
+          content: Text(AppLocalizations.of(context)!
+              .confirmCredentialDeleteText(credential.getClearDisplayName())),
           actions: [
             Row(
               children: [
@@ -102,7 +110,9 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
                         }
                       });
                     },
-                    style: TextButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
+                    style: TextButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white),
                     child: Text(AppLocalizations.of(context)!.restore),
                   ),
                 ),
@@ -121,7 +131,9 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
                         }
                       });
                     },
-                    style: TextButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                    style: TextButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white),
                     child: Text(AppLocalizations.of(context)!.deleteForever),
                   ),
                 ),

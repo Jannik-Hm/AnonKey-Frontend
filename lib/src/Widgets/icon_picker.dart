@@ -32,10 +32,10 @@ class _IconPicker extends State<IconPicker> {
         iconColor: Theme.of(context).colorScheme.onSurface,
       ),
     );
-    if(icon?.data == null) return;
+    if (icon?.data == null) return;
     _iconData = icon?.data;
     setState(() {
-      if(widget.iconCallback != null){
+      if (widget.iconCallback != null) {
         widget.iconCallback!(iconData: icon?.data);
       }
     });
@@ -52,7 +52,8 @@ class _IconPicker extends State<IconPicker> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 20.0, top: 10.0, right: 20.0, bottom: 10.0),
+      padding: const EdgeInsets.only(
+          left: 20.0, top: 10.0, right: 20.0, bottom: 10.0),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(25)),
         color: Theme.of(context).colorScheme.secondary,
@@ -74,7 +75,8 @@ class _IconPicker extends State<IconPicker> {
           if (_enabled)
             TextButton(
               onPressed: _pickIcon,
-              style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.onPrimary),
+              style: TextButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.onPrimary),
               child: Text(AppLocalizations.of(context)!.chooseIcon),
             )
         ],

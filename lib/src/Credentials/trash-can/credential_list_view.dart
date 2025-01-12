@@ -55,7 +55,8 @@ class _CredentialTrashListWidget extends State<CredentialTrashListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    credentialList.sort((x, y) => x.getClearDisplayName().compareTo(y.getClearDisplayName()));
+    credentialList.sort(
+        (x, y) => x.getClearDisplayName().compareTo(y.getClearDisplayName()));
     return Column(
       key: UniqueKey(),
       children: credentialList.map(_fromList).toList(),

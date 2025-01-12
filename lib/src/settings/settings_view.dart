@@ -20,13 +20,16 @@ class SettingsView extends StatelessWidget {
     void deleteUser() async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String url = prefs.getString("url")!;
-      final String token = (await AuthService.getAuthenticationCredentials())["token"]!;
+      final String token =
+          (await AuthService.getAuthenticationCredentials())["token"]!;
 
-      bool res = await UserService.deleteUser(url, token, controller.password.text);
+      bool res =
+          await UserService.deleteUser(url, token, controller.password.text);
       if (res) {
         GoRouter.of(context).clearStackAndNavigate("/login");
       } else {
-        controller.errorMessage.value = AppLocalizations.of(context)!.deleteUserFailed;
+        controller.errorMessage.value =
+            AppLocalizations.of(context)!.deleteUserFailed;
         Timer(const Duration(seconds: 5), () {
           controller.errorMessage.value = null;
         });
@@ -55,11 +58,14 @@ class SettingsView extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             ListTile(
-              leading: Icon(Icons.brightness_6, color: theme.colorScheme.onSurface),
-              title: Text(AppLocalizations.of(context)!.selectTheme, style: TextStyle(color: theme.colorScheme.onSurface)),
+              leading:
+                  Icon(Icons.brightness_6, color: theme.colorScheme.onSurface),
+              title: Text(AppLocalizations.of(context)!.selectTheme,
+                  style: TextStyle(color: theme.colorScheme.onSurface)),
               trailing: DropdownButton<ThemeMode>(
                 value: controller.themeMode,
-                onChanged: (ThemeMode? newTheme) => controller.updateThemeMode(newTheme, context),
+                onChanged: (ThemeMode? newTheme) =>
+                    controller.updateThemeMode(newTheme, context),
                 items: [
                   DropdownMenuItem(
                     value: ThemeMode.system,
@@ -79,10 +85,12 @@ class SettingsView extends StatelessWidget {
             const SizedBox(height: 8),
             ListTile(
               leading: Icon(Icons.language, color: theme.colorScheme.onSurface),
-              title: Text(AppLocalizations.of(context)!.language, style: TextStyle(color: theme.colorScheme.onSurface)),
+              title: Text(AppLocalizations.of(context)!.language,
+                  style: TextStyle(color: theme.colorScheme.onSurface)),
               trailing: DropdownButton<Locale>(
                 value: controller.languageMode,
-                onChanged: (Locale? newLanguage) => controller.updateLanguage(newLanguage!),
+                onChanged: (Locale? newLanguage) =>
+                    controller.updateLanguage(newLanguage!),
                 items: [
                   DropdownMenuItem(
                     value: const Locale("de"),
@@ -107,11 +115,15 @@ class SettingsView extends StatelessWidget {
             const SizedBox(height: 8),
             ListTile(
               leading: Icon(Icons.info, color: theme.colorScheme.onSurface),
-              title: Text(AppLocalizations.of(context)!.viewLicenses, style: TextStyle(color: theme.colorScheme.onSurface)),
+              title: Text(AppLocalizations.of(context)!.viewLicenses,
+                  style: TextStyle(color: theme.colorScheme.onSurface)),
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(builder: (BuildContext context) {
                   return Theme(
-                    data: (controller.themeMode == ThemeMode.dark || controller.themeMode == ThemeMode.system && MediaQuery.of(context).platformBrightness == Brightness.dark)
+                    data: (controller.themeMode == ThemeMode.dark ||
+                            controller.themeMode == ThemeMode.system &&
+                                MediaQuery.of(context).platformBrightness ==
+                                    Brightness.dark)
                         ? ThemeData(
                             colorScheme: ColorScheme.fromSeed(
                               seedColor: Colors.blue.shade800,
@@ -139,7 +151,8 @@ class SettingsView extends StatelessWidget {
               valueListenable: controller.isBiometricEnabled,
               builder: (context, isBiometricEnabled, child) {
                 return SwitchListTile(
-                  title: Text(AppLocalizations.of(context)!.biometricAuthentication),
+                  title: Text(
+                      AppLocalizations.of(context)!.biometricAuthentication),
                   value: isBiometricEnabled,
                   onChanged: (bool value) {
                     controller.updateBiometricSetting(context, value);
@@ -168,15 +181,21 @@ class SettingsView extends StatelessWidget {
                       builder: (BuildContext context) {
                         bool isDarkTheme;
                         if (ThemeMode.system != controller.themeMode) {
-                          isDarkTheme = controller.themeMode == ThemeMode.dark ? true : false;
+                          isDarkTheme = controller.themeMode == ThemeMode.dark
+                              ? true
+                              : false;
                         } else {
-                          var brightness = MediaQuery.of(context).platformBrightness;
+                          var brightness =
+                              MediaQuery.of(context).platformBrightness;
                           isDarkTheme = brightness == Brightness.dark;
                         }
                         return ClipRRect(
-                          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(20)),
                           child: Container(
-                            color: isDarkTheme ? ThemeData.dark().scaffoldBackgroundColor : ThemeData.light().scaffoldBackgroundColor,
+                            color: isDarkTheme
+                                ? ThemeData.dark().scaffoldBackgroundColor
+                                : ThemeData.light().scaffoldBackgroundColor,
                             padding: EdgeInsets.only(
                               bottom: MediaQuery.of(context).viewInsets.bottom,
                               left: 16,
@@ -199,7 +218,8 @@ class SettingsView extends StatelessWidget {
                                   TextField(
                                     controller: controller.password,
                                     decoration: InputDecoration(
-                                      labelText: AppLocalizations.of(context)!.password,
+                                      labelText: AppLocalizations.of(context)!
+                                          .password,
                                     ),
                                     obscureText: true,
                                   ),
@@ -212,7 +232,8 @@ class SettingsView extends StatelessWidget {
                                               alignment: Alignment.centerLeft,
                                               child: Text(
                                                 errorMessage,
-                                                style: const TextStyle(color: Colors.red),
+                                                style: const TextStyle(
+                                                    color: Colors.red),
                                               ),
                                             )
                                           : Container();
@@ -223,12 +244,19 @@ class SettingsView extends StatelessWidget {
                                     valueListenable: controller.isPasswordEmpty,
                                     builder: (context, isPasswordEmpty, child) {
                                       return ElevatedButton(
-                                        onPressed: isPasswordEmpty ? null : deleteUser,
+                                        onPressed:
+                                            isPasswordEmpty ? null : deleteUser,
                                         style: ElevatedButton.styleFrom(
-                                          foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                                          backgroundColor: Theme.of(context).colorScheme.error,
+                                          foregroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
+                                          backgroundColor: Theme.of(context)
+                                              .colorScheme
+                                              .error,
                                         ),
-                                        child: Text(AppLocalizations.of(context)!.deleteUser),
+                                        child: Text(
+                                            AppLocalizations.of(context)!
+                                                .deleteUser),
                                       );
                                     },
                                   ),

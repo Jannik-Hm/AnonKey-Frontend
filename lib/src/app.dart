@@ -59,26 +59,27 @@ class MyApp extends StatelessWidget {
           // preferred ThemeMode (light, dark, or system default) from the
           // SettingsController to display the correct theme.
           theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue.shade600,
-            surface: Colors.grey.shade50,
-            secondary: Colors.grey.shade200,
-            onSecondary: Colors.grey.shade700,
-            tertiary: Colors.grey.shade100,
-            onTertiary: Colors.grey.shade800,
-          ),
-          navigationBarTheme: NavigationBarThemeData(
-                labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
-                  (Set<WidgetState> states) =>
-                      states.contains(WidgetState.selected)
-                          ? const TextStyle(color: Colors.black)
-                          : const TextStyle(color: Colors.black),
-                ),
-                iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
-                  (Set<WidgetState> states) =>
-                      states.contains(WidgetState.selected)
-                          ? IconThemeData(color: Theme.of(context).colorScheme.onPrimary)
-                          : const IconThemeData(color: Colors.black),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue.shade600,
+              surface: Colors.grey.shade50,
+              secondary: Colors.grey.shade200,
+              onSecondary: Colors.grey.shade700,
+              tertiary: Colors.grey.shade100,
+              onTertiary: Colors.grey.shade800,
+            ),
+            navigationBarTheme: NavigationBarThemeData(
+              labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
+                (Set<WidgetState> states) =>
+                    states.contains(WidgetState.selected)
+                        ? const TextStyle(color: Colors.black)
+                        : const TextStyle(color: Colors.black),
+              ),
+              iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
+                (Set<WidgetState> states) =>
+                    states.contains(WidgetState.selected)
+                        ? IconThemeData(
+                            color: Theme.of(context).colorScheme.onPrimary)
+                        : const IconThemeData(color: Colors.black),
               ),
             ),
           ),
@@ -96,13 +97,15 @@ class MyApp extends StatelessWidget {
                 labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
                   (Set<WidgetState> states) =>
                       states.contains(WidgetState.selected)
-                          ? TextStyle(color: Theme.of(context).colorScheme.onTertiary)
+                          ? TextStyle(
+                              color: Theme.of(context).colorScheme.onTertiary)
                           : const TextStyle(color: Colors.black),
                 ),
                 iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
                   (Set<WidgetState> states) =>
                       states.contains(WidgetState.selected)
-                          ? IconThemeData(color: Theme.of(context).colorScheme.onPrimary)
+                          ? IconThemeData(
+                              color: Theme.of(context).colorScheme.onPrimary)
                           : const IconThemeData(color: Colors.black),
                 ),
               )),
