@@ -9,7 +9,12 @@ class FolderDropdown extends StatefulWidget {
   final Function(String? value)? onChangeCallback;
   final String currentFolderUuid;
 
-  const FolderDropdown({super.key, this.enabled = true, required this.folders, this.onChangeCallback, this.currentFolderUuid = ""});
+  const FolderDropdown(
+      {super.key,
+      this.enabled = true,
+      required this.folders,
+      this.onChangeCallback,
+      this.currentFolderUuid = ""});
 
   @override
   State<StatefulWidget> createState() => _FolderDropdown();
@@ -28,7 +33,9 @@ class _FolderDropdown extends State<FolderDropdown> {
     List<DropdownMenuItem<String>>? items = [];
     items.add(DropdownTile.normal(value: "", displayText: ""));
     for (var element in widget.folders) {
-      items.add(DropdownTile.fromFolder(folder: element, fontColor: Theme.of(context).colorScheme.onSecondary));
+      items.add(DropdownTile.fromFolder(
+          folder: element,
+          fontColor: Theme.of(context).colorScheme.onSecondary));
     }
     return items;
   }

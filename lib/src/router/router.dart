@@ -61,12 +61,14 @@ class AppRouter {
         GoRoute(
           name: "settings",
           path: "/settings",
-          builder: (context, state) => SettingsView(controller: settingsController),
+          builder: (context, state) =>
+              SettingsView(controller: settingsController),
         ),
         GoRoute(
           path: '/folder',
           builder: (context, state) {
-            final data = state.extra as CredentialListWidgetData; // Access the passed object
+            final data = state.extra
+                as CredentialListWidgetData; // Access the passed object
             return FolderView(
               data: data,
             );
@@ -86,7 +88,9 @@ class AppRouter {
         bool isAuthenticated = false;
 
         try {
-          isAuthenticated = (await AuthService.getAuthenticationCredentials())['token'] != null;
+          isAuthenticated =
+              (await AuthService.getAuthenticationCredentials())['token'] !=
+                  null;
         } on NoCredentialException catch (e) {
           if (kDebugMode) {
             print(e.errMsg());

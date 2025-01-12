@@ -21,7 +21,7 @@ class FolderList {
   /// remove Folder with ID [folderUUID] from this FolderList
   void remove(String folderUUID) {
     Folder? temp = byIDList[folderUUID];
-    if(temp != null){
+    if (temp != null) {
       byIDList.remove(folderUUID);
       byNameList.remove(temp.displayName);
     }
@@ -59,14 +59,14 @@ class FolderList {
   List<dynamic> toJson() => byIDList.values.toList();
 
   /// Function to get new FolderList from `All` API endpoint response
-  static FolderList getFromAPI({required api.FoldersGetAllResponseBody folders}) {
+  static FolderList getFromAPI(
+      {required api.FoldersGetAllResponseBody folders}) {
     FolderList data = FolderList._();
     for (var folder in folders.folder!) {
       Folder? temp = Folder(
           uuid: folder.uuid!,
           displayName: folder.name!,
-          iconData: folder.icon!
-          );
+          iconData: folder.icon!);
       data.add(temp);
     }
     return data;
@@ -75,7 +75,7 @@ class FolderList {
   /// Function to update Folder Entry in FolderList using Folder Object
   Future<FolderList> updateFromLocalObject({required Folder folder}) async {
     Folder? temp = byIDList[folder.uuid];
-    if(temp != null){
+    if (temp != null) {
       remove(folder.uuid!);
       add(folder);
     }
@@ -86,11 +86,14 @@ class FolderList {
   static Future<FolderList?> getFromAPIFull() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('url'); // Get Backend URL
-    Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+    Map<String, String> authdata =
+        await AuthService.getAuthenticationCredentials();
     if (url != null) {
-      api.ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+      api.ApiClient apiClient =
+          RequestUtility.getApiWithAuth(authdata["token"]!, url);
       api.FoldersApi apiPoint = api.FoldersApi(apiClient);
-      api.FoldersGetAllResponseBody? response = await apiPoint.foldersGetAllGet();
+      api.FoldersGetAllResponseBody? response =
+          await apiPoint.foldersGetAllGet();
 
       if (response != null) {
         FolderList data = FolderList.getFromAPI(folders: response);

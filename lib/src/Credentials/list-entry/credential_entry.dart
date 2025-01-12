@@ -102,9 +102,13 @@ class _CredentialEntry extends State<CredentialEntry> {
         children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
+              backgroundColor: Theme.of(context)
+                  .colorScheme
+                  .primary, // Set the primary color from ColorScheme
             ),
-            onPressed: () => copyToClipboard(message: AppLocalizations.of(context)!.copiedUsername, value: _credential.getClearUsername()),
+            onPressed: () => copyToClipboard(
+                message: AppLocalizations.of(context)!.copiedUsername,
+                value: _credential.getClearUsername()),
             /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: _credential.username));
                 if (context.mounted) {
@@ -123,9 +127,13 @@ class _CredentialEntry extends State<CredentialEntry> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
+              backgroundColor: Theme.of(context)
+                  .colorScheme
+                  .primary, // Set the primary color from ColorScheme
             ),
-            onPressed: () => copyToClipboard(message: AppLocalizations.of(context)!.copiedPassword, value: _credential.getClearPassword()),
+            onPressed: () => copyToClipboard(
+                message: AppLocalizations.of(context)!.copiedPassword,
+                value: _credential.getClearPassword()),
             /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: _credential.password));
                 if (context.mounted) {

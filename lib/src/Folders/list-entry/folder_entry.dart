@@ -13,7 +13,8 @@ class FolderEntry extends StatefulWidget {
   final Folder folder;
   final CredentialList credentials;
   final FolderList? availableFolders;
-  final Function({required String uuid, required bool recursive})? onDeleteCallback;
+  final Function({required String uuid, required bool recursive})?
+      onDeleteCallback;
   final Function({required Folder folderData})? onSaveCallback;
 
   const FolderEntry({
@@ -50,7 +51,11 @@ class _FolderEntry extends State<FolderEntry> {
     ThemeData theme = Theme.of(context);
     return ClickableTile(
       onTap: () => {
-        context.push('/folder', extra: CredentialListWidgetData(availableFolders: widget.availableFolders, credentials: widget.credentials, currentFolderUuid: widget.folder.uuid!)),
+        context.push('/folder',
+            extra: CredentialListWidgetData(
+                availableFolders: widget.availableFolders,
+                credentials: widget.credentials,
+                currentFolderUuid: widget.folder.uuid!)),
       },
       leading: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 70.0),
@@ -67,7 +72,9 @@ class _FolderEntry extends State<FolderEntry> {
       ),
       trailing: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
+          backgroundColor: Theme.of(context)
+              .colorScheme
+              .primary, // Set the primary color from ColorScheme
         ),
         onPressed: () => {
           Navigator.push(
