@@ -38,12 +38,14 @@ StatefulWidget getNetworkLogoFromUrl(String url) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // While the future is loading, show a progress indicator
           return const CircularProgressIndicator();
+
         } else if (snapshot.hasError) {
           // If there's an error, show a fallback icon or error message
           // print(snapshot.error); // Debugging information
           return Icon(
             Icons.public,
             color: Theme.of(context).colorScheme.onTertiary,
+
           );
         } else if (snapshot.hasData) {
           return Image.network(snapshot.data!);
