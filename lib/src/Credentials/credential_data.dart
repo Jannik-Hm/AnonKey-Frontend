@@ -78,7 +78,8 @@ class Credential {
   static Future<Credential> fromJson(Map<String, dynamic> json) async {
     return Credential.fromApi(
       uuid: json["uuid"],
-      masterPassword: (await AuthService.getAuthenticationCredentials())["encryptionKDF"]!,
+      masterPassword:
+          (await AuthService.getAuthenticationCredentials())["encryptionKDF"]!,
       encryptedWebsiteUrl: json["encryptedWebsiteUrl"],
       websiteUrlSalt: json["websiteUrlSalt"],
       encryptedUsername: json["encryptedUsername"],
@@ -110,9 +111,15 @@ class Credential {
         'encryptedNote': _encryptedNote,
         'noteSalt': _noteSalt,
         'folderUuid': folderUuid,
-        'createdTimeStamp': (_createdTimeStamp == null) ? null : (_createdTimeStamp!.millisecondsSinceEpoch ~/ 1000),
-        'changedTimeStamp': (_changedTimeStamp == null) ? null : (_changedTimeStamp!.millisecondsSinceEpoch ~/ 1000),
-        'deletedTimeStamp': (_deletedTimeStamp == null) ? null : (_deletedTimeStamp!.millisecondsSinceEpoch ~/ 1000),
+        'createdTimeStamp': (_createdTimeStamp == null)
+            ? null
+            : (_createdTimeStamp!.millisecondsSinceEpoch ~/ 1000),
+        'changedTimeStamp': (_changedTimeStamp == null)
+            ? null
+            : (_changedTimeStamp!.millisecondsSinceEpoch ~/ 1000),
+        'deletedTimeStamp': (_deletedTimeStamp == null)
+            ? null
+            : (_deletedTimeStamp!.millisecondsSinceEpoch ~/ 1000),
       };
 
   String getClearDisplayName() {
@@ -188,7 +195,10 @@ class Credential {
     required int? changedTimeStamp,
     required int? deletedTimeStamp,
   }) async {
-    encrypt.Key kdfKey = await Cryptography.getKDFKey(masterPassword: masterPassword, salt: uuid, kdfMode: KDFMode.credential);
+    encrypt.Key kdfKey = await Cryptography.getKDFKey(
+        masterPassword: masterPassword,
+        salt: uuid,
+        kdfMode: KDFMode.credential);
     return Credential(
       uuid: uuid,
       folderUuid: folderUuid,
@@ -233,9 +243,15 @@ class Credential {
       encryptedNote: encryptedNote,
       noteSalt: noteSalt,
       //
-      createdTimeStamp: (createdTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(createdTimeStamp * 1000),
-      changedTimeStamp: (changedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(changedTimeStamp * 1000),
-      deletedTimeStamp: (deletedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(deletedTimeStamp * 1000),
+      createdTimeStamp: (createdTimeStamp == null)
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(createdTimeStamp * 1000),
+      changedTimeStamp: (changedTimeStamp == null)
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(changedTimeStamp * 1000),
+      deletedTimeStamp: (deletedTimeStamp == null)
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(deletedTimeStamp * 1000),
     );
   }
 
@@ -256,7 +272,10 @@ class Credential {
     final usernameSalt = Cryptography.createCryptoRandomString(16);
     final displayNameSalt = Cryptography.createCryptoRandomString(16);
     final noteSalt = Cryptography.createCryptoRandomString(16);
-    encrypt.Key kdfKey = await Cryptography.getKDFKey(masterPassword: masterPassword, salt: uuid, kdfMode: KDFMode.credential);
+    encrypt.Key kdfKey = await Cryptography.getKDFKey(
+        masterPassword: masterPassword,
+        salt: uuid,
+        kdfMode: KDFMode.credential);
     return Credential(
       uuid: uuid,
       folderUuid: folderUuid,
@@ -301,7 +320,9 @@ class Credential {
       ),
       noteSalt: noteSalt,
       //
-      createdTimeStamp: (createdTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(createdTimeStamp),
+      createdTimeStamp: (createdTimeStamp == null)
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(createdTimeStamp),
     );
   }
 
@@ -325,17 +346,23 @@ class Credential {
   }) async {
     this.folderUuid = folderUuid;
     late encrypt.Key kdfKey;
-    if (
-      this._encryptedWebsiteUrl != encryptedWebsiteUrl && this._websiteUrlSalt != websiteUrlSalt ||
-      this._encryptedUsername != encryptedUsername && this._usernameSalt != usernameSalt ||
-      this._encryptedPassword != encryptedPassword && this._passwordSalt != passwordSalt ||
-      this._encryptedDisplayName != encryptedDisplayName && this._displayNameSalt != displayNameSalt ||
-      this._encryptedNote != encryptedNote && this._noteSalt != noteSalt
-      ) {
-      kdfKey = await Cryptography.getKDFKey(masterPassword: masterPassword, salt: uuid, kdfMode: KDFMode.credential);
+    if (this._encryptedWebsiteUrl != encryptedWebsiteUrl &&
+            this._websiteUrlSalt != websiteUrlSalt ||
+        this._encryptedUsername != encryptedUsername &&
+            this._usernameSalt != usernameSalt ||
+        this._encryptedPassword != encryptedPassword &&
+            this._passwordSalt != passwordSalt ||
+        this._encryptedDisplayName != encryptedDisplayName &&
+            this._displayNameSalt != displayNameSalt ||
+        this._encryptedNote != encryptedNote && this._noteSalt != noteSalt) {
+      kdfKey = await Cryptography.getKDFKey(
+          masterPassword: masterPassword,
+          salt: uuid,
+          kdfMode: KDFMode.credential);
     }
     //
-    if (this._encryptedWebsiteUrl != encryptedWebsiteUrl && this._websiteUrlSalt != websiteUrlSalt) {
+    if (this._encryptedWebsiteUrl != encryptedWebsiteUrl &&
+        this._websiteUrlSalt != websiteUrlSalt) {
       this._clearWebsiteUrl = await Cryptography.getClearStringWithKey(
         kdfKey: kdfKey,
         encryptedString: encryptedWebsiteUrl,
@@ -345,7 +372,8 @@ class Credential {
       this._websiteUrlSalt = websiteUrlSalt;
     }
     //
-    if (this._encryptedUsername != encryptedUsername && this._usernameSalt != usernameSalt) {
+    if (this._encryptedUsername != encryptedUsername &&
+        this._usernameSalt != usernameSalt) {
       this._clearUsername = await Cryptography.getClearStringWithKey(
         kdfKey: kdfKey,
         encryptedString: encryptedUsername,
@@ -355,7 +383,8 @@ class Credential {
       this._usernameSalt = usernameSalt;
     }
     //
-    if (this._encryptedPassword != encryptedPassword && this._passwordSalt != passwordSalt) {
+    if (this._encryptedPassword != encryptedPassword &&
+        this._passwordSalt != passwordSalt) {
       this._clearPassword = await Cryptography.getClearStringWithKey(
         kdfKey: kdfKey,
         encryptedString: encryptedPassword,
@@ -365,7 +394,8 @@ class Credential {
       this._passwordSalt = passwordSalt;
     }
     //
-    if (this._encryptedDisplayName != encryptedDisplayName && this._displayNameSalt != displayNameSalt) {
+    if (this._encryptedDisplayName != encryptedDisplayName &&
+        this._displayNameSalt != displayNameSalt) {
       this._clearDisplayName = await Cryptography.getClearStringWithKey(
         kdfKey: kdfKey,
         encryptedString: encryptedDisplayName,
@@ -385,9 +415,15 @@ class Credential {
       this._noteSalt = noteSalt;
     }
     //
-    this._createdTimeStamp = (createdTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(createdTimeStamp * 1000);
-    this._changedTimeStamp = (changedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(changedTimeStamp * 1000);
-    this._deletedTimeStamp = (deletedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(deletedTimeStamp * 1000);
+    this._createdTimeStamp = (createdTimeStamp == null)
+        ? null
+        : DateTime.fromMillisecondsSinceEpoch(createdTimeStamp * 1000);
+    this._changedTimeStamp = (changedTimeStamp == null)
+        ? null
+        : DateTime.fromMillisecondsSinceEpoch(changedTimeStamp * 1000);
+    this._deletedTimeStamp = (deletedTimeStamp == null)
+        ? null
+        : DateTime.fromMillisecondsSinceEpoch(deletedTimeStamp * 1000);
     //
     return this;
   }
@@ -405,14 +441,15 @@ class Credential {
   }) async {
     this.folderUuid = folderUuid;
     late encrypt.Key kdfKey;
-    if (
-      this._clearWebsiteUrl != clearWebsiteUrl ||
-      this._clearUsername != clearUsername ||
-      this._clearPassword != clearPassword ||
-      this._clearDisplayName != clearDisplayName ||
-      this._clearNote != clearNote
-      ) {
-      kdfKey = await Cryptography.getKDFKey(masterPassword: masterPassword, salt: uuid, kdfMode: KDFMode.credential);
+    if (this._clearWebsiteUrl != clearWebsiteUrl ||
+        this._clearUsername != clearUsername ||
+        this._clearPassword != clearPassword ||
+        this._clearDisplayName != clearDisplayName ||
+        this._clearNote != clearNote) {
+      kdfKey = await Cryptography.getKDFKey(
+          masterPassword: masterPassword,
+          salt: uuid,
+          kdfMode: KDFMode.credential);
     }
     //
     if (this._clearWebsiteUrl != clearWebsiteUrl) {
@@ -460,12 +497,16 @@ class Credential {
       );
     }
     //
-    this._changedTimeStamp = (changedTimeStamp == null) ? null : DateTime.fromMillisecondsSinceEpoch(changedTimeStamp);
+    this._changedTimeStamp = (changedTimeStamp == null)
+        ? null
+        : DateTime.fromMillisecondsSinceEpoch(changedTimeStamp);
     return this;
   }
 
   /// Function to retrieve Credential from `Single` API endpoint response
-  static Future<Credential>? fromSingleApi({required api.CredentialsGetResponseBody response, required String masterPassword}) {
+  static Future<Credential>? fromSingleApi(
+      {required api.CredentialsGetResponseBody response,
+      required String masterPassword}) {
     api.CredentialsGetCredential? credential = response.credential;
     if (credential == null) {
       return null;
@@ -534,7 +575,8 @@ class Credential {
   }
 
   /// Function to get API UpdateCredential Body from this Credential
-  api.CredentialsUpdateRequestBody updateAPICredentialRequestBody({api.CredentialsUpdateCredentialRequest? requestdata}) {
+  api.CredentialsUpdateRequestBody updateAPICredentialRequestBody(
+      {api.CredentialsUpdateCredentialRequest? requestdata}) {
     return api.CredentialsUpdateRequestBody(
       credential: requestdata ?? this.updateAPICredentialRequest(),
     );
