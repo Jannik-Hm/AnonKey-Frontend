@@ -24,7 +24,7 @@ class AuthService {
     AuthenticationApi authApi = AuthenticationApi(apiClient);
     String masterKDF = await Cryptography.getKDFBase64(
       masterPassword: password,
-      salt: username,
+      salt: "${username}_authentication",
     );
     try {
       AuthenticationLoginRequestBody loginBody = AuthenticationLoginRequestBody(
@@ -62,7 +62,7 @@ class AuthService {
     UsersApi authApi = UsersApi(apiClient);
     String masterKDF = await Cryptography.getKDFBase64(
       masterPassword: password,
-      salt: username,
+      salt: "${username}_authentication",
     );
     try {
       UsersCreateRequestBody registerBody = UsersCreateRequestBody(
@@ -99,6 +99,7 @@ class AuthService {
     String? token = await storage.read(key: "token");
     String? username = await storage.read(key: "username");
     String? password = await storage.read(key: "password");
+    String? encryptionKDF = (password == null || username == null) ? "" : await Cryptography.getKDFBase64(masterPassword: password, salt: "${username}_encryption", kdfMode: KDFMode.master);
     String? timestampStorage = await storage.read(key: "timestamp");
     int expire = int.parse(await storage.read(key: "expire") ?? "0");
     if (token == null ||
@@ -110,7 +111,7 @@ class AuthService {
     if (!(await validateToken(username, password, timestampStorage, expire))) {
       return getAuthenticationCredentials();
     }
-    return {"token": token, "username": username, "password": password};
+    return {"token": token, "username": username, "password": password, "encryptionKDF": encryptionKDF};
   }
 
   /// Validates the authentication token. If the token is invalid, the user is logged in again but only if the token is still in the valid range.
