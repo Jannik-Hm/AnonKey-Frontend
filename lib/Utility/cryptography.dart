@@ -79,7 +79,8 @@ class Cryptography {
       required String encryptedSalt}) async {
     return (clearString.isEmpty)
         ? ""
-        : encrypt.Encrypter(encrypt.AES(kdfKey))
+        : encrypt.Encrypter(encrypt.AES(kdfKey,
+                mode: encrypt.AESMode.sic, padding: 'PKCS7'))
             .encrypt(
               clearString,
               iv: encrypt.IV.fromUtf8(encryptedSalt),
@@ -101,7 +102,8 @@ class Cryptography {
         : await getKDFKey(
                 masterPassword: masterPassword, salt: kdfSalt, kdfMode: kdfMode)
             .then(
-            (value) => encrypt.Encrypter(encrypt.AES(value))
+            (value) => encrypt.Encrypter(encrypt.AES(value,
+                    mode: encrypt.AESMode.sic, padding: 'PKCS7'))
                 .encrypt(
                   clearString,
                   iv: encrypt.IV.fromUtf8(encryptedSalt),
@@ -121,7 +123,9 @@ class Cryptography {
       return "";
     } else {
       try {
-        return encrypt.Encrypter(encrypt.AES(kdfKey)).decrypt64(
+        return encrypt.Encrypter(encrypt.AES(kdfKey,
+                mode: encrypt.AESMode.sic, padding: 'PKCS7'))
+            .decrypt64(
           encryptedString,
           iv: encrypt.IV.fromUtf8(encryptedSalt),
         );
@@ -148,7 +152,9 @@ class Cryptography {
         return getKDFKey(
                 masterPassword: masterPassword, salt: kdfSalt, kdfMode: kdfMode)
             .then(
-          (value) => encrypt.Encrypter(encrypt.AES(value)).decrypt64(
+          (value) => encrypt.Encrypter(encrypt.AES(value,
+                  mode: encrypt.AESMode.sic, padding: 'PKCS7'))
+              .decrypt64(
             encryptedString,
             iv: encrypt.IV.fromUtf8(encryptedSalt),
           ),
