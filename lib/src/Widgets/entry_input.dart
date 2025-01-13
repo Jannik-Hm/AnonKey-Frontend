@@ -52,7 +52,8 @@ class _EntryInput extends State<EntryInput> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
+      padding:
+          const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(25)),
         color: Theme.of(context).colorScheme.secondary,
@@ -71,7 +72,11 @@ class _EntryInput extends State<EntryInput> {
               validator: widget.validator,
               controller: widget.controller,
               obscureText: _obscure,
-              decoration: InputDecoration(border: InputBorder.none, labelText: widget.label, labelStyle: TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+              decoration: InputDecoration(
+                  border: InputBorder.none,
+                  labelText: widget.label,
+                  labelStyle: TextStyle(
+                      color: Theme.of(context).colorScheme.onSecondary)),
             ),
           ),
           if (widget.obscureText)
@@ -81,7 +86,9 @@ class _EntryInput extends State<EntryInput> {
                 color: Theme.of(context).colorScheme.onSecondary,
               ),
               onPressed: () => (_obscure) ? _show() : _hide(),
-              style: TextButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary, foregroundColor: Theme.of(context).colorScheme.onSecondary),
+              style: TextButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  foregroundColor: Theme.of(context).colorScheme.onSecondary),
             ),
         ],
       ),

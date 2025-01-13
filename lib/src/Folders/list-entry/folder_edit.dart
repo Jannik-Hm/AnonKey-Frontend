@@ -14,7 +14,8 @@ class FolderEditWidget extends StatefulWidget {
   final Folder? folder;
   final void Function({required int codePoint})? iconCallback;
   final Function({required Folder folderData})? onSaveCallback;
-  final Function({required String uuid, required bool recursive})? onDeleteCallback;
+  final Function({required String uuid, required bool recursive})?
+      onDeleteCallback;
   final Function()? onAbortCallback;
 
   const FolderEditWidget({
@@ -77,10 +78,12 @@ class _FolderEditWidget extends State<FolderEditWidget> {
     Future<bool> save() async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? url = prefs.getString('url'); // Get Backend URL
-      Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+      Map<String, String> authdata =
+          await AuthService.getAuthenticationCredentials();
       try {
         if (url != null) {
-          ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+          ApiClient apiClient =
+              RequestUtility.getApiWithAuth(authdata["token"]!, url);
           FoldersApi api = FoldersApi(apiClient);
           if (_folder != null) {
             _folder!.displayName = displayName.text;
@@ -92,8 +95,15 @@ class _FolderEditWidget extends State<FolderEditWidget> {
             }
             await api.foldersUpdatePut(_folder!.updateFolderBody());
           } else {
-            await api.foldersCreatePost(FoldersCreateRequestBody(folder: FoldersCreateFolder(icon: _iconData!.codePoint, name: displayName.text))).then((value) {
-              _folder = Folder(displayName: displayName.text, iconData: _iconData!.codePoint, uuid: value!.folderUuid);
+            await api
+                .foldersCreatePost(FoldersCreateRequestBody(
+                    folder: FoldersCreateFolder(
+                        icon: _iconData!.codePoint, name: displayName.text)))
+                .then((value) {
+              _folder = Folder(
+                  displayName: displayName.text,
+                  iconData: _iconData!.codePoint,
+                  uuid: value!.folderUuid);
             });
           }
           return true;
@@ -104,7 +114,8 @@ class _FolderEditWidget extends State<FolderEditWidget> {
         }
       } on ApiException catch (e) {
         if (context.mounted) {
-          NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+          NotificationPopup.apiError(
+              context: context, apiResponseMessage: e.message);
         }
         return false;
       }
@@ -114,22 +125,28 @@ class _FolderEditWidget extends State<FolderEditWidget> {
     Future<bool> delete(bool recursive) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? url = prefs.getString('url'); // Get Backend URL
-      Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+      Map<String, String> authdata =
+          await AuthService.getAuthenticationCredentials();
       try {
         if (url != null) {
-          ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+          ApiClient apiClient =
+              RequestUtility.getApiWithAuth(authdata["token"]!, url);
           FoldersApi api = FoldersApi(apiClient);
-          await api.foldersDeleteDelete(_folder!.uuid!, recursive).then((value) {});
+          await api
+              .foldersDeleteDelete(_folder!.uuid!, recursive)
+              .then((value) {});
         } else {
           if (context.mounted) {
             NotificationPopup.apiError(context: context);
           }
           return false;
         }
-        if (widget.onDeleteCallback != null) widget.onDeleteCallback!(uuid: _folder!.uuid!, recursive: recursive);
+        if (widget.onDeleteCallback != null)
+          widget.onDeleteCallback!(uuid: _folder!.uuid!, recursive: recursive);
       } on ApiException catch (e) {
         if (context.mounted) {
-          NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+          NotificationPopup.apiError(
+              context: context, apiResponseMessage: e.message);
         }
         return false;
       }
@@ -143,9 +160,11 @@ class _FolderEditWidget extends State<FolderEditWidget> {
           return AlertDialog(
             // Retrieve the text the that user has entered by using the
             // TextEditingController.
-            title: Text(AppLocalizations.of(context)!.confirmFolderDeleteTitle(folder.displayName)),
+            title: Text(AppLocalizations.of(context)!
+                .confirmFolderDeleteTitle(folder.displayName)),
             //content: Text('Are you sure you want to move Credential "${credential.getClearDisplayName()}" into the deleted Folder?'),
-            content: Text(AppLocalizations.of(context)!.confirmFolderDeleteText(folder.displayName)),
+            content: Text(AppLocalizations.of(context)!
+                .confirmFolderDeleteText(folder.displayName)),
             actions: [
               Row(
                 children: [
@@ -154,7 +173,9 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      style: TextButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
+                      style: TextButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white),
                       child: Text(AppLocalizations.of(context)!.abort),
                     ),
                   ),
@@ -173,8 +194,11 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                           },
                         );
                       },
-                      style: TextButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-                      child: Text(AppLocalizations.of(context)!.deleteFolderWithCredentials),
+                      style: TextButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white),
+                      child: Text(AppLocalizations.of(context)!
+                          .deleteFolderWithCredentials),
                     ),
                   ),
                   const SizedBox(
@@ -190,8 +214,11 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                           },
                         );
                       },
-                      style: TextButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
-                      child: Text(AppLocalizations.of(context)!.deleteFolderKeepCredentials),
+                      style: TextButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white),
+                      child: Text(AppLocalizations.of(context)!
+                          .deleteFolderKeepCredentials),
                     ),
                   ),
                 ],
@@ -208,7 +235,11 @@ class _FolderEditWidget extends State<FolderEditWidget> {
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         title: Text(_folder?.displayName ?? ""),
         actions: [
-          if (!_enabled) IconButton(onPressed: () => enableFields(), icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary)),
+          if (!_enabled)
+            IconButton(
+                onPressed: () => enableFields(),
+                icon: Icon(Icons.edit,
+                    color: Theme.of(context).colorScheme.onPrimary)),
           if (_enabled)
             IconButton(
                 onPressed: () => {
@@ -218,7 +249,9 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                             (value) {
                               if (value) {
                                 disableFields();
-                                if (widget.onSaveCallback != null && _folder != null) widget.onSaveCallback!(folderData: _folder!);
+                                if (widget.onSaveCallback != null &&
+                                    _folder != null)
+                                  widget.onSaveCallback!(folderData: _folder!);
                                 if (context.mounted) {
                                   Navigator.of(context).pop();
                                 }
@@ -235,7 +268,8 @@ class _FolderEditWidget extends State<FolderEditWidget> {
             IconButton(
                 onPressed: () => {
                       disableFields(),
-                      if (widget.onAbortCallback != null) widget.onAbortCallback!(),
+                      if (widget.onAbortCallback != null)
+                        widget.onAbortCallback!(),
                     },
                 icon: Icon(
                   Icons.cancel,

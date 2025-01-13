@@ -32,7 +32,9 @@ class _HomeFoldersDisplayWidget extends State<HomeFoldersDisplayWidget> {
   }
 
   void addFolderToList(Folder folder) {
-    setState(() {_combinedData.folders!.add(folder);});
+    setState(() {
+      _combinedData.folders!.add(folder);
+    });
   }
 
   @override

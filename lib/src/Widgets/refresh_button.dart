@@ -12,7 +12,8 @@ class RefreshButton extends StatefulWidget {
   State<StatefulWidget> createState() => _RefreshButton();
 }
 
-class _RefreshButton extends State<RefreshButton> with SingleTickerProviderStateMixin {
+class _RefreshButton extends State<RefreshButton>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -21,7 +22,8 @@ class _RefreshButton extends State<RefreshButton> with SingleTickerProviderState
     // Initialize the mutable object from the widget field
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500), // The duration of the rotation
+      duration:
+          const Duration(milliseconds: 500), // The duration of the rotation
     );
   }
 
@@ -36,9 +38,8 @@ class _RefreshButton extends State<RefreshButton> with SingleTickerProviderState
     if (_controller.isAnimating) {
       return; // Prevent triggering multiple animations
     }
-    _controller
-        .forward(from: 0.0); // Start from the beginning
-        //.then((_) => _controller.reverse()); // Reset the animation after completion (optional)
+    _controller.forward(from: 0.0); // Start from the beginning
+    //.then((_) => _controller.reverse()); // Reset the animation after completion (optional)
   }
 
   @override
@@ -47,7 +48,9 @@ class _RefreshButton extends State<RefreshButton> with SingleTickerProviderState
       animation: _controller,
       builder: (context, child) {
         return Transform.rotate(
-          angle: _controller.value * 2.0 * 3.14159265359, // Full rotation (2 * pi radians)
+          angle: _controller.value *
+              2.0 *
+              3.14159265359, // Full rotation (2 * pi radians)
           child: child, // The icon button to rotate
         );
       },
@@ -55,7 +58,8 @@ class _RefreshButton extends State<RefreshButton> with SingleTickerProviderState
         onPressed: () {
           refresh();
         },
-        icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.onPrimary),
+        icon:
+            Icon(Icons.refresh, color: Theme.of(context).colorScheme.onPrimary),
       ),
     );
   }
