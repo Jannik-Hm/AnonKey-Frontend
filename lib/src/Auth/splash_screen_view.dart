@@ -37,7 +37,12 @@ class _SplashScreenViewState extends State<SplashScreenView> {
 
   Future<void> _checkBiometricAvailability() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool canCheckBiometrics = await auth.canCheckBiometrics;
+    bool canCheckBiometrics;
+    try {
+      canCheckBiometrics = await auth.canCheckBiometrics;
+    } catch (e) {
+      canCheckBiometrics = false;
+    }
     bool isBiometric = prefs.getBool('isBiometricEnabled') ?? false;
     setState(() {
       _isBiometricAvailable = isBiometric && canCheckBiometrics;
@@ -100,17 +105,17 @@ class _SplashScreenViewState extends State<SplashScreenView> {
               child: const Text('Fly me to the moon'),
             ),
             const SizedBox(height: 20),
-            if(notFirstTry)
-            ElevatedButton.icon(
-              key: UniqueKey(),
-              onPressed: () => UserService.logout(context),
-              icon: const Icon(Icons.logout),
-              label: Text(AppLocalizations.of(context)!.logout),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                backgroundColor: Theme.of(context).colorScheme.primary,
+            if (notFirstTry)
+              ElevatedButton.icon(
+                key: UniqueKey(),
+                onPressed: () => UserService.logout(context),
+                icon: const Icon(Icons.logout),
+                label: Text(AppLocalizations.of(context)!.logout),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                ),
               ),
-            ),
           ],
         ),
       ),
