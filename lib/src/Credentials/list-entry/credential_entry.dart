@@ -47,7 +47,7 @@ class _CredentialEntry extends State<CredentialEntry> {
         _timer = Timer(const Duration(seconds: 10), () async {
           ClipboardData? current = await Clipboard.getData('text/plain');
           if (current != null && current.text == value) {
-            await Clipboard.setData(const ClipboardData(text: ''));
+            Clipboard.setData(const ClipboardData(text: ''));
           }
         });
         if (context.mounted) {
