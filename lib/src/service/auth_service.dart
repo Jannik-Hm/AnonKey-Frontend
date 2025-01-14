@@ -1,9 +1,47 @@
+import 'package:anonkey_frontend/Utility/auth_utils.dart';
 import 'package:anonkey_frontend/Utility/cryptography.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class AuthenticationKeysSingleton {
+  static final AuthenticationKeysSingleton _singleton =
+      AuthenticationKeysSingleton._internal();
+
+  String? encryptionKDF;
+  String? refreshToken;
+  String? accessToken;
+  DateTime? timestamp;
+  int? refreshExpiration;
+  int? accessExpiration;
+
+  factory AuthenticationKeysSingleton() {
+    return _singleton;
+  }
+
+  deleteAuthenticationKeysSingleton() {
+    refreshToken = null;
+    accessToken = null;
+    encryptionKDF = null;
+    timestamp = null;
+    refreshExpiration = null;
+    accessExpiration = null;
+  }
+
+  AuthenticationKeysSingleton._internal();
+}
+
+class AuthenticationCredentials {
+  AuthenticationKeysSingleton? keysSingleton;
+  String? username;
+  bool? softLogout;
+  bool? skipSplashScreen;
+
+  AuthenticationCredentials(this.keysSingleton, this.username, this.softLogout,
+      this.skipSplashScreen);
+}
 
 /// The authentication service.
 ///
@@ -35,7 +73,11 @@ class AuthService {
             if (value?.token != null)
               {
                 await storeAuthenticationCredentials(
-                    value?.token, username, password, value!.expiresInSeconds!),
+                    // TODO: Ask Backend for the updated OpenAI specification in order to be able to parse the return object -> refresh and access tockens
+                    value?.token,
+                    username,
+                    password,
+                    value!.expiresInSeconds!),
               }
           });
       return true;
@@ -64,6 +106,8 @@ class AuthService {
       masterPassword: password,
       salt: "${username}_authentication",
     );
+    String encryptionKDF = await Cryptography.getKDFBase64(
+        masterPassword: password, salt: "${username}_encryption");
     try {
       UsersCreateRequestBody registerBody = UsersCreateRequestBody(
         userName: username,
@@ -73,8 +117,14 @@ class AuthService {
       await authApi.userCreatePost(registerBody).then((value) async => {
             if (value?.token != null)
               {
+                // TODO: Ask Backend for the updated OpenAI specification in order to be able to parse the return object -> refresh and access tockens
                 await storeAuthenticationCredentials(
-                    value?.token, username, password, value!.expiresInSeconds!),
+                  username,
+                  password,
+                  encryptionKDF,
+                  value?.token,
+                  value!.expiresInSeconds!,
+                ),
               }
           });
       return true;
@@ -94,34 +144,28 @@ class AuthService {
   /// [password]: The password.
   ///
   /// \throws [NoCredentialException] if no data is found.
-  static Future<Map<String, String>> getAuthenticationCredentials() async {
+  static Future<AuthenticationCredentials>
+      getAuthenticationCredentials() async {
     const storage = FlutterSecureStorage();
-    String? token = await storage.read(key: "token");
+    AuthenticationKeysSingleton? keys = AuthenticationKeysSingleton();
     String? username = await storage.read(key: "username");
-    String? password = await storage.read(key: "password");
-    String? encryptionKDF = (password == null || username == null)
-        ? ""
-        : await Cryptography.getKDFBase64(
-            masterPassword: password,
-            salt: "${username}_encryption",
-            kdfMode: KDFMode.master);
-    String? timestampStorage = await storage.read(key: "timestamp");
-    int expire = int.parse(await storage.read(key: "expire") ?? "0");
-    if (token == null ||
-        username == null ||
-        password == null ||
-        timestampStorage == null) {
+    bool softLogout =
+        await storage.read(key: "softLogout") == "true" ? true : false;
+    bool skipSplashScreen =
+        await storage.read(key: "skipSplashScreen") == "true" ? true : false;
+    if (keys.refreshToken == null ||
+        keys.accessToken == null ||
+        keys.refreshExpiration == null ||
+        keys.accessExpiration == null ||
+        username == null) {
       throw NoCredentialException();
     }
-    if (!(await validateToken(username, password, timestampStorage, expire))) {
+    if (!(await validateToken(
+        username, keys.timestamp, keys.refreshExpiration))) {
       return getAuthenticationCredentials();
     }
-    return {
-      "token": token,
-      "username": username,
-      "password": password,
-      "encryptionKDF": encryptionKDF
-    };
+    return AuthenticationCredentials(
+        keys, username, softLogout, skipSplashScreen);
   }
 
   /// Validates the authentication token. If the token is invalid, the user is logged in again but only if the token is still in the valid range.
@@ -137,19 +181,19 @@ class AuthService {
   /// [expire]: The expiration time of the token.
   static Future<bool> validateToken(
     String username,
-    String password,
-    String timestampStorage,
-    int expire,
+    DateTime? timestamp,
+    int? expire,
   ) async {
-    DateTime timestamp = DateTime.parse(timestampStorage);
+    timestamp = (timestamp == null) ? DateTime.now() : timestamp;
+    expire = (expire == null) ? 0 : expire;
     DateTime now = DateTime.now();
     Duration difference = now.difference(timestamp);
 
     int minRange = (expire * 0.8).toInt();
-    //int maxRange = (expire).toInt();
 
     if (difference.inSeconds >= minRange) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // TODO: Here the user shall be prompted to reenter the password, as we do not store it.
       await AuthService.login(username, password, prefs.getString("url")!);
       return false;
     }
@@ -158,31 +202,52 @@ class AuthService {
 
   /// Stores the authentication data in the secure storage.
   ///
-  /// [token]: The authentication token.
-  ///
   /// [username]: The username.
   ///
-  /// [password]: The password.
+  /// [encryptionKDF]: The encryption KDF. If  biometrics are enabled, the encryptionKDF of the AuthenticationKeysSingleton object is set to null and the encryptionKDF is saved into the secure storage.
+  ///
+  /// [refreshToken]: The refresh token from the server;
+  ///
+  /// [refreshExpiration]: The time in seconds till the expiration of the refresh token.
+  ///
+  /// [accessToken]: The access token from the server.
+  ///
+  /// [accessExpiration]: The ime in seconds till the expiration of the access token.
   static Future<void> storeAuthenticationCredentials(
-      String? token, String username, String password, int expire) async {
+      String? username,
+      String? encryptionKDF,
+      String? refreshToken,
+      int refreshExpiration,
+      String? accessToken,
+      int accessExpiration) async {
     const storage = FlutterSecureStorage();
-    await storage.write(key: "token", value: token);
-    await storage.write(
-        key: "timestamp", value: DateTime.now().toIso8601String());
-    await storage.write(key: "password", value: password);
+    var singleton = AuthenticationKeysSingleton();
+    singleton.refreshToken = refreshToken;
+    singleton.accessToken = accessToken;
+    if (await AuthUtils.checkBiometricAvailability()) {
+      await storage.write(key: "encryptionKDF", value: encryptionKDF);
+      singleton.encryptionKDF = null;
+    } else {
+      singleton.encryptionKDF = encryptionKDF;
+    }
     await storage.write(key: "username", value: username);
-    await storage.write(key: "expire", value: expire.toString());
+    singleton.timestamp = DateTime.now();
+    singleton.refreshExpiration = refreshExpiration;
+    singleton.accessExpiration = accessExpiration;
     await storage.write(key: "softLogout", value: false.toString());
     await storage.write(key: "skipSplashScreen", value: "false");
   }
 
   static Future<void> deleteAuthenticationCredentials() async {
     const storage = FlutterSecureStorage();
-    await storage.delete(key: "token");
-    await storage.delete(key: "timestamp");
-    await storage.delete(key: "password");
-    await storage.delete(key: "expire");
+    var singleton = AuthenticationKeysSingleton();
+    singleton.deleteAuthenticationKeysSingleton();
+    if (await AuthUtils.checkBiometricAvailability()) {
+      await storage.delete(key: "encryptionKDF");
+    }
     await storage.delete(key: "username");
+    await storage.delete(key: "softLogout");
+    await storage.delete(key: "skipSplashScreen");
   }
 
   /// softLogout is used to indicate that the user has logged out without deleting the authentication data.
