@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart' as api;
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FolderList {
@@ -55,8 +59,25 @@ class FolderList {
     return data;
   }
 
+  /// Function to read FolderList from App Document Directory
+  static Future<FolderList> readFromDisk() async {
+    final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+    File offlineCopy = File("${appDocumentsDir.path}/folders.json");
+    String json = await offlineCopy.readAsString();
+    return fromJson(jsonDecode(json));
+  }
+
   /// Function to serialize FolderList to store in Local Storage
   List<dynamic> toJson() => byIDList.values.toList();
+
+  /// Function to write FolderList to App Document Directory
+  Future<void> saveToDisk() async {
+    String json = jsonEncode(toJson());
+
+    final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+    File offlineCopy = File("${appDocumentsDir.path}/folders.json");
+    await offlineCopy.writeAsString(json, flush: true);
+  }
 
   /// Function to get new FolderList from `All` API endpoint response
   static FolderList getFromAPI(
@@ -69,6 +90,7 @@ class FolderList {
           iconData: folder.icon!);
       data.add(temp);
     }
+    data.saveToDisk();
     return data;
   }
 
@@ -78,6 +100,7 @@ class FolderList {
     if (temp != null) {
       remove(folder.uuid!);
       add(folder);
+      await saveToDisk();
     }
     return this;
   }

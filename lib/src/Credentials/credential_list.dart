@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart' as api;
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CredentialList {
@@ -79,8 +83,25 @@ class CredentialList {
     return data;
   }
 
-  /// Function to serialize CredentialList to store in Local Storage
+  /// Function to read encrypted CredentialList from App Document Directory
+  static Future<CredentialList> readFromDisk() async {
+    final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+    File offlineCopy = File("${appDocumentsDir.path}/vault.json");
+    String json = await offlineCopy.readAsString();
+    return await fromJson(jsonDecode(json));
+  }
+
+  /// Function to serialize CredentialList to store in App Storage
   List<dynamic> toJson() => byIDList.values.toList();
+
+  /// Function to write encrypted CredentialList to App Document Directory
+  Future<void> saveToDisk() async {
+    String json = jsonEncode(toJson());
+
+    final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+    File offlineCopy = File("${appDocumentsDir.path}/vault.json");
+    await offlineCopy.writeAsString(json, flush: true);
+  }
 
   /// Function to get new CredentialList from `All` API endpoint response
   static Future<CredentialList> getFromAPI(
@@ -109,6 +130,7 @@ class CredentialList {
         .toList();
     List<Credential> futureCredentials = await Future.wait(futures);
     futureCredentials.forEach(data.add);
+    await data.saveToDisk();
     return data;
   }
 
@@ -138,6 +160,7 @@ class CredentialList {
           createdTimeStamp:
               temp.getCreatedTimeStamp()!.millisecondsSinceEpoch ~/ 1000,
           clearNote: clearNote));
+      await saveToDisk();
     }
   }
 
@@ -147,6 +170,7 @@ class CredentialList {
     if (temp != null) {
       remove(credential.uuid);
       add(credential);
+      saveToDisk();
     }
     return this;
   }
@@ -202,6 +226,8 @@ class CredentialList {
 
     List<Credential> futureCredentials = await Future.wait(futures);
     futureCredentials.forEach(data.add);
+
+    await data.saveToDisk();
 
     return data;
   }
