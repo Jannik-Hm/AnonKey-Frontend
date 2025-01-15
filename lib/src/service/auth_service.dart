@@ -6,31 +6,33 @@ import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthenticationKeysSingleton {
-  static final AuthenticationKeysSingleton _singleton =
-      AuthenticationKeysSingleton._internal();
+class AuthenticationCredentialsSingleton {
+  static final AuthenticationCredentialsSingleton _singleton =
+      AuthenticationCredentialsSingleton._internal();
 
-  String? encryptionKDF;
+  String? encryptionKDF; // always in RAM if nor taken from the secure storage
   String? refreshToken;
   String? accessToken;
-  DateTime? timestamp;
   int? refreshExpiration;
   int? accessExpiration;
 
-  factory AuthenticationKeysSingleton() {
+  String? username;
+  bool? softLogout;
+  bool? skipSplashScreen;
+
+  factory AuthenticationCredentialsSingleton() {
     return _singleton;
   }
 
-  deleteAuthenticationKeysSingleton() {
+  deleteAuthenticationCredentialsSingleton() {
     refreshToken = null;
     accessToken = null;
     encryptionKDF = null;
-    timestamp = null;
     refreshExpiration = null;
     accessExpiration = null;
-  }
-
-  AuthenticationKeysSingleton._internal();
+    username = null;
+    softLogout = true;
+    skipSplashScreen = null;
 }
 
 class AuthenticationCredentials {
@@ -39,8 +41,7 @@ class AuthenticationCredentials {
   bool? softLogout;
   bool? skipSplashScreen;
 
-  AuthenticationCredentials(this.keysSingleton, this.username, this.softLogout,
-      this.skipSplashScreen);
+  AuthenticationCredentialsSingleton._internal();
 }
 
 /// The authentication service.
@@ -144,14 +145,16 @@ class AuthService {
   /// [password]: The password.
   ///
   /// \throws [NoCredentialException] if no data is found.
-  static Future<AuthenticationCredentials>
+  static Future<AuthenticationCredentialsSingleton>
       getAuthenticationCredentials() async {
     const storage = FlutterSecureStorage();
-    AuthenticationKeysSingleton? keys = AuthenticationKeysSingleton();
-    String? username = await storage.read(key: "username");
-    bool softLogout =
-        await storage.read(key: "softLogout") == "true" ? true : false;
-    bool skipSplashScreen =
+    var singleton = AuthenticationCredentialsSingleton();
+    if (await AuthUtils.checkBiometricAvailability() &&
+        singleton.encryptionKDF == null) {
+      singleton.encryptionKDF = await storage.read(key: "encryptionKDF");
+    } // otherwise the roken is already in the singleton
+    singleton.username ??= await storage.read(key: "username");
+    singleton.skipSplashScreen ??=
         await storage.read(key: "skipSplashScreen") == "true" ? true : false;
     if (keys.refreshToken == null ||
         keys.accessToken == null ||
@@ -165,7 +168,11 @@ class AuthService {
       return getAuthenticationCredentials();
     }
     return AuthenticationCredentials(
-        keys, username, softLogout, skipSplashScreen);
+      keysSingleton: keys,
+      username: username,
+      softLogout: softLogout,
+      skipSplashScreen: skipSplashScreen,
+    );
   }
 
   /// Validates the authentication token. If the token is invalid, the user is logged in again but only if the token is still in the valid range.
@@ -213,40 +220,43 @@ class AuthService {
   /// [accessToken]: The access token from the server.
   ///
   /// [accessExpiration]: The ime in seconds till the expiration of the access token.
-  static Future<void> storeAuthenticationCredentials(
-      String? username,
-      String? encryptionKDF,
-      String? refreshToken,
-      int refreshExpiration,
-      String? accessToken,
-      int accessExpiration) async {
-    const storage = FlutterSecureStorage();
-    var singleton = AuthenticationKeysSingleton();
+  static Future<void> storeAuthenticationCredentials({
+    required String? username,
+    required String? encryptionKDF,
+    required String? refreshToken,
+    required int refreshExpiration,
+    required String? accessToken,
+    required int accessExpiration,
+  }) async {
+    // Store in RAM
+    var singleton = AuthenticationCredentialsSingleton();
     singleton.refreshToken = refreshToken;
     singleton.accessToken = accessToken;
-    if (await AuthUtils.checkBiometricAvailability()) {
-      await storage.write(key: "encryptionKDF", value: encryptionKDF);
-      singleton.encryptionKDF = null;
-    } else {
-      singleton.encryptionKDF = encryptionKDF;
-    }
-    await storage.write(key: "username", value: username);
-    singleton.timestamp = DateTime.now();
+    singleton.encryptionKDF = encryptionKDF;
+    singleton.username = username;
     singleton.refreshExpiration = refreshExpiration;
     singleton.accessExpiration = accessExpiration;
-    await storage.write(key: "softLogout", value: false.toString());
+    singleton.softLogout = true;
+    singleton.skipSplashScreen = false;
+    // Store in secure storage
+    const storage = FlutterSecureStorage();
+    if (await AuthUtils.checkBiometricAvailability()) {
+      await storage.write(key: "encryptionKDF", value: encryptionKDF);
+    }
+    await storage.write(key: "username", value: username);
     await storage.write(key: "skipSplashScreen", value: "false");
   }
 
   static Future<void> deleteAuthenticationCredentials() async {
+    // Clean up RAM
+    AuthenticationCredentialsSingleton()
+        .deleteAuthenticationCredentialsSingleton();
+    // CLean up secure storage
     const storage = FlutterSecureStorage();
-    var singleton = AuthenticationKeysSingleton();
-    singleton.deleteAuthenticationKeysSingleton();
     if (await AuthUtils.checkBiometricAvailability()) {
       await storage.delete(key: "encryptionKDF");
     }
     await storage.delete(key: "username");
-    await storage.delete(key: "softLogout");
     await storage.delete(key: "skipSplashScreen");
   }
 
