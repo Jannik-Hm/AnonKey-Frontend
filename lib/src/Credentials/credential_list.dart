@@ -90,7 +90,7 @@ class CredentialList {
     final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
     File offlineCopy = File("${appDocumentsDir.path}/vault.json");
     String json = "[]";
-    if(offlineCopy.existsSync()){
+    if (offlineCopy.existsSync()) {
       json = await offlineCopy.readAsString();
     }
     return await fromJson(jsonDecode(json));
@@ -264,7 +264,7 @@ class CredentialList {
   static Future<CredentialList?> getFromAPIFull() async {
     Future<api.CredentialsGetAllResponseBody?> responseFuture = (() async {
       try {
-        return await _getResponseFromAllAPI(timeout: Duration(seconds: 10));
+        return await _getResponseFromAllAPI(timeout: Duration(seconds: 5));
       } catch (e) {
         if (e is TimeoutException) {
           log("TimeoutException: Using local data instead.");

@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:anonkey_frontend/Utility/request_utility.dart';
@@ -64,7 +66,7 @@ class FolderList {
     final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
     File offlineCopy = File("${appDocumentsDir.path}/folders.json");
     String json = "[]";
-    if(offlineCopy.existsSync()){
+    if (offlineCopy.existsSync()) {
       json = await offlineCopy.readAsString();
     }
     return fromJson(jsonDecode(json));
@@ -114,18 +116,40 @@ class FolderList {
     String? url = prefs.getString('url'); // Get Backend URL
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
+    Future<FolderList> futureLocalData = readFromDisk();
     if (url != null) {
       api.ApiClient apiClient =
           RequestUtility.getApiWithAuth(authdata["token"]!, url);
       api.FoldersApi apiPoint = api.FoldersApi(apiClient);
+      Future<api.FoldersGetAllResponseBody?> responseFuture = (() async {
+        try {
+          return await apiPoint
+              .foldersGetAllGet()
+              .timeout(Duration(seconds: 5));
+        } catch (e) {
+          if (e is TimeoutException) {
+            log("TimeoutException: Using local data instead.");
+            return null;
+          }
+          rethrow; // Propagate exceptions
+        }
+      })();
+
+      List<dynamic> futureData =
+          await Future.wait([responseFuture, futureLocalData]);
+
       api.FoldersGetAllResponseBody? response =
-          await apiPoint.foldersGetAllGet();
+          (futureData[0] as api.FoldersGetAllResponseBody?);
+
+      FolderList localData = (futureData[1] as FolderList);
 
       if (response != null) {
         FolderList data = FolderList.getFromAPI(folders: response);
         return data;
+      } else {
+        return localData;
       }
     }
-    return null;
+    return await futureLocalData;
   }
 }
