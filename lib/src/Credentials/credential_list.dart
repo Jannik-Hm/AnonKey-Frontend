@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:anonkey_frontend/Utility/request_utility.dart';
@@ -233,8 +235,9 @@ class CredentialList {
   }
 
   /// Helper to get `All` API endpoint
-  static Future<api.CredentialsGetAllResponseBody?>
-      _getResponseFromAllAPI() async {
+  /// throws [TimeoutException] if timeout is specified and exceeded
+  static Future<api.CredentialsGetAllResponseBody?> _getResponseFromAllAPI(
+      {Duration? timeout}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('url');
     Map<String, String> authdata =
@@ -243,9 +246,12 @@ class CredentialList {
       api.ApiClient apiClient =
           RequestUtility.getApiWithAuth(authdata["token"]!, url);
       api.CredentialsApi credentialApi = api.CredentialsApi(apiClient);
-      api.CredentialsGetAllResponseBody? response =
-          await credentialApi.credentialsGetAllGet();
-
+      api.CredentialsGetAllResponseBody? response = null;
+      if (timeout != null) {
+        response = await credentialApi.credentialsGetAllGet().timeout(timeout);
+      } else {
+        response = await credentialApi.credentialsGetAllGet();
+      }
       return response;
     }
     return null;
@@ -253,17 +259,36 @@ class CredentialList {
 
   /// Function to get entire CredentialList from Backend
   static Future<CredentialList?> getFromAPIFull() async {
-    api.CredentialsGetAllResponseBody? response =
-        await _getResponseFromAllAPI();
+    Future<api.CredentialsGetAllResponseBody?> responseFuture = (() async {
+      try {
+        return await _getResponseFromAllAPI(timeout: Duration(seconds: 10));
+      } catch (e) {
+        if (e is TimeoutException) {
+          log("TimeoutException: Using local data instead.");
+          return null;
+        }
+        rethrow; // Propagate exceptions
+      }
+    })();
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
 
+    Future<CredentialList> futureLocalData = readFromDisk();
+
+    List<dynamic> futureData =
+        await Future.wait([responseFuture, futureLocalData]);
+
+    api.CredentialsGetAllResponseBody? response =
+        (futureData[0] as api.CredentialsGetAllResponseBody?);
+
+    CredentialList localData = (futureData[1] as CredentialList);
+
     if (response != null) {
-      CredentialList data = await CredentialList.getFromAPI(
+      CredentialList data = await localData.updateFromAPI(
           credentials: response, masterPassword: authdata["encryptionKDF"]!);
       return data;
     }
-    return null;
+    return localData;
   }
 
   /// Function to update this entire CredentialList from Backend (with minimal decryption)
