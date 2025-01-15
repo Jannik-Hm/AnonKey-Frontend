@@ -89,7 +89,10 @@ class CredentialList {
   static Future<CredentialList> readFromDisk() async {
     final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
     File offlineCopy = File("${appDocumentsDir.path}/vault.json");
-    String json = await offlineCopy.readAsString();
+    String json = "[]";
+    if(offlineCopy.existsSync()){
+      json = await offlineCopy.readAsString();
+    }
     return await fromJson(jsonDecode(json));
   }
 
