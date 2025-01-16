@@ -547,16 +547,29 @@ components:
     AuthenticationLoginResponseBody:
       type: object
       properties:
+        accessToken:
+          $ref: '#/components/schemas/AuthenticationLoginToken'
+        refreshToken:
+          $ref: '#/components/schemas/AuthenticationLoginToken'
+      additionalProperties: false
+      description: The body of the response to a login request.
+    AuthenticationLoginToken:
+      type: object
+      properties:
         token:
           type: string
           description: The token that can be used for authentication.
           nullable: true
-        expiresInSeconds:
+        tokenType:
+          type: string
+          description: 'The type of the token, either "AccessToken" or "RefreshToken"'
+          nullable: true
+        expiryTimestamp:
           type: integer
-          description: The time in seconds the token expires in.
-          format: int32
+          description: The time in seconds the token expires on.
+          format: int64
       additionalProperties: false
-      description: The body of the response to a login request.
+      description: Represents a token object in the response to a Login request
     CredentialsCreateCredential:
       type: object
       properties:
@@ -911,10 +924,6 @@ components:
           type: string
           description: A detailed explanation detailing the error.
           nullable: true
-        internalCode:
-          type: integer
-          description: The error code for error correction purposes.
-          format: int32
       additionalProperties: false
       description: Structure of an error message.
     FoldersCreateFolder:
@@ -1051,16 +1060,29 @@ components:
     UsersCreateResponseBody:
       type: object
       properties:
+        accessToken:
+          $ref: '#/components/schemas/UsersCreateResponseToken'
+        refreshToken:
+          $ref: '#/components/schemas/UsersCreateResponseToken'
+      additionalProperties: false
+      description: Body of a response to a user create request.
+    UsersCreateResponseToken:
+      type: object
+      properties:
         token:
           type: string
           description: The token that can be used for authentication.
           nullable: true
-        expiresInSeconds:
+        tokenType:
+          type: string
+          description: 'The type of the token, either "AccessToken" or "RefreshToken"'
+          nullable: true
+        expiryTimestamp:
           type: integer
-          description: The time in seconds the token expires in.
-          format: int32
+          description: The time in seconds the token expires on.
+          format: int64
       additionalProperties: false
-      description: Body of a response to a user create request.
+      description: Represents a token object in the response to a user UsersCreateResponseToken request
     UsersGetResponseBody:
       type: object
       properties:
