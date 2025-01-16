@@ -38,6 +38,10 @@ part 'api/users_api.dart';
 part 'model/authentication_change_password_request_body.dart';
 part 'model/authentication_login_request_body.dart';
 part 'model/authentication_login_response_body.dart';
+<<<<<<< HEAD
+=======
+part 'model/authentication_login_token.dart';
+>>>>>>> 7a4a85b (Swagger api)
 part 'model/credentials_create_credential.dart';
 part 'model/credentials_create_request_body.dart';
 part 'model/credentials_get_all_credential.dart';
@@ -61,6 +65,10 @@ part 'model/folders_update_request_body.dart';
 part 'model/folders_update_response_body.dart';
 part 'model/users_create_request_body.dart';
 part 'model/users_create_response_body.dart';
+<<<<<<< HEAD
+=======
+part 'model/users_create_response_token.dart';
+>>>>>>> 7a4a85b (Swagger api)
 part 'model/users_get_response_body.dart';
 part 'model/users_get_user.dart';
 part 'model/users_update_request_body.dart';

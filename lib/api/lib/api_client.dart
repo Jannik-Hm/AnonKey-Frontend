@@ -235,6 +235,8 @@ class ApiClient {
           return AuthenticationLoginRequestBody.fromJson(value);
         case 'AuthenticationLoginResponseBody':
           return AuthenticationLoginResponseBody.fromJson(value);
+        case 'AuthenticationLoginToken':
+          return AuthenticationLoginToken.fromJson(value);
         case 'CredentialsCreateCredential':
           return CredentialsCreateCredential.fromJson(value);
         case 'CredentialsCreateRequestBody':
@@ -281,6 +283,8 @@ class ApiClient {
           return UsersCreateRequestBody.fromJson(value);
         case 'UsersCreateResponseBody':
           return UsersCreateResponseBody.fromJson(value);
+        case 'UsersCreateResponseToken':
+          return UsersCreateResponseToken.fromJson(value);
         case 'UsersGetResponseBody':
           return UsersGetResponseBody.fromJson(value);
         case 'UsersGetUser':

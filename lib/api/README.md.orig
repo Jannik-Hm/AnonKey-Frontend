@@ -89,6 +89,10 @@ Class | Method | HTTP request | Description
  - [AuthenticationChangePasswordRequestBody](doc//AuthenticationChangePasswordRequestBody.md)
  - [AuthenticationLoginRequestBody](doc//AuthenticationLoginRequestBody.md)
  - [AuthenticationLoginResponseBody](doc//AuthenticationLoginResponseBody.md)
+<<<<<<< HEAD
+=======
+ - [AuthenticationLoginToken](doc//AuthenticationLoginToken.md)
+>>>>>>> 7a4a85b (Swagger api)
  - [CredentialsCreateCredential](doc//CredentialsCreateCredential.md)
  - [CredentialsCreateRequestBody](doc//CredentialsCreateRequestBody.md)
  - [CredentialsGetAllCredential](doc//CredentialsGetAllCredential.md)
@@ -112,6 +116,10 @@ Class | Method | HTTP request | Description
  - [FoldersUpdateResponseBody](doc//FoldersUpdateResponseBody.md)
  - [UsersCreateRequestBody](doc//UsersCreateRequestBody.md)
  - [UsersCreateResponseBody](doc//UsersCreateResponseBody.md)
+<<<<<<< HEAD
+=======
+ - [UsersCreateResponseToken](doc//UsersCreateResponseToken.md)
+>>>>>>> 7a4a85b (Swagger api)
  - [UsersGetResponseBody](doc//UsersGetResponseBody.md)
  - [UsersGetUser](doc//UsersGetUser.md)
  - [UsersUpdateRequestBody](doc//UsersUpdateRequestBody.md)

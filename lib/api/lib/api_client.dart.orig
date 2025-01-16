@@ -235,6 +235,11 @@ class ApiClient {
           return AuthenticationLoginRequestBody.fromJson(value);
         case 'AuthenticationLoginResponseBody':
           return AuthenticationLoginResponseBody.fromJson(value);
+<<<<<<< HEAD
+=======
+        case 'AuthenticationLoginToken':
+          return AuthenticationLoginToken.fromJson(value);
+>>>>>>> 7a4a85b (Swagger api)
         case 'CredentialsCreateCredential':
           return CredentialsCreateCredential.fromJson(value);
         case 'CredentialsCreateRequestBody':
@@ -281,6 +286,11 @@ class ApiClient {
           return UsersCreateRequestBody.fromJson(value);
         case 'UsersCreateResponseBody':
           return UsersCreateResponseBody.fromJson(value);
+<<<<<<< HEAD
+=======
+        case 'UsersCreateResponseToken':
+          return UsersCreateResponseToken.fromJson(value);
+>>>>>>> 7a4a85b (Swagger api)
         case 'UsersGetResponseBody':
           return UsersGetResponseBody.fromJson(value);
         case 'UsersGetUser':

@@ -10,65 +10,72 @@
 
 part of openapi.api;
 
-class UsersCreateResponseBody {
-  /// Returns a new [UsersCreateResponseBody] instance.
-  UsersCreateResponseBody({
-    this.accessToken,
-    this.refreshToken,
+class AuthenticationLoginToken {
+  /// Returns a new [AuthenticationLoginToken] instance.
+  AuthenticationLoginToken({
+    this.token,
+    this.tokenType,
+    this.expiryTimestamp,
   });
 
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  UsersCreateResponseToken? accessToken;
+  /// The token that can be used for authentication.
+  String? token;
 
+  /// The type of the token, either \"AccessToken\" or \"RefreshToken\"
+  String? tokenType;
+
+  /// The time in seconds the token expires on.
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
   /// does not include a default value (using the "default:" property), however, the generated
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  UsersCreateResponseToken? refreshToken;
+  int? expiryTimestamp;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UsersCreateResponseBody &&
-          other.accessToken == accessToken &&
-          other.refreshToken == refreshToken;
+      other is AuthenticationLoginToken &&
+          other.token == token &&
+          other.tokenType == tokenType &&
+          other.expiryTimestamp == expiryTimestamp;
 
   @override
   int get hashCode =>
       // ignore: unnecessary_parenthesis
-      (accessToken == null ? 0 : accessToken!.hashCode) +
-      (refreshToken == null ? 0 : refreshToken!.hashCode);
+      (token == null ? 0 : token!.hashCode) +
+      (tokenType == null ? 0 : tokenType!.hashCode) +
+      (expiryTimestamp == null ? 0 : expiryTimestamp!.hashCode);
 
   @override
   String toString() =>
-      'UsersCreateResponseBody[accessToken=$accessToken, refreshToken=$refreshToken]';
+      'AuthenticationLoginToken[token=$token, tokenType=$tokenType, expiryTimestamp=$expiryTimestamp]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.accessToken != null) {
-      json[r'accessToken'] = this.accessToken;
+    if (this.token != null) {
+      json[r'token'] = this.token;
     } else {
-      json[r'accessToken'] = null;
+      json[r'token'] = null;
     }
-    if (this.refreshToken != null) {
-      json[r'refreshToken'] = this.refreshToken;
+    if (this.tokenType != null) {
+      json[r'tokenType'] = this.tokenType;
     } else {
-      json[r'refreshToken'] = null;
+      json[r'tokenType'] = null;
+    }
+    if (this.expiryTimestamp != null) {
+      json[r'expiryTimestamp'] = this.expiryTimestamp;
+    } else {
+      json[r'expiryTimestamp'] = null;
     }
     return json;
   }
 
-  /// Returns a new [UsersCreateResponseBody] instance and imports its values from
+  /// Returns a new [AuthenticationLoginToken] instance and imports its values from
   /// [value] if it's a [Map], null otherwise.
   // ignore: prefer_constructors_over_static_methods
-  static UsersCreateResponseBody? fromJson(dynamic value) {
+  static AuthenticationLoginToken? fromJson(dynamic value) {
     if (value is Map) {
       final json = value.cast<String, dynamic>();
 
@@ -78,29 +85,30 @@ class UsersCreateResponseBody {
       assert(() {
         requiredKeys.forEach((key) {
           assert(json.containsKey(key),
-              'Required key "UsersCreateResponseBody[$key]" is missing from JSON.');
+              'Required key "AuthenticationLoginToken[$key]" is missing from JSON.');
           assert(json[key] != null,
-              'Required key "UsersCreateResponseBody[$key]" has a null value in JSON.');
+              'Required key "AuthenticationLoginToken[$key]" has a null value in JSON.');
         });
         return true;
       }());
 
-      return UsersCreateResponseBody(
-        accessToken: UsersCreateResponseToken.fromJson(json[r'accessToken']),
-        refreshToken: UsersCreateResponseToken.fromJson(json[r'refreshToken']),
+      return AuthenticationLoginToken(
+        token: mapValueOfType<String>(json, r'token'),
+        tokenType: mapValueOfType<String>(json, r'tokenType'),
+        expiryTimestamp: mapValueOfType<int>(json, r'expiryTimestamp'),
       );
     }
     return null;
   }
 
-  static List<UsersCreateResponseBody> listFromJson(
+  static List<AuthenticationLoginToken> listFromJson(
     dynamic json, {
     bool growable = false,
   }) {
-    final result = <UsersCreateResponseBody>[];
+    final result = <AuthenticationLoginToken>[];
     if (json is List && json.isNotEmpty) {
       for (final row in json) {
-        final value = UsersCreateResponseBody.fromJson(row);
+        final value = AuthenticationLoginToken.fromJson(row);
         if (value != null) {
           result.add(value);
         }
@@ -109,12 +117,12 @@ class UsersCreateResponseBody {
     return result.toList(growable: growable);
   }
 
-  static Map<String, UsersCreateResponseBody> mapFromJson(dynamic json) {
-    final map = <String, UsersCreateResponseBody>{};
+  static Map<String, AuthenticationLoginToken> mapFromJson(dynamic json) {
+    final map = <String, AuthenticationLoginToken>{};
     if (json is Map && json.isNotEmpty) {
       json = json.cast<String, dynamic>(); // ignore: parameter_assignments
       for (final entry in json.entries) {
-        final value = UsersCreateResponseBody.fromJson(entry.value);
+        final value = AuthenticationLoginToken.fromJson(entry.value);
         if (value != null) {
           map[entry.key] = value;
         }
@@ -123,17 +131,17 @@ class UsersCreateResponseBody {
     return map;
   }
 
-  // maps a json object with a list of UsersCreateResponseBody-objects as value to a dart map
-  static Map<String, List<UsersCreateResponseBody>> mapListFromJson(
+  // maps a json object with a list of AuthenticationLoginToken-objects as value to a dart map
+  static Map<String, List<AuthenticationLoginToken>> mapListFromJson(
     dynamic json, {
     bool growable = false,
   }) {
-    final map = <String, List<UsersCreateResponseBody>>{};
+    final map = <String, List<AuthenticationLoginToken>>{};
     if (json is Map && json.isNotEmpty) {
       // ignore: parameter_assignments
       json = json.cast<String, dynamic>();
       for (final entry in json.entries) {
-        map[entry.key] = UsersCreateResponseBody.listFromJson(
+        map[entry.key] = AuthenticationLoginToken.listFromJson(
           entry.value,
           growable: growable,
         );

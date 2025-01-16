@@ -15,7 +15,10 @@ class ErrorResponseBody {
   ErrorResponseBody({
     this.message,
     this.detail,
+<<<<<<< HEAD
     this.internalCode,
+=======
+>>>>>>> 7a4a85b (Swagger api)
   });
 
   /// The short message describing the error.
@@ -24,6 +27,7 @@ class ErrorResponseBody {
   /// A detailed explanation detailing the error.
   String? detail;
 
+<<<<<<< HEAD
   /// The error code for error correction purposes.
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
@@ -33,24 +37,37 @@ class ErrorResponseBody {
   ///
   int? internalCode;
 
+=======
+>>>>>>> 7a4a85b (Swagger api)
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ErrorResponseBody &&
           other.message == message &&
+<<<<<<< HEAD
           other.detail == detail &&
           other.internalCode == internalCode;
+=======
+          other.detail == detail;
+>>>>>>> 7a4a85b (Swagger api)
 
   @override
   int get hashCode =>
       // ignore: unnecessary_parenthesis
       (message == null ? 0 : message!.hashCode) +
+<<<<<<< HEAD
       (detail == null ? 0 : detail!.hashCode) +
       (internalCode == null ? 0 : internalCode!.hashCode);
 
   @override
   String toString() =>
       'ErrorResponseBody[message=$message, detail=$detail, internalCode=$internalCode]';
+=======
+      (detail == null ? 0 : detail!.hashCode);
+
+  @override
+  String toString() => 'ErrorResponseBody[message=$message, detail=$detail]';
+>>>>>>> 7a4a85b (Swagger api)
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -64,11 +81,14 @@ class ErrorResponseBody {
     } else {
       json[r'detail'] = null;
     }
+<<<<<<< HEAD
     if (this.internalCode != null) {
       json[r'internalCode'] = this.internalCode;
     } else {
       json[r'internalCode'] = null;
     }
+=======
+>>>>>>> 7a4a85b (Swagger api)
     return json;
   }
 
@@ -95,7 +115,10 @@ class ErrorResponseBody {
       return ErrorResponseBody(
         message: mapValueOfType<String>(json, r'message'),
         detail: mapValueOfType<String>(json, r'detail'),
+<<<<<<< HEAD
         internalCode: mapValueOfType<int>(json, r'internalCode'),
+=======
+>>>>>>> 7a4a85b (Swagger api)
       );
     }
     return null;
