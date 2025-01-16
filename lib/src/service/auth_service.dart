@@ -33,13 +33,14 @@ class AuthenticationCredentialsSingleton {
     username = null;
     softLogout = true;
     skipSplashScreen = null;
-}
+  }
 
-class AuthenticationCredentials {
-  AuthenticationKeysSingleton? keysSingleton;
-  String? username;
-  bool? softLogout;
-  bool? skipSplashScreen;
+  areTockensAvailable() {
+    return (refreshToken != null &&
+        accessToken != null &&
+        refreshExpiration != null &&
+        accessExpiration != null);
+  }
 
   AuthenticationCredentialsSingleton._internal();
 }
@@ -75,9 +76,8 @@ class AuthService {
               {
                 await storeAuthenticationCredentials(
                     // TODO: Ask Backend for the updated OpenAI specification in order to be able to parse the return object -> refresh and access tockens
-                    value?.token,
-                    username,
-                    password,
+                    refreshToken: value?.token,
+                    username: username,
                     value!.expiresInSeconds!),
               }
           });
@@ -164,15 +164,12 @@ class AuthService {
       throw NoCredentialException();
     }
     if (!(await validateToken(
-        username, keys.timestamp, keys.refreshExpiration))) {
+            username, keys.timestamp, keys.refreshExpiration)) ||
+        !(singleton.areTockensAvailable())) {
+      // Fetch tokens here
       return getAuthenticationCredentials();
     }
-    return AuthenticationCredentials(
-      keysSingleton: keys,
-      username: username,
-      softLogout: softLogout,
-      skipSplashScreen: skipSplashScreen,
-    );
+    return singleton;
   }
 
   /// Validates the authentication token. If the token is invalid, the user is logged in again but only if the token is still in the valid range.
@@ -201,17 +198,20 @@ class AuthService {
     if (difference.inSeconds >= minRange) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       // TODO: Here the user shall be prompted to reenter the password, as we do not store it.
+      // Swap login with a fetch of a new accessTocken
       await AuthService.login(username, password, prefs.getString("url")!);
       return false;
     }
     return true;
   }
 
+  static Future<void> fetchNewTockens() async {}
+
   /// Stores the authentication data in the secure storage.
   ///
   /// [username]: The username.
   ///
-  /// [encryptionKDF]: The encryption KDF. If  biometrics are enabled, the encryptionKDF of the AuthenticationKeysSingleton object is set to null and the encryptionKDF is saved into the secure storage.
+  /// [encryptionKDF]: The encryption KDF.
   ///
   /// [refreshToken]: The refresh token from the server;
   ///
@@ -244,7 +244,7 @@ class AuthService {
       await storage.write(key: "encryptionKDF", value: encryptionKDF);
     }
     await storage.write(key: "username", value: username);
-    await storage.write(key: "skipSplashScreen", value: "false");
+    await storage.write(key: "refreshToken", value: refreshToken);
   }
 
   static Future<void> deleteAuthenticationCredentials() async {
@@ -257,7 +257,7 @@ class AuthService {
       await storage.delete(key: "encryptionKDF");
     }
     await storage.delete(key: "username");
-    await storage.delete(key: "skipSplashScreen");
+    await storage.delete(key: "refreshToken");
   }
 
   /// softLogout is used to indicate that the user has logged out without deleting the authentication data.
