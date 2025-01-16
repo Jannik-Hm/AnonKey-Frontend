@@ -19,8 +19,6 @@ dependencies:
     sdk: flutter
   form_validator: ^2.1.1
   http: ^1.2.2
-  openapi_generator: ^5.0.2
-  openapi_generator_annotations: ^6.0.0
   shared_preferences: ^2.3.2
   rxdart: any
   intl: any
@@ -28,6 +26,9 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   go_router: ^14.2.8
   local_auth: ^2.3.0
+
+  openapi_generator: ^5.0.0
+  openapi_generator_annotations: ^6.0.0
 
 dev_dependencies:
   flutter_test:
