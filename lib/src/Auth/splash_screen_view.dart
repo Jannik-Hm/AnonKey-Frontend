@@ -187,6 +187,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
             await AuthService.getAuthenticationCredentials();
         bool req = await AuthService.login(credentials.username!,
             credentials.encryptionKDF!, prefs.getString("url") ?? "");
+        // bool req = LoginInWithRefreshToken(credentials.username!, (await FlutterSecureStorage()).read(key: "refreshToken"));
         if (req) {
           if (context.mounted) {
             if (context.canPop()) {
