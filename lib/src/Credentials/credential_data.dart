@@ -104,7 +104,7 @@ class Credential {
     return Credential.fromApi(
       uuid: json["uuid"],
       masterPassword:
-          (await AuthService.getAuthenticationCredentials())["encryptionKDF"]!,
+          (await AuthService.getAuthenticationCredentials()).encryptionKDF!,
       encryptedWebsiteUrl: json["encryptedWebsiteUrl"],
       websiteUrlSalt: json["websiteUrlSalt"],
       encryptedUsername: json["encryptedUsername"],

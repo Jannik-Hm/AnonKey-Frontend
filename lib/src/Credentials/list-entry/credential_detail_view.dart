@@ -108,28 +108,25 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     Future<bool> save() async {
       Credential temp;
       String? url = await ApiBaseData.getURL(); // Get Backend URL
-      Map<String, String> authdata =
+      AuthenticationCredentialsSingleton authdata =
           await AuthService.getAuthenticationCredentials();
       try {
         if (url != null) {
           ApiClient apiClient =
-              RequestUtility.getApiWithAuth(authdata["token"]!, url);
+              RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
           CredentialsApi api = CredentialsApi(apiClient);
           if (_credential != null) {
-            temp = await _credential!.clone().updateFromLocal(
-                  masterPassword: authdata["encryptionKDF"]!,
-                  clearWebsiteUrl: websiteUrl.text,
-                  clearUsername: username.text,
-                  clearPassword: password.text,
-                  clearDisplayName: displayName.text,
-                  clearNote: note.text,
-                  folderUuid: newFolderUUID,
-                );
-            await ApiBaseData.apiCallWrapper(
-                api.credentialsUpdatePut(temp.updateAPICredentialRequestBody()),
-                logMessage: (context.mounted)
-                    ? AppLocalizations.of(context)!.credentialUpdateTimeout
-                    : null);
+            temp = await _credential!.updateFromLocal(
+              masterPassword: authdata.encryptionKDF!,
+              clearWebsiteUrl: websiteUrl.text,
+              clearUsername: username.text,
+              clearPassword: password.text,
+              clearDisplayName: displayName.text,
+              clearNote: note.text,
+              folderUuid: newFolderUUID,
+            );
+            await api
+                .credentialsUpdatePut(temp.updateAPICredentialRequestBody());
           } else {
             UUIDApi uuidApi = UUIDApi(apiClient);
             String? uuid = await ApiBaseData.apiCallWrapper(
@@ -139,7 +136,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                     : null);
             temp = await Credential.newEntry(
               uuid: uuid!,
-              masterPassword: authdata["encryptionKDF"]!,
+              masterPassword: authdata.encryptionKDF!,
               clearWebsiteUrl: websiteUrl.text,
               clearUsername: username.text,
               clearPassword: password.text,
@@ -186,11 +183,11 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       try {
         if (_credential != null) {
           String? url = await ApiBaseData.getURL(); // Get Backend URL
-          Map<String, String> authdata =
+          AuthenticationCredentialsSingleton authdata =
               await AuthService.getAuthenticationCredentials();
           if (url != null) {
-            ApiClient apiClient =
-                RequestUtility.getApiWithAuth(authdata["token"]!, url);
+            ApiClient apiClient = RequestUtility.getApiWithAuth(
+                authdata.accessToken!.token!, url);
             CredentialsApi api = CredentialsApi(apiClient);
             await ApiBaseData.apiCallWrapper(
                 api.credentialsSoftDeletePut(_credential!.uuid),

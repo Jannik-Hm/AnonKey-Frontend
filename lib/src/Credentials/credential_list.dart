@@ -244,11 +244,11 @@ class CredentialList {
   static Future<api.CredentialsGetAllResponseBody?>
       _getResponseFromAllAPI() async {
     String? url = await ApiBaseData.getURL();
-    Map<String, String> authdata =
+    AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
     if (url != null) {
       api.ApiClient apiClient =
-          RequestUtility.getApiWithAuth(authdata["token"]!, url);
+          RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
       api.CredentialsApi credentialApi = api.CredentialsApi(apiClient);
       api.CredentialsGetAllResponseBody? response =
           await ApiBaseData.apiCallWrapper(credentialApi.credentialsGetAllGet(),
@@ -268,7 +268,7 @@ class CredentialList {
         return null;
       }
     })();
-    Map<String, String> authdata =
+    AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
 
     Future<CredentialList> futureLocalData = readFromDisk();
@@ -283,7 +283,7 @@ class CredentialList {
 
     if (response != null) {
       CredentialList data = await localData.updateFromAPI(
-          credentials: response, masterPassword: authdata["encryptionKDF"]!);
+          credentials: response, masterPassword: authdata.encryptionKDF!);
       return data;
     }
     throw CredentialListTimeout(localData);
@@ -293,12 +293,12 @@ class CredentialList {
   Future<CredentialList?> updateFromAPIFull() async {
     api.CredentialsGetAllResponseBody? response =
         await _getResponseFromAllAPI();
-    Map<String, String> authdata =
+    AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
 
     if (response != null) {
       CredentialList data = await updateFromAPI(
-          credentials: response, masterPassword: authdata["encryptionKDF"]!);
+          credentials: response, masterPassword: authdata.encryptionKDF!);
       return data;
     } else {
       throw CredentialListTimeout(this);
