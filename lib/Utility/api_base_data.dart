@@ -22,7 +22,7 @@ class ApiBaseData {
   }
 
   static Future<T?> apiCallWrapper<T>(Future<T?> asyncFunction,
-      {required String logMessage, Duration? timeout}) async {
+      {required String logMessage, Duration? timeout, bool returnNullOnTimeout = false}) async {
     try {
       timeout ??= Duration(seconds: 5);
       T? result = await asyncFunction.timeout(timeout);
@@ -31,7 +31,9 @@ class ApiBaseData {
       if (e is TimeoutException) {
         log("TimeoutException: $logMessage");
         await setlastCallSuccessful(false);
-        return null;
+        if(returnNullOnTimeout){
+          return null;
+        }
       }
       rethrow;
     }
