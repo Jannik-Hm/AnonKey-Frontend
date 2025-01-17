@@ -182,10 +182,11 @@ class _SplashScreenViewState extends State<SplashScreenView> {
 
       if (authenticated) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
+        throw UnimplementedError("The revamp of the user service is not complete");
         final AuthenticationCredentialsSingleton credentials =
             await AuthService.getAuthenticationCredentials();
         bool req = await AuthService.login(credentials.username!,
-            credentials["password"]!, prefs.getString("url") ?? "");
+            credentials.encryptionKDF!, prefs.getString("url") ?? "");
         if (req) {
           if (context.mounted) {
             if (context.canPop()) {

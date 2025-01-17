@@ -24,8 +24,10 @@ class UserService {
     UsersApi usersApi = UsersApi(apiClient);
 
     try {
+      // TODO password equal to credentials.encryptionKDF?
       final AuthenticationCredentialsSingleton credentials =
           await AuthService.getAuthenticationCredentials();
+      throw UnimplementedError("The revamp of the user service is not complete");
       if (credentials.encryptionKDF != password) {
         throw Exception("No credentials found");
       }
