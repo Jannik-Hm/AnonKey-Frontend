@@ -77,12 +77,12 @@ class _FolderEditWidget extends State<FolderEditWidget> {
 
     Future<bool> save() async {
       String? url = await ApiBaseData.getURL(); // Get Backend URL
-      Map<String, String> authdata =
+      AuthenticationCredentialsSingleton authdata =
           await AuthService.getAuthenticationCredentials();
       try {
         if (url != null) {
           ApiClient apiClient =
-              RequestUtility.getApiWithAuth(authdata["token"]!, url);
+              RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
           FoldersApi api = FoldersApi(apiClient);
           if (_folder != null) {
             Folder temp = Folder(
@@ -143,12 +143,12 @@ class _FolderEditWidget extends State<FolderEditWidget> {
 
     Future<bool> delete(bool recursive) async {
       String? url = await ApiBaseData.getURL(); // Get Backend URL
-      Map<String, String> authdata =
+      AuthenticationCredentialsSingleton authdata =
           await AuthService.getAuthenticationCredentials();
       try {
         if (url != null) {
           ApiClient apiClient =
-              RequestUtility.getApiWithAuth(authdata["token"]!, url);
+              RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
           FoldersApi api = FoldersApi(apiClient);
           await ApiBaseData.apiCallWrapper(
               api.foldersDeleteDelete(_folder!.uuid!, recursive),

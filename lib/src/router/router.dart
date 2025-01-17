@@ -89,7 +89,7 @@ class AppRouter {
 
         try {
           isAuthenticated =
-              (await AuthService.getAuthenticationCredentials())['token'] !=
+              (await AuthService.getAuthenticationCredentials()).accessToken?.token !=
                   null;
         } on NoCredentialException catch (e) {
           if (kDebugMode) {
@@ -114,6 +114,7 @@ class AppRouter {
             return "/login";
           }
         } else {
+          // TODO checking the behavior of the app when the user is authenticated after starting the app
           return null; // return "null" to display the intended route without redirecting
         }
       },

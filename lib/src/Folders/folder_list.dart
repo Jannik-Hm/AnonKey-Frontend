@@ -109,12 +109,12 @@ class FolderList {
   /// Function to get entire FolderList from Backend
   static Future<FolderList?> getFromAPIFull() async {
     String? url = await ApiBaseData.getURL(); // Get Backend URL
-    Map<String, String> authdata =
+    AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
     Future<FolderList> futureLocalData = readFromDisk();
     if (url != null) {
       api.ApiClient apiClient =
-          RequestUtility.getApiWithAuth(authdata["token"]!, url);
+          RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
       api.FoldersApi apiPoint = api.FoldersApi(apiClient);
 
       Future<api.FoldersGetAllResponseBody?> responseFuture =

@@ -20,11 +20,11 @@ class SettingsView extends StatelessWidget {
     void deleteUser() async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String url = prefs.getString("url")!;
-      final String token =
-          (await AuthService.getAuthenticationCredentials())["token"]!;
+      final String? token =
+      (await AuthService.getAuthenticationCredentials()).accessToken?.token;
 
       bool res =
-          await UserService.deleteUser(url, token, controller.password.text);
+          await UserService.deleteUser(url, token!, controller.password.text);
       if (res) {
         GoRouter.of(context).clearStackAndNavigate("/login");
       } else {

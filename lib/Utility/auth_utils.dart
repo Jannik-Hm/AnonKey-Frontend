@@ -39,12 +39,13 @@ class AuthUtils {
         ),
       );
 
+      // TODO Implement refresh token endpoint
       if (authenticated) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        final Map<String, String> credentials =
+        final AuthenticationCredentialsSingleton credentials =
             await AuthService.getAuthenticationCredentials();
-        bool req = await AuthService.login(credentials["username"]!,
-            credentials["password"]!, prefs.getString("url") ?? "");
+        bool req = await AuthService.login(credentials.username!,
+            credentials.encryptionKDF!, prefs.getString("url") ?? "");
         if (req) {
           if (context.mounted) {
             if (context.canPop()) {
