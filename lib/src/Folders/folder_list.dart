@@ -86,11 +86,11 @@ class FolderList {
   static Future<FolderList?> getFromAPIFull() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('url'); // Get Backend URL
-    Map<String, String> authdata =
+    AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
     if (url != null) {
       api.ApiClient apiClient =
-          RequestUtility.getApiWithAuth(authdata["token"]!, url);
+          RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
       api.FoldersApi apiPoint = api.FoldersApi(apiClient);
       api.FoldersGetAllResponseBody? response =
           await apiPoint.foldersGetAllGet();
