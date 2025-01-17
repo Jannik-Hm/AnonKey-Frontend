@@ -22,21 +22,21 @@ extension TokenTypeExtension on TokenType {
 }
 
 // It should be more concise to pack each token in a class, so that all information such as expiration time can be easily accessible 
-// class Token {
-//   String? token;
-//   TokenType? tokenType;
-//   DateTime? expiration;
-// }
+class Token {
+  String? token;
+  TokenType? tokenType;
+  int? expiration;
+
+  Token({required String? token, required TokenType? tokenType,required int? expiration});
+}
 
 class AuthenticationCredentialsSingleton {
   static final AuthenticationCredentialsSingleton _singleton =
       AuthenticationCredentialsSingleton._internal();
 
   String? encryptionKDF; // always in RAM if nor taken from the secure storage
-  String? refreshToken;
-  String? accessToken;
-  int? refreshExpiration;
-  int? accessExpiration;
+  Token? refreshToken;
+  Token? accessToken;
 
   String? username;
   bool softLogout = true;
@@ -50,8 +50,6 @@ class AuthenticationCredentialsSingleton {
     refreshToken = null;
     accessToken = null;
     encryptionKDF = null;
-    refreshExpiration = null;
-    accessExpiration = null;
     username = null;
     softLogout = true;
     skipSplashScreen = null;
@@ -61,8 +59,6 @@ class AuthenticationCredentialsSingleton {
     return (encryptionKDF != null &&
         refreshToken != null &&
         accessToken != null &&
-        refreshExpiration != null &&
-        accessExpiration != null &&
         username != null &&
         softLogout == true &&
         skipSplashScreen == null);
@@ -269,14 +265,14 @@ class AuthService {
   }) async {
     // Store in RAM
     var singleton = AuthenticationCredentialsSingleton();
-    singleton.refreshToken = refreshToken;
-    singleton.accessToken = accessToken;
     singleton.encryptionKDF = encryptionKDF;
     singleton.username = username;
-    singleton.refreshExpiration = refreshExpiration;
-    singleton.accessExpiration = accessExpiration;
     singleton.softLogout = true;
     singleton.skipSplashScreen = false;
+    Token localRefreshToken = Token(token: refreshToken, tokenType: TokenType.refreshToken, expiration: refreshExpiration);
+    Token localAccessToken = Token(token: accessToken, tokenType: TokenType.accessToken, expiration: accessExpiration);
+    singleton.refreshToken = localRefreshToken;
+    singleton.accessToken = localAccessToken;
     // Store in secure storage
     const storage = FlutterSecureStorage();
     if (await AuthUtils.checkBiometricAvailability()) {
