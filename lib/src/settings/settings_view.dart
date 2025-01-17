@@ -21,7 +21,7 @@ class SettingsView extends StatelessWidget {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String url = prefs.getString("url")!;
       final String? token =
-      (await AuthService.getAuthenticationCredentials()).accessToken?.token;
+          (await AuthService.getAuthenticationCredentials()).accessToken?.token;
 
       bool res =
           await UserService.deleteUser(url, token!, controller.password.text);
