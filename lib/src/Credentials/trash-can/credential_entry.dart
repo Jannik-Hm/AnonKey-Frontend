@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
@@ -6,7 +7,6 @@ import 'package:anonkey_frontend/src/Widgets/clickable_tile.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CredentialTrashEntry extends StatefulWidget {
@@ -29,8 +29,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
   late Credential _credential;
 
   Future<bool> restore() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? url = prefs.getString('url'); // Get Backend URL
+    String? url = await ApiBaseData.getURL(); // Get Backend URL
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
     try {
@@ -38,7 +37,9 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         ApiClient apiClient =
             RequestUtility.getApiWithAuth(authdata["token"]!, url);
         CredentialsApi api = CredentialsApi(apiClient);
-        await api.credentialsSoftUndeletePut(_credential.uuid);
+        await ApiBaseData.apiCallWrapper(
+            api.credentialsSoftUndeletePut(_credential.uuid),
+            logMessage: "Credential soft undelete failed.");
         return true;
       } else {
         if (context.mounted) {
@@ -56,8 +57,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
   }
 
   Future<bool> deleteForever() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? url = prefs.getString('url'); // Get Backend URL
+    String? url = await ApiBaseData.getURL(); // Get Backend URL
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
     try {
@@ -65,7 +65,9 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         ApiClient apiClient =
             RequestUtility.getApiWithAuth(authdata["token"]!, url);
         CredentialsApi api = CredentialsApi(apiClient);
-        await api.credentialsDeleteDelete(_credential.uuid);
+        await ApiBaseData.apiCallWrapper(
+            api.credentialsDeleteDelete(_credential.uuid),
+            logMessage: "Credential final delete failed.");
         return true;
       } else {
         if (context.mounted) {

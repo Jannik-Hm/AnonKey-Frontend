@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart' as api;
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class FolderList {
   // Map of all folders, UUID as Key
@@ -112,8 +111,7 @@ class FolderList {
 
   /// Function to get entire FolderList from Backend
   static Future<FolderList?> getFromAPIFull() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? url = prefs.getString('url'); // Get Backend URL
+    String? url = await ApiBaseData.getURL(); // Get Backend URL
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
     Future<FolderList> futureLocalData = readFromDisk();
@@ -121,19 +119,11 @@ class FolderList {
       api.ApiClient apiClient =
           RequestUtility.getApiWithAuth(authdata["token"]!, url);
       api.FoldersApi apiPoint = api.FoldersApi(apiClient);
-      Future<api.FoldersGetAllResponseBody?> responseFuture = (() async {
-        try {
-          return await apiPoint
-              .foldersGetAllGet()
-              .timeout(Duration(seconds: 5));
-        } catch (e) {
-          if (e is TimeoutException) {
-            log("TimeoutException: Using local data instead.");
-            return null;
-          }
-          rethrow; // Propagate exceptions
-        }
-      })();
+
+      Future<api.FoldersGetAllResponseBody?> responseFuture =
+          ApiBaseData.apiCallWrapper(apiPoint.foldersGetAllGet(),
+              logMessage: "Exceeded Folder Fetch, using local data instead.",
+              returnNullOnTimeout: true);
 
       List<dynamic> futureData =
           await Future.wait([responseFuture, futureLocalData]);

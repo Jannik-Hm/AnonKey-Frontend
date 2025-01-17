@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart' as api;
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CredentialList {
   // Map of all credentials, UUID as Key
@@ -239,22 +238,20 @@ class CredentialList {
 
   /// Helper to get `All` API endpoint
   /// throws [TimeoutException] if timeout is specified and exceeded
-  static Future<api.CredentialsGetAllResponseBody?> _getResponseFromAllAPI(
-      {Duration? timeout}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? url = prefs.getString('url');
+  static Future<api.CredentialsGetAllResponseBody?>
+      _getResponseFromAllAPI() async {
+    String? url = await ApiBaseData.getURL();
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
     if (url != null) {
       api.ApiClient apiClient =
           RequestUtility.getApiWithAuth(authdata["token"]!, url);
       api.CredentialsApi credentialApi = api.CredentialsApi(apiClient);
-      api.CredentialsGetAllResponseBody? response = null;
-      if (timeout != null) {
-        response = await credentialApi.credentialsGetAllGet().timeout(timeout);
-      } else {
-        response = await credentialApi.credentialsGetAllGet();
-      }
+      api.CredentialsGetAllResponseBody? response =
+          await ApiBaseData.apiCallWrapper(credentialApi.credentialsGetAllGet(),
+              logMessage:
+                  "Exceeded Credential Fetch, using local data instead.",
+              returnNullOnTimeout: true);
       return response;
     }
     return null;
@@ -264,10 +261,9 @@ class CredentialList {
   static Future<CredentialList?> getFromAPIFull() async {
     Future<api.CredentialsGetAllResponseBody?> responseFuture = (() async {
       try {
-        return await _getResponseFromAllAPI(timeout: Duration(seconds: 5));
+        return await _getResponseFromAllAPI();
       } catch (e) {
         if (e is TimeoutException) {
-          log("TimeoutException: Using local data instead.");
           return null;
         }
         rethrow; // Propagate exceptions
@@ -296,15 +292,21 @@ class CredentialList {
 
   /// Function to update this entire CredentialList from Backend (with minimal decryption)
   Future<CredentialList?> updateFromAPIFull() async {
-    api.CredentialsGetAllResponseBody? response =
-        await _getResponseFromAllAPI();
-    Map<String, String> authdata =
-        await AuthService.getAuthenticationCredentials();
+    try {
+      api.CredentialsGetAllResponseBody? response =
+          await _getResponseFromAllAPI();
+      Map<String, String> authdata =
+          await AuthService.getAuthenticationCredentials();
 
-    if (response != null) {
-      CredentialList data = await updateFromAPI(
-          credentials: response, masterPassword: authdata["encryptionKDF"]!);
-      return data;
+      if (response != null) {
+        CredentialList data = await updateFromAPI(
+            credentials: response, masterPassword: authdata["encryptionKDF"]!);
+        return data;
+      }
+    } catch (e) {
+      if (e is TimeoutException) {
+        return this;
+      }
     }
     return null;
   }

@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
@@ -7,7 +8,6 @@ import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Widget for Editing and Displaying Credential Data
@@ -105,8 +105,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
 
     Future<bool> save() async {
       Credential temp;
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? url = prefs.getString('url'); // Get Backend URL
+      String? url = await ApiBaseData.getURL(); // Get Backend URL
       Map<String, String> authdata =
           await AuthService.getAuthenticationCredentials();
       try {
@@ -128,7 +127,9 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                 .credentialsUpdatePut(temp.updateAPICredentialRequestBody());
           } else {
             UUIDApi uuidApi = UUIDApi(apiClient);
-            String? uuid = await uuidApi.uuidNewGet();
+            String? uuid = await ApiBaseData.apiCallWrapper(
+                uuidApi.uuidNewGet(),
+                logMessage: "Getting UUID failed.");
             temp = await Credential.newEntry(
               uuid: uuid!,
               masterPassword: authdata["encryptionKDF"]!,
@@ -140,11 +141,13 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               folderUuid: newFolderUUID,
               createdTimeStamp: DateTime.now().microsecondsSinceEpoch ~/ 1000,
             );
-            await api.credentialsCreatePost(
-              CredentialsCreateRequestBody(
-                credential: temp.createAPICredential(),
-              ),
-            );
+            await ApiBaseData.apiCallWrapper(
+                api.credentialsCreatePost(
+                  CredentialsCreateRequestBody(
+                    credential: temp.createAPICredential(),
+                  ),
+                ),
+                logMessage: "Credential creation failed.");
           }
           setState(() {
             _credential = temp;
@@ -169,15 +172,14 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     Future<bool> delete() async {
       try {
         if (_credential != null) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          String? url = prefs.getString('url'); // Get Backend URL
+          String? url = await ApiBaseData.getURL(); // Get Backend URL
           Map<String, String> authdata =
               await AuthService.getAuthenticationCredentials();
           if (url != null) {
             ApiClient apiClient =
                 RequestUtility.getApiWithAuth(authdata["token"]!, url);
             CredentialsApi api = CredentialsApi(apiClient);
-            await api.credentialsSoftDeletePut(_credential!.uuid);
+            await ApiBaseData.apiCallWrapper(api.credentialsSoftDeletePut(_credential!.uuid), logMessage: "Credential soft delete failed.");
           }
           if (widget.onSoftDeleteCallback != null)
             widget.onSoftDeleteCallback!(_credential!.uuid);

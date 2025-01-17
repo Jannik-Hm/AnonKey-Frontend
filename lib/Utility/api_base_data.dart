@@ -17,12 +17,15 @@ class ApiBaseData {
   }
 
   static Future<void> setlastCallSuccessful(bool boolean) async {
-    await SharedPreferencesAsync()
-        .setBool('lastapicallsuccess', boolean);
+    await SharedPreferencesAsync().setBool('lastapicallsuccess', boolean);
   }
 
-  static Future<T?> apiCallWrapper<T>(Future<T?> asyncFunction,
-      {required String logMessage, Duration? timeout, bool returnNullOnTimeout = false}) async {
+  static Future<T?> apiCallWrapper<T>(
+    Future<T?> asyncFunction, {
+    required String logMessage,
+    Duration? timeout,
+    bool returnNullOnTimeout = false,
+  }) async {
     try {
       timeout ??= Duration(seconds: 5);
       T? result = await asyncFunction.timeout(timeout);
@@ -31,7 +34,7 @@ class ApiBaseData {
       if (e is TimeoutException) {
         log("TimeoutException: $logMessage");
         await setlastCallSuccessful(false);
-        if(returnNullOnTimeout){
+        if (returnNullOnTimeout) {
           return null;
         }
       }

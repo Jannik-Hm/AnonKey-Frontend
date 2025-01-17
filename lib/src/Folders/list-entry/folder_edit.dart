@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
@@ -7,7 +10,6 @@ import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Widgets/icon_picker.dart';
 import 'package:form_validator/form_validator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FolderEditWidget extends StatefulWidget {
@@ -76,8 +78,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
     }
 
     Future<bool> save() async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? url = prefs.getString('url'); // Get Backend URL
+      String? url = await ApiBaseData.getURL(); // Get Backend URL
       Map<String, String> authdata =
           await AuthService.getAuthenticationCredentials();
       try {
@@ -93,18 +94,28 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                 widget.iconCallback!(codePoint: _iconData!.codePoint);
               }
             }
-            await api.foldersUpdatePut(_folder!.updateFolderBody());
+            await ApiBaseData.apiCallWrapper(
+                api.foldersUpdatePut(_folder!.updateFolderBody()),
+                logMessage: "Folder Update failed.");
           } else {
-            await api
-                .foldersCreatePost(FoldersCreateRequestBody(
+            await ApiBaseData.apiCallWrapper(
+                api
+                    .foldersCreatePost(
+                  FoldersCreateRequestBody(
                     folder: FoldersCreateFolder(
-                        icon: _iconData!.codePoint, name: displayName.text)))
-                .then((value) {
-              _folder = Folder(
-                  displayName: displayName.text,
-                  iconData: _iconData!.codePoint,
-                  uuid: value!.folderUuid);
-            });
+                      icon: _iconData!.codePoint,
+                      name: displayName.text,
+                    ),
+                  ),
+                )
+                    .then((value) {
+                  _folder = Folder(
+                    displayName: displayName.text,
+                    iconData: _iconData!.codePoint,
+                    uuid: value!.folderUuid,
+                  );
+                }),
+                logMessage: "Folder Create failed.");
           }
           return true;
         } else {
@@ -123,8 +134,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
     }
 
     Future<bool> delete(bool recursive) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? url = prefs.getString('url'); // Get Backend URL
+      String? url = await ApiBaseData.getURL(); // Get Backend URL
       Map<String, String> authdata =
           await AuthService.getAuthenticationCredentials();
       try {
@@ -132,9 +142,9 @@ class _FolderEditWidget extends State<FolderEditWidget> {
           ApiClient apiClient =
               RequestUtility.getApiWithAuth(authdata["token"]!, url);
           FoldersApi api = FoldersApi(apiClient);
-          await api
-              .foldersDeleteDelete(_folder!.uuid!, recursive)
-              .then((value) {});
+          await ApiBaseData.apiCallWrapper(
+              api.foldersDeleteDelete(_folder!.uuid!, recursive),
+              logMessage: "Folder delete failed.");
         } else {
           if (context.mounted) {
             NotificationPopup.apiError(context: context);
