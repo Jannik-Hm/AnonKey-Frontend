@@ -21,7 +21,7 @@ extension TokenTypeExtension on TokenType {
   }
 }
 
-// It should be more concise to pack each token in a class, so that all information such as expiration time can be easily accessible 
+// It should be more concise to pack each token in a class, so that all information such as expiration time can be easily accessible
 class Token {
   String? token;
   TokenType? tokenType;
