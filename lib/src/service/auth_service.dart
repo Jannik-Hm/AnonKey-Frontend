@@ -6,6 +6,28 @@ import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+enum TokenType {
+  refreshToken,
+  accessToken,
+}
+
+extension TokenTypeExtension on TokenType {
+  Duration validationRange() {
+    if (this.index == 0) {
+      return Duration(days: 30);
+    } else {
+      return Duration(minutes: 30);
+    }
+  }
+}
+
+// It should be more concise to pack each token in a class, so that all information such as expiration time can be easily accessible 
+// class Token {
+//   String? token;
+//   TokenType? tokenType;
+//   DateTime? expiration;
+// }
+
 class AuthenticationCredentialsSingleton {
   static final AuthenticationCredentialsSingleton _singleton =
       AuthenticationCredentialsSingleton._internal();
@@ -17,7 +39,7 @@ class AuthenticationCredentialsSingleton {
   int? accessExpiration;
 
   String? username;
-  bool? softLogout;
+  bool softLogout = true;
   bool? skipSplashScreen;
 
   factory AuthenticationCredentialsSingleton() {
@@ -35,11 +57,15 @@ class AuthenticationCredentialsSingleton {
     skipSplashScreen = null;
   }
 
-  areTockensAvailable() {
-    return (refreshToken != null &&
+  areAuthenticationCredentialsAvailable() {
+    return (encryptionKDF != null &&
+        refreshToken != null &&
         accessToken != null &&
         refreshExpiration != null &&
-        accessExpiration != null);
+        accessExpiration != null &&
+        username != null &&
+        softLogout == true &&
+        skipSplashScreen == null);
   }
 
   AuthenticationCredentialsSingleton._internal();
@@ -66,19 +92,26 @@ class AuthService {
       masterPassword: password,
       salt: "${username}_authentication",
     );
+    String encryptionKDF = await Cryptography.getKDFBase64(
+      masterPassword: password,
+      salt: "${username}_encryption",
+    );
     try {
       AuthenticationLoginRequestBody loginBody = AuthenticationLoginRequestBody(
         userName: username,
         kdfPasswordResult: masterKDF,
       );
       await authApi.authenticationLoginPost(loginBody).then((value) async => {
-            if (value?.token != null)
+            if (value?.accessToken != null && value?.refreshToken != null)
               {
                 await storeAuthenticationCredentials(
-                    // TODO: Ask Backend for the updated OpenAI specification in order to be able to parse the return object -> refresh and access tockens
-                    refreshToken: value?.token,
-                    username: username,
-                    value!.expiresInSeconds!),
+                  username: username,
+                  encryptionKDF: encryptionKDF,
+                  refreshToken: value!.refreshToken!.token,
+                  refreshExpiration: value.refreshToken!.expiryTimestamp!,
+                  accessToken: value.accessToken!.token,
+                  accessExpiration: value.accessToken!.expiryTimestamp!,
+                ),
               }
           });
       return true;
@@ -100,7 +133,6 @@ class AuthService {
   static Future<bool> register(
       String username, String password, String? displayName, String url) async {
     displayName = username;
-
     ApiClient apiClient = RequestUtility.getApiWithoutAuth(url);
     UsersApi authApi = UsersApi(apiClient);
     String masterKDF = await Cryptography.getKDFBase64(
@@ -116,15 +148,15 @@ class AuthService {
         kdfPasswordResult: masterKDF,
       );
       await authApi.userCreatePost(registerBody).then((value) async => {
-            if (value?.token != null)
+            if (value?.accessToken != null && value?.refreshToken != null)
               {
-                // TODO: Ask Backend for the updated OpenAI specification in order to be able to parse the return object -> refresh and access tockens
                 await storeAuthenticationCredentials(
-                  username,
-                  password,
-                  encryptionKDF,
-                  value?.token,
-                  value!.expiresInSeconds!,
+                  username: username,
+                  encryptionKDF: encryptionKDF,
+                  refreshToken: value!.refreshToken!.token,
+                  refreshExpiration: value.refreshToken!.expiryTimestamp!,
+                  accessToken: value.accessToken!.token,
+                  accessExpiration: value.accessToken!.expiryTimestamp!,
                 ),
               }
           });
@@ -152,23 +184,22 @@ class AuthService {
     if (await AuthUtils.checkBiometricAvailability() &&
         singleton.encryptionKDF == null) {
       singleton.encryptionKDF = await storage.read(key: "encryptionKDF");
-    } // otherwise the roken is already in the singleton
+    } // otherwise the token is already in the singleton
     singleton.username ??= await storage.read(key: "username");
     singleton.skipSplashScreen ??=
         await storage.read(key: "skipSplashScreen") == "true" ? true : false;
-    if (keys.refreshToken == null ||
-        keys.accessToken == null ||
-        keys.refreshExpiration == null ||
-        keys.accessExpiration == null ||
-        username == null) {
+    if (!singleton.areAuthenticationCredentialsAvailable()) {
       throw NoCredentialException();
     }
-    if (!(await validateToken(
-            username, keys.timestamp, keys.refreshExpiration)) ||
-        !(singleton.areTockensAvailable())) {
-      // Fetch tokens here
-      return getAuthenticationCredentials();
+    if (!validateToken(singleton.accessExpiration, TokenType.accessToken)) {
+      // Fetch tokens here and update them in singleton (and in secure storage if needed)
     }
+
+    // if (!(await validateToken(
+    //         username, keys.timestamp, keys.refreshExpiration))) {
+    //   // Fetch tokens here
+    //   return getAuthenticationCredentials();
+    // }
     return singleton;
   }
 
@@ -183,29 +214,37 @@ class AuthService {
   /// [timestampStorage]: The timestamp when the token was stored.
   ///
   /// [expire]: The expiration time of the token.
-  static Future<bool> validateToken(
-    String username,
-    DateTime? timestamp,
-    int? expire,
-  ) async {
-    timestamp = (timestamp == null) ? DateTime.now() : timestamp;
-    expire = (expire == null) ? 0 : expire;
-    DateTime now = DateTime.now();
-    Duration difference = now.difference(timestamp);
+  // static Future<bool> validateToken(
+  //   String username,
+  //   DateTime? timestamp,
+  //   int? expire,
+  // ) async {
+  //   timestamp = (timestamp == null) ? DateTime.now() : timestamp;
+  //   expire = (expire == null) ? 0 : expire;
+  //   DateTime now = DateTime.now();
+  //   Duration difference = now.difference(timestamp);
 
-    int minRange = (expire * 0.8).toInt();
+  //   int minRange = (expire * 0.8).toInt();
 
-    if (difference.inSeconds >= minRange) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      // TODO: Here the user shall be prompted to reenter the password, as we do not store it.
-      // Swap login with a fetch of a new accessTocken
-      await AuthService.login(username, password, prefs.getString("url")!);
+  //   if (difference.inSeconds >= minRange) {
+  //     final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     // TODO: Here the user shall be prompted to reenter the password, as we do not store it.
+  //     // Swap login with a fetch of a new accessTocken
+  //     await AuthService.login(username, password, prefs.getString("url")!);
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
+  static bool validateToken(int? timestamp, TokenType? tokenType) {
+    timestamp ??= 0; // Not sure whether this is the correct way to handle it
+    DateTime validUntil = DateTime.fromMicrosecondsSinceEpoch(timestamp);
+    Duration timeStampDifference = DateTime.now().difference(validUntil);
+    if (timeStampDifference < tokenType!.validationRange()) {
       return false;
     }
     return true;
   }
-
-  static Future<void> fetchNewTockens() async {}
 
   /// Stores the authentication data in the secure storage.
   ///
