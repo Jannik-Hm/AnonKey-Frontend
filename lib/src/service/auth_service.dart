@@ -190,7 +190,7 @@ class AuthService {
     if (!singleton.areAuthenticationCredentialsAvailable()) {
       throw NoCredentialException();
     }
-    if (!validateToken(singleton.accessExpiration, TokenType.accessToken)) {
+    if (!validateToken(singleton.accessToken?.expiration, TokenType.accessToken)) {
       // Fetch tokens here and update them in singleton (and in secure storage if needed)
     }
 
