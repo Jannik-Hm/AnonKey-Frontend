@@ -107,16 +107,16 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       Credential temp;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? url = prefs.getString('url'); // Get Backend URL
-      Map<String, String> authdata =
+      AuthenticationCredentialsSingleton authdata =
           await AuthService.getAuthenticationCredentials();
       try {
         if (url != null) {
           ApiClient apiClient =
-              RequestUtility.getApiWithAuth(authdata["token"]!, url);
+              RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
           CredentialsApi api = CredentialsApi(apiClient);
           if (_credential != null) {
             temp = await _credential!.updateFromLocal(
-              masterPassword: authdata["encryptionKDF"]!,
+              masterPassword: authdata.encryptionKDF!,
               clearWebsiteUrl: websiteUrl.text,
               clearUsername: username.text,
               clearPassword: password.text,
@@ -131,7 +131,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             String? uuid = await uuidApi.uuidNewGet();
             temp = await Credential.newEntry(
               uuid: uuid!,
-              masterPassword: authdata["encryptionKDF"]!,
+              masterPassword: authdata.encryptionKDF!,
               clearWebsiteUrl: websiteUrl.text,
               clearUsername: username.text,
               clearPassword: password.text,
@@ -171,11 +171,11 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         if (_credential != null) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           String? url = prefs.getString('url'); // Get Backend URL
-          Map<String, String> authdata =
+          AuthenticationCredentialsSingleton authdata =
               await AuthService.getAuthenticationCredentials();
           if (url != null) {
-            ApiClient apiClient =
-                RequestUtility.getApiWithAuth(authdata["token"]!, url);
+            ApiClient apiClient = RequestUtility.getApiWithAuth(
+                authdata.accessToken!.token!, url);
             CredentialsApi api = CredentialsApi(apiClient);
             await api.credentialsSoftDeletePut(_credential!.uuid);
           }

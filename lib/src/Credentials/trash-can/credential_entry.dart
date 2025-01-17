@@ -31,12 +31,12 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
   Future<bool> restore() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('url'); // Get Backend URL
-    Map<String, String> authdata =
+    AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
     try {
       if (url != null) {
         ApiClient apiClient =
-            RequestUtility.getApiWithAuth(authdata["token"]!, url);
+            RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
         CredentialsApi api = CredentialsApi(apiClient);
         await api.credentialsSoftUndeletePut(_credential.uuid);
         return true;
@@ -58,12 +58,12 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
   Future<bool> deleteForever() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? url = prefs.getString('url'); // Get Backend URL
-    Map<String, String> authdata =
+    AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
     try {
       if (url != null) {
         ApiClient apiClient =
-            RequestUtility.getApiWithAuth(authdata["token"]!, url);
+            RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
         CredentialsApi api = CredentialsApi(apiClient);
         await api.credentialsDeleteDelete(_credential.uuid);
         return true;

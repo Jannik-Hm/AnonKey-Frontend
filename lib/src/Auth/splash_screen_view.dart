@@ -126,10 +126,10 @@ class _SplashScreenViewState extends State<SplashScreenView> {
     if (_loginFormKey.currentState!.validate()) {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       try {
-        final Map<String, String> credentials =
+        final AuthenticationCredentialsSingleton credentials =
             await AuthService.getAuthenticationCredentials();
-        bool req = await AuthService.login(credentials["username"]!,
-            password.text, prefs.getString("url") ?? "");
+        bool req = await AuthService.login(
+            credentials.username!, password.text, prefs.getString("url") ?? "");
         if (req) {
           if (context.mounted) {
             if (context.canPop()) {
@@ -181,9 +181,9 @@ class _SplashScreenViewState extends State<SplashScreenView> {
 
       if (authenticated) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        final Map<String, String> credentials =
+        final AuthenticationCredentialsSingleton credentials =
             await AuthService.getAuthenticationCredentials();
-        bool req = await AuthService.login(credentials["username"]!,
+        bool req = await AuthService.login(credentials.username!,
             credentials["password"]!, prefs.getString("url") ?? "");
         if (req) {
           if (context.mounted) {
