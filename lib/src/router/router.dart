@@ -88,9 +88,10 @@ class AppRouter {
         bool isAuthenticated = false;
 
         try {
-          isAuthenticated =
-              (await AuthService.getAuthenticationCredentials()).accessToken?.token !=
-                  null;
+          isAuthenticated = (await AuthService.getAuthenticationCredentials())
+                  .accessToken
+                  ?.token !=
+              null;
         } on NoCredentialException catch (e) {
           if (kDebugMode) {
             print(e.errMsg());
