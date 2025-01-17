@@ -44,7 +44,8 @@ class AuthUtils {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         final AuthenticationCredentialsSingleton credentials =
             await AuthService.getAuthenticationCredentials();
-        throw UnimplementedError("The revamp of the user service is not complete");
+        throw UnimplementedError(
+            "The revamp of the user service is not complete");
         bool req = await AuthService.login(credentials.username!,
             credentials.encryptionKDF!, prefs.getString("url") ?? "");
         if (req) {
