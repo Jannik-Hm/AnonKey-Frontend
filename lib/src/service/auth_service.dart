@@ -27,7 +27,10 @@ class Token {
   TokenType? tokenType;
   int? expiration;
 
-  Token({required String? token, required TokenType? tokenType,required int? expiration});
+  Token(
+      {required String? token,
+      required TokenType? tokenType,
+      required int? expiration});
 }
 
 class AuthenticationCredentialsSingleton {
@@ -269,8 +272,14 @@ class AuthService {
     singleton.username = username;
     singleton.softLogout = true;
     singleton.skipSplashScreen = false;
-    Token localRefreshToken = Token(token: refreshToken, tokenType: TokenType.refreshToken, expiration: refreshExpiration);
-    Token localAccessToken = Token(token: accessToken, tokenType: TokenType.accessToken, expiration: accessExpiration);
+    Token localRefreshToken = Token(
+        token: refreshToken,
+        tokenType: TokenType.refreshToken,
+        expiration: refreshExpiration);
+    Token localAccessToken = Token(
+        token: accessToken,
+        tokenType: TokenType.accessToken,
+        expiration: accessExpiration);
     singleton.refreshToken = localRefreshToken;
     singleton.accessToken = localAccessToken;
     // Store in secure storage
