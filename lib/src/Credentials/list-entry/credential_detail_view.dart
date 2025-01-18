@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
@@ -114,17 +116,18 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               RequestUtility.getApiWithAuth(authdata["token"]!, url);
           CredentialsApi api = CredentialsApi(apiClient);
           if (_credential != null) {
-            temp = await _credential!.updateFromLocal(
-              masterPassword: authdata["encryptionKDF"]!,
-              clearWebsiteUrl: websiteUrl.text,
-              clearUsername: username.text,
-              clearPassword: password.text,
-              clearDisplayName: displayName.text,
-              clearNote: note.text,
-              folderUuid: newFolderUUID,
-            );
-            await api
-                .credentialsUpdatePut(temp.updateAPICredentialRequestBody());
+            temp = await _credential!.clone().updateFromLocal(
+                  masterPassword: authdata["encryptionKDF"]!,
+                  clearWebsiteUrl: websiteUrl.text,
+                  clearUsername: username.text,
+                  clearPassword: password.text,
+                  clearDisplayName: displayName.text,
+                  clearNote: note.text,
+                  folderUuid: newFolderUUID,
+                );
+            await ApiBaseData.apiCallWrapper(
+                api.credentialsUpdatePut(temp.updateAPICredentialRequestBody()),
+                logMessage: "Credential update failed.");
           } else {
             UUIDApi uuidApi = UUIDApi(apiClient);
             String? uuid = await ApiBaseData.apiCallWrapper(
@@ -150,6 +153,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                 logMessage: "Credential creation failed.");
           }
           setState(() {
+            print("Test");
             _credential = temp;
           });
           if (widget.onSaveCallback != null) widget.onSaveCallback!(temp);
@@ -158,15 +162,24 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
           if (context.mounted) {
             NotificationPopup.apiError(context: context);
           }
-          return false;
         }
       } on ApiException catch (e) {
         if (context.mounted) {
           NotificationPopup.apiError(
               context: context, apiResponseMessage: e.message);
         }
-        return false;
+      } on AnonKeyServerOffline catch (e) {
+        print("Test2");
+        if (context.mounted) {
+          NotificationPopup.popupErrorMessage(
+              context: context,
+              message: (e.message != null)
+                  ? "Timeout Error: ${e.message}"
+                  : "Timeout Error");
+        }
       }
+      print("Test3");
+      return false;
     }
 
     Future<bool> delete() async {
@@ -179,24 +192,34 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             ApiClient apiClient =
                 RequestUtility.getApiWithAuth(authdata["token"]!, url);
             CredentialsApi api = CredentialsApi(apiClient);
-            await ApiBaseData.apiCallWrapper(api.credentialsSoftDeletePut(_credential!.uuid), logMessage: "Credential soft delete failed.");
+            await ApiBaseData.apiCallWrapper(
+                api.credentialsSoftDeletePut(_credential!.uuid),
+                logMessage: "Credential soft delete failed.");
           }
-          if (widget.onSoftDeleteCallback != null)
+          if (widget.onSoftDeleteCallback != null) {
             widget.onSoftDeleteCallback!(_credential!.uuid);
+          }
           return true;
         } else {
           if (context.mounted) {
             NotificationPopup.apiError(context: context);
           }
-          return false;
         }
       } on ApiException catch (e) {
         if (context.mounted) {
           NotificationPopup.apiError(
               context: context, apiResponseMessage: e.message);
         }
-        return false;
+      } on AnonKeyServerOffline catch (e) {
+        if (context.mounted) {
+          NotificationPopup.popupErrorMessage(
+              context: context,
+              message: (e.message != null)
+                  ? "Timeout Error: ${e.message}"
+                  : "Timeout Error");
+        }
       }
+      return false;
     }
 
     /// Popup to confirm deletion

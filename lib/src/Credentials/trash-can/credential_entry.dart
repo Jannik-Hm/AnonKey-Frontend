@@ -43,17 +43,28 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         return true;
       } else {
         if (context.mounted) {
+          // ignore: use_build_context_synchronously
           NotificationPopup.apiError(context: context);
         }
-        return false;
       }
     } on ApiException catch (e) {
       if (context.mounted) {
         NotificationPopup.apiError(
-            context: context, apiResponseMessage: e.message);
+            // ignore: use_build_context_synchronously
+            context: context,
+            apiResponseMessage: e.message);
       }
-      return false;
+    } on AnonKeyServerOffline catch (e) {
+      if (context.mounted) {
+        NotificationPopup.popupErrorMessage(
+            // ignore: use_build_context_synchronously
+            context: context,
+            message: (e.message != null)
+                ? "Timeout Error: ${e.message}"
+                : "Timeout Error");
+      }
     }
+    return false;
   }
 
   Future<bool> deleteForever() async {
@@ -71,17 +82,28 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         return true;
       } else {
         if (context.mounted) {
+          // ignore: use_build_context_synchronously
           NotificationPopup.apiError(context: context);
         }
-        return false;
       }
     } on ApiException catch (e) {
       if (context.mounted) {
         NotificationPopup.apiError(
-            context: context, apiResponseMessage: e.message);
+            // ignore: use_build_context_synchronously
+            context: context,
+            apiResponseMessage: e.message);
       }
-      return false;
+    } on AnonKeyServerOffline catch (e) {
+      if (context.mounted) {
+        NotificationPopup.popupErrorMessage(
+            // ignore: use_build_context_synchronously
+            context: context,
+            message: (e.message != null)
+                ? "Timeout Error: ${e.message}"
+                : "Timeout Error");
+      }
     }
+    return false;
   }
 
   /// show Popup to delete forever or restore Credential
