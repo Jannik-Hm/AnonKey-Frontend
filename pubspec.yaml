@@ -19,7 +19,7 @@ dependencies:
     sdk: flutter
   form_validator: ^2.1.1
   http: ^1.2.2
-  openapi_generator: ^5.0.2
+  openapi_generator: ^6.1.0
   openapi_generator_annotations: ^6.0.0
   shared_preferences: ^2.3.2
   rxdart: any
@@ -35,6 +35,7 @@ dev_dependencies:
   ansi_styles: any
 
   flutter_lints: ^5.0.0
+  build_runner: ^2.4.14
 
 flutter:
   uses-material-design: true

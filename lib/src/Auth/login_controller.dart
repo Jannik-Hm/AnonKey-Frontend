@@ -10,6 +10,8 @@ import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Widgets/button_with_throbber.dart';
+
 class LoginController extends State<LoginView> {
   final url = TextEditingController();
   final username = TextEditingController();
@@ -20,6 +22,8 @@ class LoginController extends State<LoginView> {
   final _urlFocus = FocusNode();
   final _usernameFocus = FocusNode();
   final _passwordFocus = FocusNode();
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -91,12 +95,16 @@ class LoginController extends State<LoginView> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextButton(
-                style: TextButton.styleFrom(
+              FractionallySizedBox(
+                widthFactor: 0.6,
+                child: ButtonWithThrobber(
+                  style: TextButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Theme.of(context).colorScheme.onPrimary),
-                onPressed: () => _showDialog(),
-                child: const Text('Fly me to the moon'),
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  onPressed: () => _showDialog(),
+                  text: AppLocalizations.of(context)!.login,
+                ),
               ),
               TextButton(
                 onPressed: () => context.replaceNamed("register"),
@@ -126,8 +134,6 @@ class LoginController extends State<LoginView> {
             context: context,
             builder: (context) {
               return const AlertDialog(
-                // Retrieve the text the that user has entered by using the
-                // TextEditingController.
                 content: Text('Login failed'),
               );
             },
@@ -141,5 +147,4 @@ class LoginController extends State<LoginView> {
       }
     }
   }
-// Todo implement login function
 }

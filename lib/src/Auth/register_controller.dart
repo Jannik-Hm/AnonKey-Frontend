@@ -9,6 +9,7 @@ import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Widgets/button_with_throbber.dart';
 import '../service/auth_service.dart';
 
 class RegisterControllerState extends State<RegisterView> {
@@ -111,12 +112,16 @@ class RegisterControllerState extends State<RegisterView> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextButton(
-                style: TextButton.styleFrom(
+              FractionallySizedBox(
+                widthFactor: 0.6,
+                child: ButtonWithThrobber(
+                  style: TextButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Theme.of(context).colorScheme.onPrimary),
-                onPressed: () => _register(),
-                child: const Text('Fly me to the moon'),
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  onPressed: () => _register(),
+                  text: AppLocalizations.of(context)!.register,
+                ),
               ),
               TextButton(
                 onPressed: () => context.replaceNamed("login"),

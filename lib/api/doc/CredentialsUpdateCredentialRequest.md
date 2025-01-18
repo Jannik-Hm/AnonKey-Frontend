@@ -20,7 +20,6 @@ Name | Type | Description | Notes
 **displayName** | **String** | The display name of the credential.. | [optional] 
 **displayNameSalt** | **String** | The DisplayNameSalt of the credetial | [optional] 
 **folderUuid** | **String** | The UUID of the folder the credential is in.  Use NULL for no folder. | [optional] 
-**deletedTimestamp** | **int** | The DeletedTimestamp of the credential in order to be able to recover a credential.  Use NULL in oder to recover after deleting. | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 
