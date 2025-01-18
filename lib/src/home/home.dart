@@ -35,7 +35,21 @@ class _HomeScreenState extends State<HomeScreen> {
     currentPageIndex = widget.index;
     _initializeSettings();
     combinedData = Future.wait(
-        [CredentialList.getFromAPIFull(), FolderList.getFromAPIFull()]).then(
+      [
+        CredentialList.getFromAPIFull().catchError(
+          (e) {
+            return (e as CredentialListTimeout).fallbackData;
+          },
+          test: (error) => error is CredentialListTimeout,
+        ),
+        FolderList.getFromAPIFull().catchError(
+          (e) {
+            return (e as FolderListTimeout).fallbackData;
+          },
+          test: (error) => error is FolderListTimeout,
+        ),
+      ],
+    ).then(
       (results) {
         return CombinedListData(
             credentials: results[0] as CredentialList,

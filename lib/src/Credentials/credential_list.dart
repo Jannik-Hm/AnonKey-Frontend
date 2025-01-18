@@ -9,6 +9,12 @@ import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:path_provider/path_provider.dart';
 
+class CredentialListTimeout implements Exception {
+  CredentialList fallbackData;
+  static String? message = "Credential fetch failed, using local data instead.";
+  CredentialListTimeout(this.fallbackData);
+}
+
 class CredentialList {
   // Map of all credentials, UUID as Key
   Map<String, Credential> byIDList = {};
@@ -263,7 +269,7 @@ class CredentialList {
       try {
         return await _getResponseFromAllAPI();
       } catch (e) {
-        if (e is TimeoutException) {
+        if (e is AnonKeyServerOffline) {
           return null;
         }
         rethrow; // Propagate exceptions
@@ -287,27 +293,22 @@ class CredentialList {
           credentials: response, masterPassword: authdata["encryptionKDF"]!);
       return data;
     }
-    return localData;
+    throw CredentialListTimeout(localData);
   }
 
   /// Function to update this entire CredentialList from Backend (with minimal decryption)
   Future<CredentialList?> updateFromAPIFull() async {
-    try {
-      api.CredentialsGetAllResponseBody? response =
-          await _getResponseFromAllAPI();
-      Map<String, String> authdata =
-          await AuthService.getAuthenticationCredentials();
+    api.CredentialsGetAllResponseBody? response =
+        await _getResponseFromAllAPI();
+    Map<String, String> authdata =
+        await AuthService.getAuthenticationCredentials();
 
-      if (response != null) {
-        CredentialList data = await updateFromAPI(
-            credentials: response, masterPassword: authdata["encryptionKDF"]!);
-        return data;
-      }
-    } catch (e) {
-      if (e is TimeoutException) {
-        return this;
-      }
+    if (response != null) {
+      CredentialList data = await updateFromAPI(
+          credentials: response, masterPassword: authdata["encryptionKDF"]!);
+      return data;
+    } else {
+      throw CredentialListTimeout(this);
     }
-    return null;
   }
 }
