@@ -3,6 +3,11 @@ import 'dart:developer';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+class AnonKeyServerOffline implements Exception {
+  String? message;
+  AnonKeyServerOffline(this.message);
+}
+
 class ApiBaseData {
   static Future<String?> getURL() async {
     return await SharedPreferencesAsync().getString('url') ?? "";
@@ -36,6 +41,8 @@ class ApiBaseData {
         await setlastCallSuccessful(false);
         if (returnNullOnTimeout) {
           return null;
+        } else {
+          throw AnonKeyServerOffline(logMessage);
         }
       }
       rethrow;
