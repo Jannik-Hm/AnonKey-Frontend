@@ -14,7 +14,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FolderEditWidget extends StatefulWidget {
   final Folder? folder;
-  final void Function({required int codePoint})? iconCallback;
   final Function({required Folder folderData})? onSaveCallback;
   final Function({required String uuid, required bool recursive})?
       onDeleteCallback;
@@ -23,7 +22,6 @@ class FolderEditWidget extends StatefulWidget {
   const FolderEditWidget({
     super.key,
     this.folder,
-    this.iconCallback,
     this.onSaveCallback,
     this.onAbortCallback,
     this.onDeleteCallback,
@@ -87,35 +85,37 @@ class _FolderEditWidget extends State<FolderEditWidget> {
               RequestUtility.getApiWithAuth(authdata["token"]!, url);
           FoldersApi api = FoldersApi(apiClient);
           if (_folder != null) {
-            _folder!.displayName = displayName.text;
-            if (_iconData != null) {
-              _folder!.setIcon(codePoint: _iconData!.codePoint);
-              if (widget.folder != null && widget.iconCallback != null) {
-                widget.iconCallback!(codePoint: _iconData!.codePoint);
-              }
-            }
+            Folder temp = Folder(
+              displayName: displayName.text,
+              iconData: _iconData?.codePoint ?? _folder!.getIconCodePoint(),
+              uuid: _folder!.uuid,
+            );
             await ApiBaseData.apiCallWrapper(
-                api.foldersUpdatePut(_folder!.updateFolderBody()),
+                api.foldersUpdatePut(temp.updateFolderBody()),
                 logMessage: "Folder Update failed.");
+            setState(
+              () {
+                _folder = temp;
+              },
+            );
           } else {
-            await ApiBaseData.apiCallWrapper(
-                api
-                    .foldersCreatePost(
-                  FoldersCreateRequestBody(
-                    folder: FoldersCreateFolder(
-                      icon: _iconData!.codePoint,
-                      name: displayName.text,
-                    ),
+            FoldersCreateResponseBody? response =
+                await ApiBaseData.apiCallWrapper(
+              api.foldersCreatePost(
+                FoldersCreateRequestBody(
+                  folder: FoldersCreateFolder(
+                    icon: _iconData!.codePoint,
+                    name: displayName.text,
                   ),
-                )
-                    .then((value) {
-                  _folder = Folder(
-                    displayName: displayName.text,
-                    iconData: _iconData!.codePoint,
-                    uuid: value!.folderUuid,
-                  );
-                }),
-                logMessage: "Folder Create failed.");
+                ),
+              ),
+              logMessage: "Folder Create failed.",
+            );
+            _folder = Folder(
+              displayName: displayName.text,
+              iconData: _iconData!.codePoint,
+              uuid: response!.folderUuid,
+            );
           }
           return true;
         } else {
@@ -128,7 +128,14 @@ class _FolderEditWidget extends State<FolderEditWidget> {
           NotificationPopup.apiError(
               context: context, apiResponseMessage: e.message);
         }
-        return false;
+      } on AnonKeyServerOffline catch (e) {
+        if (context.mounted) {
+          NotificationPopup.popupErrorMessage(
+              context: context,
+              message: (e.message != null)
+                  ? "Timeout Error: ${e.message}"
+                  : "Timeout Error");
+        }
       }
       return false;
     }
@@ -151,14 +158,25 @@ class _FolderEditWidget extends State<FolderEditWidget> {
           }
           return false;
         }
-        if (widget.onDeleteCallback != null)
+        if (widget.onDeleteCallback != null) {
           widget.onDeleteCallback!(uuid: _folder!.uuid!, recursive: recursive);
+        }
       } on ApiException catch (e) {
         if (context.mounted) {
           NotificationPopup.apiError(
               context: context, apiResponseMessage: e.message);
         }
         return false;
+      } on AnonKeyServerOffline catch (e) {
+        if (context.mounted) {
+          NotificationPopup.popupErrorMessage(
+              // ignore: use_build_context_synchronously
+              context: context,
+              message: (e.message != null)
+                  ? "Timeout Error: ${e.message}"
+                  : "Timeout Error");
+          return false;
+        }
       }
       return true;
     }

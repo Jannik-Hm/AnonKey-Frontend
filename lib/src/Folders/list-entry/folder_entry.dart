@@ -40,12 +40,6 @@ class _FolderEntry extends State<FolderEntry> {
     _folder = widget.folder;
   }
 
-  void updateIcon({required int codePoint}) {
-    setState(() {
-      _folder.setIcon(codePoint: codePoint);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
@@ -82,7 +76,6 @@ class _FolderEntry extends State<FolderEntry> {
             MaterialPageRoute(
               builder: (_) => FolderEditWidget(
                 folder: _folder,
-                iconCallback: updateIcon,
                 onDeleteCallback: widget.onDeleteCallback,
                 onSaveCallback: widget.onSaveCallback,
               ),
