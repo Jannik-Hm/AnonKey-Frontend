@@ -6,6 +6,7 @@ import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/exception/missing_build_context_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AnonKeyServerOffline implements Exception {
   String? message;
@@ -59,9 +60,9 @@ class ApiBaseData {
   static void callFuncIfServerReachable(
     void Function() func, {
     required BuildContext context,
-    String offlineErrorMessage =
-        "This option is disabled as you seem to be offline. Refresh to enable this feature again.",
+    String? offlineErrorMessageOverride,
   }) {
+    String offlineErrorMessage = offlineErrorMessageOverride ?? AppLocalizations.of(context)!.offlineDisabledFeature;
     lastCallSuccessful().then(
       (lastapicallsuccess) {
         if (lastapicallsuccess ?? false) {
@@ -83,9 +84,9 @@ class ApiBaseData {
   static Future<void Function()?> aCallFuncIfServerReachable(
     void Function() func, {
     required BuildContext context,
-    String offlineErrorMessage =
-        "This option is disabled as you seem to be offline. Refresh to enable this feature again.",
+    String? offlineErrorMessageOverride,
   }) async {
+    String offlineErrorMessage = offlineErrorMessageOverride ?? AppLocalizations.of(context)!.offlineDisabledFeature;
     bool lastapicallsuccess = await lastCallSuccessful() ?? false;
     if (lastapicallsuccess) {
       return func;

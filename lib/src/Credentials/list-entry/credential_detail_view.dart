@@ -127,12 +127,12 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                 );
             await ApiBaseData.apiCallWrapper(
                 api.credentialsUpdatePut(temp.updateAPICredentialRequestBody()),
-                logMessage: "Credential update failed.");
+                logMessage: (context.mounted) ? AppLocalizations.of(context)!.credentialUpdateTimeout : "Timeout Error");
           } else {
             UUIDApi uuidApi = UUIDApi(apiClient);
             String? uuid = await ApiBaseData.apiCallWrapper(
                 uuidApi.uuidNewGet(),
-                logMessage: "Getting UUID failed.");
+                logMessage: (context.mounted) ? AppLocalizations.of(context)!.getUUIDTimeout : "Timeout Error");
             temp = await Credential.newEntry(
               uuid: uuid!,
               masterPassword: authdata["encryptionKDF"]!,
@@ -150,7 +150,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                     credential: temp.createAPICredential(),
                   ),
                 ),
-                logMessage: "Credential creation failed.");
+                logMessage: (context.mounted) ? AppLocalizations.of(context)!.credentialCreateTimeout : "Timeout Error");
           }
           setState(() {
             _credential = temp;
@@ -171,9 +171,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         if (context.mounted) {
           NotificationPopup.popupErrorMessage(
               context: context,
-              message: (e.message != null)
-                  ? "Timeout Error: ${e.message}"
-                  : "Timeout Error");
+              message: e.message ?? "Timeout Error");
         }
       }
       return false;
@@ -191,7 +189,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             CredentialsApi api = CredentialsApi(apiClient);
             await ApiBaseData.apiCallWrapper(
                 api.credentialsSoftDeletePut(_credential!.uuid),
-                logMessage: "Credential soft delete failed.");
+                logMessage: (context.mounted) ? AppLocalizations.of(context)!.credentialSoftDeleteTimeout : "Timeout Error");
           }
           if (widget.onSoftDeleteCallback != null) {
             widget.onSoftDeleteCallback!(_credential!.uuid);
@@ -211,9 +209,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         if (context.mounted) {
           NotificationPopup.popupErrorMessage(
               context: context,
-              message: (e.message != null)
-                  ? "Timeout Error: ${e.message}"
-                  : "Timeout Error");
+              message: e.message ?? "Timeout Error");
         }
       }
       return false;

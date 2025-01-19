@@ -39,7 +39,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         CredentialsApi api = CredentialsApi(apiClient);
         await ApiBaseData.apiCallWrapper(
             api.credentialsSoftUndeletePut(_credential.uuid),
-            logMessage: "Credential soft undelete failed.");
+            logMessage: (mounted) ? AppLocalizations.of(context)!.credentialRestoreTimeout : "Timeout Error");
         return true;
       } else {
         if (context.mounted) {
@@ -59,9 +59,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         NotificationPopup.popupErrorMessage(
             // ignore: use_build_context_synchronously
             context: context,
-            message: (e.message != null)
-                ? "Timeout Error: ${e.message}"
-                : "Timeout Error");
+            message: e.message ?? "Timeout Error");
       }
     }
     return false;
@@ -78,7 +76,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         CredentialsApi api = CredentialsApi(apiClient);
         await ApiBaseData.apiCallWrapper(
             api.credentialsDeleteDelete(_credential.uuid),
-            logMessage: "Credential final delete failed.");
+            logMessage: (mounted) ? AppLocalizations.of(context)!.credentialFinalDeleteTimeout : "Timeout Error");
         return true;
       } else {
         if (context.mounted) {
@@ -98,9 +96,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         NotificationPopup.popupErrorMessage(
             // ignore: use_build_context_synchronously
             context: context,
-            message: (e.message != null)
-                ? "Timeout Error: ${e.message}"
-                : "Timeout Error");
+            message: e.message ?? "Timeout Error");
       }
     }
     return false;
