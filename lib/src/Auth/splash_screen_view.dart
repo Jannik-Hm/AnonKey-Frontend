@@ -88,7 +88,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
             const SizedBox(height: 16),
             if (_isBiometricAvailable)
               ButtonWithThrobber(
-                onPressed: () => _loginWithBiometrics(context),
+                onPressedAsync: () => _loginWithBiometrics(context),
                 icon: const Icon(Icons.fingerprint),
                 text: AppLocalizations.of(context)!.loginWithBiometrics,
                 style: ElevatedButton.styleFrom(
@@ -102,7 +102,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Theme.of(context).colorScheme.onPrimary,
               ),
-              onPressed: () => _loginWithoutUsername(context),
+              onPressedAsync: () => _loginWithoutUsername(context),
               text: AppLocalizations.of(context)!.login,
             ),
             const SizedBox(height: 20),
