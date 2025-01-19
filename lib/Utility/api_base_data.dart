@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
+import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/exception/missing_build_context_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,7 +41,9 @@ class ApiBaseData {
       T? result = await asyncFunction.timeout(timeout);
       return result;
     } catch (e) {
-      if (e is TimeoutException) {
+      if (e is TimeoutException || e is ApiException && e.innerException != null
+          // might rather specifically look for inner SocketException, TlsException, IOException, ClientException
+          ) {
         log("TimeoutException: $logMessage");
         await setlastCallSuccessful(false);
         if (returnNullOnTimeout) {
