@@ -118,7 +118,7 @@ class RegisterControllerState extends State<RegisterView> {
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   ),
-                  onPressed: () => _register(),
+                  onPressedAsync: () => _register(),
                   text: AppLocalizations.of(context)!.register,
                 ),
               ),

@@ -101,7 +101,7 @@ class LoginController extends State<LoginView> {
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   ),
-                  onPressed: () => _showDialog(),
+                  onPressedAsync: () => _showDialog(),
                   text: AppLocalizations.of(context)!.login,
                 ),
               ),
@@ -116,7 +116,7 @@ class LoginController extends State<LoginView> {
     );
   }
 
-  _showDialog() async {
+  Future<void> _showDialog() async {
     if (_loginFormKey.currentState!.validate()) {
       try {
         bool test =
@@ -124,7 +124,8 @@ class LoginController extends State<LoginView> {
 
         if (test) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('url', url.text);
+          await prefs.setString(
+              'url', url.text); // Ensure the preferences are saved
           if (!mounted) return;
           context.goNamed("home");
         } else {
