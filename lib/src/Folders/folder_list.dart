@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 
 class FolderListTimeout implements Exception {
   FolderList fallbackData;
-  static String? message = "Folder fetch failed, using local data instead.";
+  static String message = "Folder fetch failed, using local data instead.";
   FolderListTimeout(this.fallbackData);
 }
 

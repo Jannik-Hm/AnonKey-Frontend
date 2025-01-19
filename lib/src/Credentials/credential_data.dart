@@ -184,6 +184,10 @@ class Credential {
     this._deletedTimeStamp = null;
   }
 
+  void setDeletedTimeStamp(DateTime? deletedTimeStamp) {
+    _deletedTimeStamp = deletedTimeStamp;
+  }
+
   @override
   String toString() {
     return """

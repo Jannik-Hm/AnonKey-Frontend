@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 
 class CredentialListTimeout implements Exception {
   CredentialList fallbackData;
-  static String? message = "Credential fetch failed, using local data instead.";
+  static String message = "Credential fetch failed, using local data instead.";
   CredentialListTimeout(this.fallbackData);
 }
 
@@ -56,6 +56,7 @@ class CredentialList {
       deletedList.remove(credentialUUID);
       credential.clearDeletedTimeStamp();
       add(credential);
+      saveToDisk();
     }
   }
 
@@ -63,8 +64,10 @@ class CredentialList {
   void softDelete(String credentialUUID) {
     Credential? credential = byIDList[credentialUUID];
     if (credential != null) {
+      credential.setDeletedTimeStamp(DateTime.now());
       remove(credentialUUID);
       deletedList[credentialUUID] = credential;
+      saveToDisk();
     }
   }
 
@@ -102,7 +105,10 @@ class CredentialList {
   }
 
   /// Function to serialize CredentialList to store in App Storage
-  List<dynamic> toJson() => byIDList.values.toList();
+  List<dynamic> toJson() => {
+        ...byIDList,
+        ...deletedList,
+      }.values.toList();
 
   /// Function to write encrypted CredentialList to App Document Directory
   Future<void> saveToDisk() async {
@@ -255,8 +261,7 @@ class CredentialList {
       api.CredentialsApi credentialApi = api.CredentialsApi(apiClient);
       api.CredentialsGetAllResponseBody? response =
           await ApiBaseData.apiCallWrapper(credentialApi.credentialsGetAllGet(),
-              logMessage:
-                  "Exceeded Credential Fetch, using local data instead.",
+              logMessage: "Credential Fetch failed, using local data instead.",
               returnNullOnTimeout: true);
       return response;
     }
