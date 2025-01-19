@@ -62,7 +62,8 @@ class ApiBaseData {
     required BuildContext context,
     String? offlineErrorMessageOverride,
   }) {
-    String offlineErrorMessage = offlineErrorMessageOverride ?? AppLocalizations.of(context)!.offlineDisabledFeature;
+    String offlineErrorMessage = offlineErrorMessageOverride ??
+        AppLocalizations.of(context)!.offlineDisabledFeature;
     lastCallSuccessful().then(
       (lastapicallsuccess) {
         if (lastapicallsuccess ?? false) {
@@ -86,7 +87,8 @@ class ApiBaseData {
     required BuildContext context,
     String? offlineErrorMessageOverride,
   }) async {
-    String offlineErrorMessage = offlineErrorMessageOverride ?? AppLocalizations.of(context)!.offlineDisabledFeature;
+    String offlineErrorMessage = offlineErrorMessageOverride ??
+        AppLocalizations.of(context)!.offlineDisabledFeature;
     bool lastapicallsuccess = await lastCallSuccessful() ?? false;
     if (lastapicallsuccess) {
       return func;

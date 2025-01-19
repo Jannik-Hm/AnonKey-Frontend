@@ -39,7 +39,9 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         CredentialsApi api = CredentialsApi(apiClient);
         await ApiBaseData.apiCallWrapper(
             api.credentialsSoftUndeletePut(_credential.uuid),
-            logMessage: (mounted) ? AppLocalizations.of(context)!.credentialRestoreTimeout : "Timeout Error");
+            logMessage: (mounted)
+                ? AppLocalizations.of(context)!.credentialRestoreTimeout
+                : "Timeout Error");
         return true;
       } else {
         if (context.mounted) {
@@ -76,7 +78,9 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         CredentialsApi api = CredentialsApi(apiClient);
         await ApiBaseData.apiCallWrapper(
             api.credentialsDeleteDelete(_credential.uuid),
-            logMessage: (mounted) ? AppLocalizations.of(context)!.credentialFinalDeleteTimeout : "Timeout Error");
+            logMessage: (mounted)
+                ? AppLocalizations.of(context)!.credentialFinalDeleteTimeout
+                : "Timeout Error");
         return true;
       } else {
         if (context.mounted) {

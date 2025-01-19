@@ -43,7 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
             if (mounted) {
               NotificationPopup.popupErrorMessage(
                 context: context,
-                message: (context.mounted) ? AppLocalizations.of(context)!.credentialFetchTimeout : "Timeout Error",
+                message: (context.mounted)
+                    ? AppLocalizations.of(context)!.credentialFetchTimeout
+                    : "Timeout Error",
               );
             } else {
               throw MissingBuildContextException();
@@ -57,7 +59,9 @@ class _HomeScreenState extends State<HomeScreen> {
             if (mounted) {
               NotificationPopup.popupErrorMessage(
                 context: context,
-                message: (context.mounted) ? AppLocalizations.of(context)!.folderFetchTimeout : "Timeout Error",
+                message: (context.mounted)
+                    ? AppLocalizations.of(context)!.folderFetchTimeout
+                    : "Timeout Error",
               );
             } else {
               throw MissingBuildContextException();
@@ -94,7 +98,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (mounted) {
                   NotificationPopup.popupErrorMessage(
                     context: context,
-                    message: (context.mounted) ? AppLocalizations.of(context)!.credentialFetchTimeout : "Timeout Error",
+                    message: (context.mounted)
+                        ? AppLocalizations.of(context)!.credentialFetchTimeout
+                        : "Timeout Error",
                   );
                 } else {
                   throw MissingBuildContextException();
@@ -134,7 +140,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (context.mounted) {
                           NotificationPopup.popupErrorMessage(
                             context: context,
-                            message: (context.mounted) ? AppLocalizations.of(context)!.credentialFetchTimeout : "Timeout Error",
+                            message: (context.mounted)
+                                ? AppLocalizations.of(context)!
+                                    .credentialFetchTimeout
+                                : "Timeout Error",
                           );
                         } else {
                           throw MissingBuildContextException();
@@ -148,7 +157,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (context.mounted) {
                           NotificationPopup.popupErrorMessage(
                             context: context,
-                            message: (context.mounted) ? AppLocalizations.of(context)!.folderFetchTimeout : "Timeout Error",
+                            message: (context.mounted)
+                                ? AppLocalizations.of(context)!
+                                    .folderFetchTimeout
+                                : "Timeout Error",
                           );
                         } else {
                           throw MissingBuildContextException();

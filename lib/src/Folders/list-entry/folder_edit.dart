@@ -92,7 +92,9 @@ class _FolderEditWidget extends State<FolderEditWidget> {
             );
             await ApiBaseData.apiCallWrapper(
                 api.foldersUpdatePut(temp.updateFolderBody()),
-                logMessage: (context.mounted) ? AppLocalizations.of(context)!.folderUpdateTimeout : "Timeout Error");
+                logMessage: (context.mounted)
+                    ? AppLocalizations.of(context)!.folderUpdateTimeout
+                    : "Timeout Error");
             setState(
               () {
                 _folder = temp;
@@ -109,7 +111,9 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                   ),
                 ),
               ),
-              logMessage: (context.mounted) ? AppLocalizations.of(context)!.folderCreateTimeout : "Timeout Error",
+              logMessage: (context.mounted)
+                  ? AppLocalizations.of(context)!.folderCreateTimeout
+                  : "Timeout Error",
             );
             _folder = Folder(
               displayName: displayName.text,
@@ -131,8 +135,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
       } on AnonKeyServerOffline catch (e) {
         if (context.mounted) {
           NotificationPopup.popupErrorMessage(
-              context: context,
-              message: e.message ?? "Timeout Error");
+              context: context, message: e.message ?? "Timeout Error");
         }
       }
       return false;
@@ -149,7 +152,9 @@ class _FolderEditWidget extends State<FolderEditWidget> {
           FoldersApi api = FoldersApi(apiClient);
           await ApiBaseData.apiCallWrapper(
               api.foldersDeleteDelete(_folder!.uuid!, recursive),
-              logMessage: (context.mounted) ? AppLocalizations.of(context)!.folderDeleteTimeout : "Timeout Error");
+              logMessage: (context.mounted)
+                  ? AppLocalizations.of(context)!.folderDeleteTimeout
+                  : "Timeout Error");
         } else {
           if (context.mounted) {
             NotificationPopup.apiError(context: context);
