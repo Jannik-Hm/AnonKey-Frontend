@@ -34,7 +34,7 @@ class ApiBaseData {
     Duration? timeout,
     bool returnNullOnTimeout = false,
   }) async {
-    timeout ??= Duration(milliseconds: 5);
+    timeout ??= Duration(seconds: 5);
     try {
       await setlastCallSuccessful(true);
       T? result = await asyncFunction.timeout(timeout);

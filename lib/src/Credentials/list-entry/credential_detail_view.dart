@@ -153,7 +153,6 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                 logMessage: "Credential creation failed.");
           }
           setState(() {
-            print("Test");
             _credential = temp;
           });
           if (widget.onSaveCallback != null) widget.onSaveCallback!(temp);
@@ -169,7 +168,6 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               context: context, apiResponseMessage: e.message);
         }
       } on AnonKeyServerOffline catch (e) {
-        print("Test2");
         if (context.mounted) {
           NotificationPopup.popupErrorMessage(
               context: context,
@@ -178,7 +176,6 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                   : "Timeout Error");
         }
       }
-      print("Test3");
       return false;
     }
 
