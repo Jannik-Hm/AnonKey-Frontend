@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-// @dart=2.12
+// @dart=2.18
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -25,7 +25,6 @@ class CredentialsUpdateCredentialRequest {
     this.displayName,
     this.displayNameSalt,
     this.folderUuid,
-    this.deletedTimestamp,
   });
 
   /// The UUID of the credential.
@@ -64,9 +63,6 @@ class CredentialsUpdateCredentialRequest {
   /// The UUID of the folder the credential is in.  Use NULL for no folder.
   String? folderUuid;
 
-  /// The DeletedTimestamp of the credential in order to be able to recover a credential.  Use NULL in oder to recover after deleting.
-  int? deletedTimestamp;
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -82,8 +78,7 @@ class CredentialsUpdateCredentialRequest {
           other.noteSalt == noteSalt &&
           other.displayName == displayName &&
           other.displayNameSalt == displayNameSalt &&
-          other.folderUuid == folderUuid &&
-          other.deletedTimestamp == deletedTimestamp;
+          other.folderUuid == folderUuid;
 
   @override
   int get hashCode =>
@@ -99,12 +94,11 @@ class CredentialsUpdateCredentialRequest {
       (noteSalt == null ? 0 : noteSalt!.hashCode) +
       (displayName == null ? 0 : displayName!.hashCode) +
       (displayNameSalt == null ? 0 : displayNameSalt!.hashCode) +
-      (folderUuid == null ? 0 : folderUuid!.hashCode) +
-      (deletedTimestamp == null ? 0 : deletedTimestamp!.hashCode);
+      (folderUuid == null ? 0 : folderUuid!.hashCode);
 
   @override
   String toString() =>
-      'CredentialsUpdateCredentialRequest[uuid=$uuid, password=$password, passwordSalt=$passwordSalt, username=$username, usernameSalt=$usernameSalt, websiteUrl=$websiteUrl, websiteUrlSalt=$websiteUrlSalt, note=$note, noteSalt=$noteSalt, displayName=$displayName, displayNameSalt=$displayNameSalt, folderUuid=$folderUuid, deletedTimestamp=$deletedTimestamp]';
+      'CredentialsUpdateCredentialRequest[uuid=$uuid, password=$password, passwordSalt=$passwordSalt, username=$username, usernameSalt=$usernameSalt, websiteUrl=$websiteUrl, websiteUrlSalt=$websiteUrlSalt, note=$note, noteSalt=$noteSalt, displayName=$displayName, displayNameSalt=$displayNameSalt, folderUuid=$folderUuid]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -168,11 +162,6 @@ class CredentialsUpdateCredentialRequest {
     } else {
       json[r'folderUuid'] = null;
     }
-    if (this.deletedTimestamp != null) {
-      json[r'deletedTimestamp'] = this.deletedTimestamp;
-    } else {
-      json[r'deletedTimestamp'] = null;
-    }
     return json;
   }
 
@@ -209,7 +198,6 @@ class CredentialsUpdateCredentialRequest {
         displayName: mapValueOfType<String>(json, r'displayName'),
         displayNameSalt: mapValueOfType<String>(json, r'displayNameSalt'),
         folderUuid: mapValueOfType<String>(json, r'folderUuid'),
-        deletedTimestamp: mapValueOfType<int>(json, r'deletedTimestamp'),
       );
     }
     return null;

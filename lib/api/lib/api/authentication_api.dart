@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-// @dart=2.12
+// @dart=2.18
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -125,40 +125,5 @@ class AuthenticationApi {
       ) as AuthenticationLoginResponseBody;
     }
     return null;
-  }
-
-  /// Invalidates an access token for user logout.
-  ///
-  /// Note: This method returns the HTTP [Response].
-  Future<Response> authenticationLogoutDeleteWithHttpInfo() async {
-    // ignore: prefer_const_declarations
-    final path = r'/authentication/logout';
-
-    // ignore: prefer_final_locals
-    Object? postBody;
-
-    final queryParams = <QueryParam>[];
-    final headerParams = <String, String>{};
-    final formParams = <String, String>{};
-
-    const contentTypes = <String>[];
-
-    return apiClient.invokeAPI(
-      path,
-      'DELETE',
-      queryParams,
-      postBody,
-      headerParams,
-      formParams,
-      contentTypes.isEmpty ? null : contentTypes.first,
-    );
-  }
-
-  /// Invalidates an access token for user logout.
-  Future<void> authenticationLogoutDelete() async {
-    final response = await authenticationLogoutDeleteWithHttpInfo();
-    if (response.statusCode >= HttpStatus.badRequest) {
-      throw ApiException(response.statusCode, await _decodeBodyBytes(response));
-    }
   }
 }

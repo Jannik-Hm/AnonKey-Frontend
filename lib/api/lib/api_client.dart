@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-// @dart=2.12
+// @dart=2.18
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -12,7 +12,7 @@ part of openapi.api;
 
 class ApiClient {
   ApiClient({
-    this.basePath = 'https://api.beta.anonkey.lightjack.de',
+    this.basePath = 'http://localhost',
     this.authentication,
   });
 

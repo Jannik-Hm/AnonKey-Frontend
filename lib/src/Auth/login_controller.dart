@@ -1,6 +1,7 @@
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
+import 'package:anonkey_frontend/src/Widgets/button_with_throbber.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/foundation.dart';
@@ -20,6 +21,8 @@ class LoginController extends State<LoginView> {
   final _urlFocus = FocusNode();
   final _usernameFocus = FocusNode();
   final _passwordFocus = FocusNode();
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -91,12 +94,16 @@ class LoginController extends State<LoginView> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextButton(
-                style: TextButton.styleFrom(
+              FractionallySizedBox(
+                widthFactor: 0.6,
+                child: ButtonWithThrobber(
+                  style: TextButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Theme.of(context).colorScheme.onPrimary),
-                onPressed: () => _showDialog(),
-                child: const Text('Fly me to the moon'),
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  onPressedAsync: () => _showDialog(),
+                  text: AppLocalizations.of(context)!.login,
+                ),
               ),
               TextButton(
                 onPressed: () => context.replaceNamed("register"),
@@ -109,7 +116,7 @@ class LoginController extends State<LoginView> {
     );
   }
 
-  _showDialog() async {
+  Future<void> _showDialog() async {
     if (_loginFormKey.currentState!.validate()) {
       try {
         bool test =
@@ -117,7 +124,8 @@ class LoginController extends State<LoginView> {
 
         if (test) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('url', url.text);
+          await prefs.setString(
+              'url', url.text); // Ensure the preferences are saved
           if (!mounted) return;
           context.goNamed("home");
         } else {
@@ -126,8 +134,6 @@ class LoginController extends State<LoginView> {
             context: context,
             builder: (context) {
               return const AlertDialog(
-                // Retrieve the text the that user has entered by using the
-                // TextEditingController.
                 content: Text('Login failed'),
               );
             },
@@ -141,5 +147,4 @@ class LoginController extends State<LoginView> {
       }
     }
   }
-// Todo implement login function
 }

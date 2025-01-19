@@ -1,5 +1,6 @@
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
+import 'package:anonkey_frontend/src/Widgets/button_with_throbber.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
@@ -86,31 +87,31 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                 )),
             const SizedBox(height: 16),
             if (_isBiometricAvailable)
-              ElevatedButton.icon(
-                onPressed: () => _loginWithBiometrics(context),
+              ButtonWithThrobber(
+                onPressedAsync: () => _loginWithBiometrics(context),
                 icon: const Icon(Icons.fingerprint),
-                label: Text(AppLocalizations.of(context)!.loginWithBiometrics),
+                text: AppLocalizations.of(context)!.loginWithBiometrics,
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
               ),
             const SizedBox(height: 16),
-            TextButton(
+            ButtonWithThrobber(
               style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Theme.of(context).colorScheme.onPrimary,
               ),
-              onPressed: () => _loginWithoutUsername(context),
-              child: const Text('Fly me to the moon'),
+              onPressedAsync: () => _loginWithoutUsername(context),
+              text: AppLocalizations.of(context)!.login,
             ),
             const SizedBox(height: 20),
             if (notFirstTry)
-              ElevatedButton.icon(
+              ButtonWithThrobber(
                 key: UniqueKey(),
                 onPressed: () => UserService.logout(context),
                 icon: const Icon(Icons.logout),
-                label: Text(AppLocalizations.of(context)!.logout),
+                text: AppLocalizations.of(context)!.logout,
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   backgroundColor: Theme.of(context).colorScheme.primary,
