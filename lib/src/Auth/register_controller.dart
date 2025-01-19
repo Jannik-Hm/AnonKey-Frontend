@@ -1,16 +1,15 @@
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
+import 'package:anonkey_frontend/src/Widgets/button_with_throbber.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
+import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../Widgets/button_with_throbber.dart';
-import '../service/auth_service.dart';
 
 class RegisterControllerState extends State<RegisterView> {
   final url = TextEditingController();
