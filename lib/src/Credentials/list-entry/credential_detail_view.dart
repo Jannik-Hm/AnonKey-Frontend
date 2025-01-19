@@ -288,9 +288,15 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         actions: [
           if (!_enabled)
             IconButton(
-                onPressed: () => enableFields(),
-                icon: Icon(Icons.edit,
-                    color: Theme.of(context).colorScheme.onPrimary)),
+              onPressed: () => ApiBaseData.callFuncIfServerReachable(
+                enableFields,
+                context: context,
+              ),
+              icon: Icon(
+                Icons.edit,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
           if (_enabled)
             IconButton(
                 onPressed: () => {
@@ -320,7 +326,10 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       ),
       floatingActionButton: (_credential != null)
           ? FloatingActionButton(
-              onPressed: () => showDeleteConfirmDialog(_credential!),
+              onPressed: () => ApiBaseData.callFuncIfServerReachable(
+                () => showDeleteConfirmDialog(_credential!),
+                context: context,
+              ),
               backgroundColor: Theme.of(context).colorScheme.primary,
               child: Icon(
                 Icons.delete,

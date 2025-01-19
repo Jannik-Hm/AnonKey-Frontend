@@ -180,9 +180,12 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     return ClickableTile(
-      onTap: () => {
-        showDeleteConfirmDialog(_credential),
-      },
+      onTap: () => ApiBaseData.callFuncIfServerReachable(
+        () {
+          showDeleteConfirmDialog(_credential);
+        },
+        context: context,
+      ),
       leading: SizedBox(
         width: 40.0,
         child: ConstrainedBox(
