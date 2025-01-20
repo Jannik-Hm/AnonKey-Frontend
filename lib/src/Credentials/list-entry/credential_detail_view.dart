@@ -129,14 +129,14 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                 api.credentialsUpdatePut(temp.updateAPICredentialRequestBody()),
                 logMessage: (context.mounted)
                     ? AppLocalizations.of(context)!.credentialUpdateTimeout
-                    : "Timeout Error");
+                    : null);
           } else {
             UUIDApi uuidApi = UUIDApi(apiClient);
             String? uuid = await ApiBaseData.apiCallWrapper(
                 uuidApi.uuidNewGet(),
                 logMessage: (context.mounted)
                     ? AppLocalizations.of(context)!.getUUIDTimeout
-                    : "Timeout Error");
+                    : null);
             temp = await Credential.newEntry(
               uuid: uuid!,
               masterPassword: authdata["encryptionKDF"]!,
@@ -156,7 +156,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                 ),
                 logMessage: (context.mounted)
                     ? AppLocalizations.of(context)!.credentialCreateTimeout
-                    : "Timeout Error");
+                    : null);
           }
           setState(() {
             _credential = temp;
@@ -196,7 +196,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                 api.credentialsSoftDeletePut(_credential!.uuid),
                 logMessage: (context.mounted)
                     ? AppLocalizations.of(context)!.credentialSoftDeleteTimeout
-                    : "Timeout Error");
+                    : null);
           }
           if (widget.onSoftDeleteCallback != null) {
             widget.onSoftDeleteCallback!(_credential!.uuid);

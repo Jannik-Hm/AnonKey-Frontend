@@ -32,10 +32,11 @@ class ApiBaseData {
 
   static Future<T?> apiCallWrapper<T>(
     Future<T?> asyncFunction, {
-    required String logMessage,
+    String? logMessage,
     Duration? timeout,
     bool returnNullOnTimeout = false,
   }) async {
+    logMessage ??= "Timeout Error";
     timeout ??= Duration(seconds: 5);
     try {
       await setlastCallSuccessful(true);

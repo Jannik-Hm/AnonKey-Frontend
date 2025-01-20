@@ -94,7 +94,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                 api.foldersUpdatePut(temp.updateFolderBody()),
                 logMessage: (context.mounted)
                     ? AppLocalizations.of(context)!.folderUpdateTimeout
-                    : "Timeout Error");
+                    : null);
             setState(
               () {
                 _folder = temp;
@@ -113,7 +113,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
               ),
               logMessage: (context.mounted)
                   ? AppLocalizations.of(context)!.folderCreateTimeout
-                  : "Timeout Error",
+                  : null,
             );
             _folder = Folder(
               displayName: displayName.text,
@@ -154,7 +154,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
               api.foldersDeleteDelete(_folder!.uuid!, recursive),
               logMessage: (context.mounted)
                   ? AppLocalizations.of(context)!.folderDeleteTimeout
-                  : "Timeout Error");
+                  : null);
         } else {
           if (context.mounted) {
             NotificationPopup.apiError(context: context);

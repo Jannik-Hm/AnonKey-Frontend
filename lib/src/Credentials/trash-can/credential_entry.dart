@@ -41,7 +41,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
             api.credentialsSoftUndeletePut(_credential.uuid),
             logMessage: (mounted)
                 ? AppLocalizations.of(context)!.credentialRestoreTimeout
-                : "Timeout Error");
+                : null);
         return true;
       } else {
         if (context.mounted) {
@@ -80,7 +80,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
             api.credentialsDeleteDelete(_credential.uuid),
             logMessage: (mounted)
                 ? AppLocalizations.of(context)!.credentialFinalDeleteTimeout
-                : "Timeout Error");
+                : null);
         return true;
       } else {
         if (context.mounted) {
