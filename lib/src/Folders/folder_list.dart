@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:anonkey_frontend/Utility/api_base_data.dart';
+import 'package:anonkey_frontend/Utility/disk.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart' as api;
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
-import 'package:path_provider/path_provider.dart';
 
 class FolderListTimeout implements Exception {
   FolderList fallbackData;
@@ -68,12 +67,7 @@ class FolderList {
 
   /// Function to read FolderList from App Document Directory
   static Future<FolderList> readFromDisk() async {
-    final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
-    File offlineCopy = File("${appDocumentsDir.path}/folders.json");
-    String json = "[]";
-    if (offlineCopy.existsSync()) {
-      json = await offlineCopy.readAsString();
-    }
+    String json = await Disk.readFromDisk("folders.json") ?? "[]";
     return fromJson(jsonDecode(json));
   }
 
@@ -83,10 +77,7 @@ class FolderList {
   /// Function to write FolderList to App Document Directory
   Future<void> saveToDisk() async {
     String json = jsonEncode(toJson());
-
-    final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
-    File offlineCopy = File("${appDocumentsDir.path}/folders.json");
-    await offlineCopy.writeAsString(json, flush: true);
+    await Disk.saveToDisk(filePath: "folders.json", data: json);
   }
 
   /// Function to get new FolderList from `All` API endpoint response

@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:anonkey_frontend/Utility/api_base_data.dart';
+import 'package:anonkey_frontend/Utility/disk.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart' as api;
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
-import 'package:path_provider/path_provider.dart';
 
 class CredentialListTimeout implements Exception {
   CredentialList fallbackData;
@@ -95,12 +94,7 @@ class CredentialList {
 
   /// Function to read encrypted CredentialList from App Document Directory
   static Future<CredentialList> readFromDisk() async {
-    final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
-    File offlineCopy = File("${appDocumentsDir.path}/vault.json");
-    String json = "[]";
-    if (offlineCopy.existsSync()) {
-      json = await offlineCopy.readAsString();
-    }
+    String json = await Disk.readFromDisk("vault.json") ?? "[]";
     return await fromJson(jsonDecode(json));
   }
 
@@ -113,10 +107,7 @@ class CredentialList {
   /// Function to write encrypted CredentialList to App Document Directory
   Future<void> saveToDisk() async {
     String json = jsonEncode(toJson());
-
-    final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
-    File offlineCopy = File("${appDocumentsDir.path}/vault.json");
-    await offlineCopy.writeAsString(json, flush: true);
+    await Disk.saveToDisk(filePath: "vault.json", data: json);
   }
 
   /// Function to get new CredentialList from `All` API endpoint response
@@ -273,11 +264,8 @@ class CredentialList {
     Future<api.CredentialsGetAllResponseBody?> responseFuture = (() async {
       try {
         return await _getResponseFromAllAPI();
-      } catch (e) {
-        if (e is AnonKeyServerOffline) {
-          return null;
-        }
-        rethrow; // Propagate exceptions
+      } on AnonKeyServerOffline catch (_) {
+        return null;
       }
     })();
     Map<String, String> authdata =
