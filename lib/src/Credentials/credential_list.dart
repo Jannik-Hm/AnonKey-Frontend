@@ -1,8 +1,18 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
+import 'package:anonkey_frontend/Utility/disk.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart' as api;
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+class CredentialListTimeout implements Exception {
+  CredentialList fallbackData;
+  static String message = "Credential fetch failed, using local data instead.";
+  CredentialListTimeout(this.fallbackData);
+}
 
 class CredentialList {
   // Map of all credentials, UUID as Key
@@ -45,6 +55,7 @@ class CredentialList {
       deletedList.remove(credentialUUID);
       credential.clearDeletedTimeStamp();
       add(credential);
+      saveToDisk();
     }
   }
 
@@ -52,8 +63,10 @@ class CredentialList {
   void softDelete(String credentialUUID) {
     Credential? credential = byIDList[credentialUUID];
     if (credential != null) {
+      credential.setDeletedTimeStamp(DateTime.now());
       remove(credentialUUID);
       deletedList[credentialUUID] = credential;
+      saveToDisk();
     }
   }
 
@@ -79,8 +92,23 @@ class CredentialList {
     return data;
   }
 
-  /// Function to serialize CredentialList to store in Local Storage
-  List<dynamic> toJson() => byIDList.values.toList();
+  /// Function to read encrypted CredentialList from App Document Directory
+  static Future<CredentialList> readFromDisk() async {
+    String json = await Disk.readFromDisk("vault.json") ?? "[]";
+    return await fromJson(jsonDecode(json));
+  }
+
+  /// Function to serialize CredentialList to store in App Storage
+  List<dynamic> toJson() => {
+        ...byIDList,
+        ...deletedList,
+      }.values.toList();
+
+  /// Function to write encrypted CredentialList to App Document Directory
+  Future<void> saveToDisk() async {
+    String json = jsonEncode(toJson());
+    await Disk.saveToDisk(filePath: "vault.json", data: json);
+  }
 
   /// Function to get new CredentialList from `All` API endpoint response
   static Future<CredentialList> getFromAPI(
@@ -109,6 +137,7 @@ class CredentialList {
         .toList();
     List<Credential> futureCredentials = await Future.wait(futures);
     futureCredentials.forEach(data.add);
+    await data.saveToDisk();
     return data;
   }
 
@@ -138,6 +167,7 @@ class CredentialList {
           createdTimeStamp:
               temp.getCreatedTimeStamp()!.millisecondsSinceEpoch ~/ 1000,
           clearNote: clearNote));
+      await saveToDisk();
     }
   }
 
@@ -147,6 +177,7 @@ class CredentialList {
     if (temp != null) {
       remove(credential.uuid);
       add(credential);
+      saveToDisk();
     }
     return this;
   }
@@ -203,14 +234,16 @@ class CredentialList {
     List<Credential> futureCredentials = await Future.wait(futures);
     futureCredentials.forEach(data.add);
 
+    await data.saveToDisk();
+
     return data;
   }
 
   /// Helper to get `All` API endpoint
+  /// throws [TimeoutException] if timeout is specified and exceeded
   static Future<api.CredentialsGetAllResponseBody?>
       _getResponseFromAllAPI() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? url = prefs.getString('url');
+    String? url = await ApiBaseData.getURL();
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
     if (url != null) {
@@ -218,8 +251,9 @@ class CredentialList {
           RequestUtility.getApiWithAuth(authdata["token"]!, url);
       api.CredentialsApi credentialApi = api.CredentialsApi(apiClient);
       api.CredentialsGetAllResponseBody? response =
-          await credentialApi.credentialsGetAllGet();
-
+          await ApiBaseData.apiCallWrapper(credentialApi.credentialsGetAllGet(),
+              logMessage: "Credential Fetch failed, using local data instead.",
+              returnNullOnTimeout: true);
       return response;
     }
     return null;
@@ -227,17 +261,32 @@ class CredentialList {
 
   /// Function to get entire CredentialList from Backend
   static Future<CredentialList?> getFromAPIFull() async {
-    api.CredentialsGetAllResponseBody? response =
-        await _getResponseFromAllAPI();
+    Future<api.CredentialsGetAllResponseBody?> responseFuture = (() async {
+      try {
+        return await _getResponseFromAllAPI();
+      } on AnonKeyServerOffline catch (_) {
+        return null;
+      }
+    })();
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
 
+    Future<CredentialList> futureLocalData = readFromDisk();
+
+    List<dynamic> futureData =
+        await Future.wait([responseFuture, futureLocalData]);
+
+    api.CredentialsGetAllResponseBody? response =
+        (futureData[0] as api.CredentialsGetAllResponseBody?);
+
+    CredentialList localData = (futureData[1] as CredentialList);
+
     if (response != null) {
-      CredentialList data = await CredentialList.getFromAPI(
+      CredentialList data = await localData.updateFromAPI(
           credentials: response, masterPassword: authdata["encryptionKDF"]!);
       return data;
     }
-    return null;
+    throw CredentialListTimeout(localData);
   }
 
   /// Function to update this entire CredentialList from Backend (with minimal decryption)
@@ -251,7 +300,8 @@ class CredentialList {
       CredentialList data = await updateFromAPI(
           credentials: response, masterPassword: authdata["encryptionKDF"]!);
       return data;
+    } else {
+      throw CredentialListTimeout(this);
     }
-    return null;
   }
 }

@@ -52,7 +52,8 @@ class _FolderListWidget extends State<FolderListWidget> {
       },
       onSaveCallback: ({required folderData}) {
         setState(() {
-          widget.folders.updateFromLocalObject(folder: folderData);
+          folders.updateFromLocalObject(folder: folderData);
+          folderList = folders.byIDList.values.toList();
         });
       },
     );

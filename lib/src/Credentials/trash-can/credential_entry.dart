@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
@@ -6,7 +7,6 @@ import 'package:anonkey_frontend/src/Widgets/clickable_tile.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CredentialTrashEntry extends StatefulWidget {
@@ -29,8 +29,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
   late Credential _credential;
 
   Future<bool> restore() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? url = prefs.getString('url'); // Get Backend URL
+    String? url = await ApiBaseData.getURL(); // Get Backend URL
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
     try {
@@ -38,26 +37,38 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         ApiClient apiClient =
             RequestUtility.getApiWithAuth(authdata["token"]!, url);
         CredentialsApi api = CredentialsApi(apiClient);
-        await api.credentialsSoftUndeletePut(_credential.uuid);
+        await ApiBaseData.apiCallWrapper(
+            api.credentialsSoftUndeletePut(_credential.uuid),
+            logMessage: (mounted)
+                ? AppLocalizations.of(context)!.credentialRestoreTimeout
+                : null);
         return true;
       } else {
         if (context.mounted) {
+          // ignore: use_build_context_synchronously
           NotificationPopup.apiError(context: context);
         }
-        return false;
       }
     } on ApiException catch (e) {
       if (context.mounted) {
         NotificationPopup.apiError(
-            context: context, apiResponseMessage: e.message);
+            // ignore: use_build_context_synchronously
+            context: context,
+            apiResponseMessage: e.message);
       }
-      return false;
+    } on AnonKeyServerOffline catch (e) {
+      if (context.mounted) {
+        NotificationPopup.popupErrorMessage(
+            // ignore: use_build_context_synchronously
+            context: context,
+            message: e.message ?? "Timeout Error");
+      }
     }
+    return false;
   }
 
   Future<bool> deleteForever() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? url = prefs.getString('url'); // Get Backend URL
+    String? url = await ApiBaseData.getURL(); // Get Backend URL
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
     try {
@@ -65,21 +76,34 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         ApiClient apiClient =
             RequestUtility.getApiWithAuth(authdata["token"]!, url);
         CredentialsApi api = CredentialsApi(apiClient);
-        await api.credentialsDeleteDelete(_credential.uuid);
+        await ApiBaseData.apiCallWrapper(
+            api.credentialsDeleteDelete(_credential.uuid),
+            logMessage: (mounted)
+                ? AppLocalizations.of(context)!.credentialFinalDeleteTimeout
+                : null);
         return true;
       } else {
         if (context.mounted) {
+          // ignore: use_build_context_synchronously
           NotificationPopup.apiError(context: context);
         }
-        return false;
       }
     } on ApiException catch (e) {
       if (context.mounted) {
         NotificationPopup.apiError(
-            context: context, apiResponseMessage: e.message);
+            // ignore: use_build_context_synchronously
+            context: context,
+            apiResponseMessage: e.message);
       }
-      return false;
+    } on AnonKeyServerOffline catch (e) {
+      if (context.mounted) {
+        NotificationPopup.popupErrorMessage(
+            // ignore: use_build_context_synchronously
+            context: context,
+            message: e.message ?? "Timeout Error");
+      }
     }
+    return false;
   }
 
   /// show Popup to delete forever or restore Credential
@@ -156,9 +180,12 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     return ClickableTile(
-      onTap: () => {
-        showDeleteConfirmDialog(_credential),
-      },
+      onTap: () => ApiBaseData.callFuncIfServerReachable(
+        () {
+          showDeleteConfirmDialog(_credential);
+        },
+        context: context,
+      ),
       leading: SizedBox(
         width: 40.0,
         child: ConstrainedBox(

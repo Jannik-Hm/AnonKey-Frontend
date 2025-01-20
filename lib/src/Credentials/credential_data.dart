@@ -74,6 +74,31 @@ class Credential {
         _clearPassword = clearPassword,
         _encryptedPassword = encryptedPassword;
 
+  Credential clone() {
+    return Credential(
+      clearWebsiteUrl: _clearWebsiteUrl,
+      encryptedWebsiteUrl: _encryptedWebsiteUrl,
+      websiteUrlSalt: _websiteUrlSalt,
+      clearUsername: _clearUsername,
+      encryptedUsername: _encryptedUsername,
+      encryptedPassword: _encryptedPassword,
+      clearPassword: _clearPassword,
+      clearDisplayName: _clearDisplayName,
+      encryptedDisplayName: _encryptedDisplayName,
+      displayNameSalt: _displayNameSalt,
+      uuid: uuid,
+      passwordSalt: _passwordSalt,
+      usernameSalt: _usernameSalt,
+      clearNote: _clearNote,
+      encryptedNote: _encryptedNote,
+      noteSalt: _noteSalt,
+      folderUuid: folderUuid,
+      createdTimeStamp: _createdTimeStamp,
+      changedTimeStamp: _changedTimeStamp,
+      deletedTimeStamp: _deletedTimeStamp,
+    );
+  }
+
   /// Function to deserialize json Map into Credential
   static Future<Credential> fromJson(Map<String, dynamic> json) async {
     return Credential.fromApi(
@@ -157,6 +182,10 @@ class Credential {
   /// Use when Restoring Credential (Soft-Undelete)
   void clearDeletedTimeStamp() {
     this._deletedTimeStamp = null;
+  }
+
+  void setDeletedTimeStamp(DateTime? deletedTimeStamp) {
+    _deletedTimeStamp = deletedTimeStamp;
   }
 
   @override
@@ -498,7 +527,7 @@ class Credential {
     }
     //
     this._changedTimeStamp = (changedTimeStamp == null)
-        ? null
+        ? DateTime.now()
         : DateTime.fromMillisecondsSinceEpoch(changedTimeStamp);
     return this;
   }

@@ -1,8 +1,18 @@
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
+import 'package:anonkey_frontend/Utility/disk.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart' as api;
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+class FolderListTimeout implements Exception {
+  FolderList fallbackData;
+  static String message = "Folder fetch failed, using local data instead.";
+  FolderListTimeout(this.fallbackData);
+}
 
 class FolderList {
   // Map of all folders, UUID as Key
@@ -55,8 +65,20 @@ class FolderList {
     return data;
   }
 
+  /// Function to read FolderList from App Document Directory
+  static Future<FolderList> readFromDisk() async {
+    String json = await Disk.readFromDisk("folders.json") ?? "[]";
+    return fromJson(jsonDecode(json));
+  }
+
   /// Function to serialize FolderList to store in Local Storage
   List<dynamic> toJson() => byIDList.values.toList();
+
+  /// Function to write FolderList to App Document Directory
+  Future<void> saveToDisk() async {
+    String json = jsonEncode(toJson());
+    await Disk.saveToDisk(filePath: "folders.json", data: json);
+  }
 
   /// Function to get new FolderList from `All` API endpoint response
   static FolderList getFromAPI(
@@ -69,6 +91,7 @@ class FolderList {
           iconData: folder.icon!);
       data.add(temp);
     }
+    data.saveToDisk();
     return data;
   }
 
@@ -78,28 +101,42 @@ class FolderList {
     if (temp != null) {
       remove(folder.uuid!);
       add(folder);
+      await saveToDisk();
     }
     return this;
   }
 
   /// Function to get entire FolderList from Backend
   static Future<FolderList?> getFromAPIFull() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? url = prefs.getString('url'); // Get Backend URL
+    String? url = await ApiBaseData.getURL(); // Get Backend URL
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
+    Future<FolderList> futureLocalData = readFromDisk();
     if (url != null) {
       api.ApiClient apiClient =
           RequestUtility.getApiWithAuth(authdata["token"]!, url);
       api.FoldersApi apiPoint = api.FoldersApi(apiClient);
+
+      Future<api.FoldersGetAllResponseBody?> responseFuture =
+          ApiBaseData.apiCallWrapper(apiPoint.foldersGetAllGet(),
+              logMessage: "Exceeded Folder Fetch, using local data instead.",
+              returnNullOnTimeout: true);
+
+      List<dynamic> futureData =
+          await Future.wait([responseFuture, futureLocalData]);
+
       api.FoldersGetAllResponseBody? response =
-          await apiPoint.foldersGetAllGet();
+          (futureData[0] as api.FoldersGetAllResponseBody?);
+
+      FolderList localData = (futureData[1] as FolderList);
 
       if (response != null) {
         FolderList data = FolderList.getFromAPI(folders: response);
         return data;
+      } else {
+        throw FolderListTimeout(localData);
       }
     }
-    return null;
+    return await futureLocalData;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
 import 'package:anonkey_frontend/src/Folders/folder_list.dart';
@@ -40,12 +41,6 @@ class _FolderEntry extends State<FolderEntry> {
     _folder = widget.folder;
   }
 
-  void updateIcon({required int codePoint}) {
-    setState(() {
-      _folder.setIcon(codePoint: codePoint);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
@@ -77,17 +72,21 @@ class _FolderEntry extends State<FolderEntry> {
               .primary, // Set the primary color from ColorScheme
         ),
         onPressed: () => {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => FolderEditWidget(
-                folder: _folder,
-                iconCallback: updateIcon,
-                onDeleteCallback: widget.onDeleteCallback,
-                onSaveCallback: widget.onSaveCallback,
-              ),
-            ),
-          )
+          ApiBaseData.callFuncIfServerReachable(
+            () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => FolderEditWidget(
+                    folder: _folder,
+                    onDeleteCallback: widget.onDeleteCallback,
+                    onSaveCallback: widget.onSaveCallback,
+                  ),
+                ),
+              );
+            },
+            context: context,
+          ),
         },
         child: Icon(
           Icons.edit,

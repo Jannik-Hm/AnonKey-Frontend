@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
 import 'package:flutter/material.dart';
@@ -29,17 +30,17 @@ class _CreateFolderWidget extends State<CreateFolderWidget> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () => {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => FolderEditWidget(
-              folder: null,
-              onSaveCallback: onSaveCallback,
-            ),
-          ),
-        )
-      },
+      onPressed: () => ApiBaseData.callFuncIfServerReachable(
+          () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => FolderEditWidget(
+                    folder: null,
+                    onSaveCallback: onSaveCallback,
+                  ),
+                ),
+              ),
+          context: context),
       icon: Icon(
         Icons.add,
         color: Theme.of(context).colorScheme.onSurface,

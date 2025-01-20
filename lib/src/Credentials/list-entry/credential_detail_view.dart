@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
@@ -7,7 +10,6 @@ import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Widget for Editing and Displaying Credential Data
@@ -105,8 +107,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
 
     Future<bool> save() async {
       Credential temp;
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? url = prefs.getString('url'); // Get Backend URL
+      String? url = await ApiBaseData.getURL(); // Get Backend URL
       Map<String, String> authdata =
           await AuthService.getAuthenticationCredentials();
       try {
@@ -115,20 +116,27 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               RequestUtility.getApiWithAuth(authdata["token"]!, url);
           CredentialsApi api = CredentialsApi(apiClient);
           if (_credential != null) {
-            temp = await _credential!.updateFromLocal(
-              masterPassword: authdata["encryptionKDF"]!,
-              clearWebsiteUrl: websiteUrl.text,
-              clearUsername: username.text,
-              clearPassword: password.text,
-              clearDisplayName: displayName.text,
-              clearNote: note.text,
-              folderUuid: newFolderUUID,
-            );
-            await api
-                .credentialsUpdatePut(temp.updateAPICredentialRequestBody());
+            temp = await _credential!.clone().updateFromLocal(
+                  masterPassword: authdata["encryptionKDF"]!,
+                  clearWebsiteUrl: websiteUrl.text,
+                  clearUsername: username.text,
+                  clearPassword: password.text,
+                  clearDisplayName: displayName.text,
+                  clearNote: note.text,
+                  folderUuid: newFolderUUID,
+                );
+            await ApiBaseData.apiCallWrapper(
+                api.credentialsUpdatePut(temp.updateAPICredentialRequestBody()),
+                logMessage: (context.mounted)
+                    ? AppLocalizations.of(context)!.credentialUpdateTimeout
+                    : null);
           } else {
             UUIDApi uuidApi = UUIDApi(apiClient);
-            String? uuid = await uuidApi.uuidNewGet();
+            String? uuid = await ApiBaseData.apiCallWrapper(
+                uuidApi.uuidNewGet(),
+                logMessage: (context.mounted)
+                    ? AppLocalizations.of(context)!.getUUIDTimeout
+                    : null);
             temp = await Credential.newEntry(
               uuid: uuid!,
               masterPassword: authdata["encryptionKDF"]!,
@@ -140,11 +148,15 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               folderUuid: newFolderUUID,
               createdTimeStamp: DateTime.now().microsecondsSinceEpoch ~/ 1000,
             );
-            await api.credentialsCreatePost(
-              CredentialsCreateRequestBody(
-                credential: temp.createAPICredential(),
-              ),
-            );
+            await ApiBaseData.apiCallWrapper(
+                api.credentialsCreatePost(
+                  CredentialsCreateRequestBody(
+                    credential: temp.createAPICredential(),
+                  ),
+                ),
+                logMessage: (context.mounted)
+                    ? AppLocalizations.of(context)!.credentialCreateTimeout
+                    : null);
           }
           setState(() {
             _credential = temp;
@@ -155,46 +167,58 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
           if (context.mounted) {
             NotificationPopup.apiError(context: context);
           }
-          return false;
         }
       } on ApiException catch (e) {
         if (context.mounted) {
           NotificationPopup.apiError(
               context: context, apiResponseMessage: e.message);
         }
-        return false;
+      } on AnonKeyServerOffline catch (e) {
+        if (context.mounted) {
+          NotificationPopup.popupErrorMessage(
+              context: context, message: e.message ?? "Timeout Error");
+        }
       }
+      return false;
     }
 
     Future<bool> delete() async {
       try {
         if (_credential != null) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          String? url = prefs.getString('url'); // Get Backend URL
+          String? url = await ApiBaseData.getURL(); // Get Backend URL
           Map<String, String> authdata =
               await AuthService.getAuthenticationCredentials();
           if (url != null) {
             ApiClient apiClient =
                 RequestUtility.getApiWithAuth(authdata["token"]!, url);
             CredentialsApi api = CredentialsApi(apiClient);
-            await api.credentialsSoftDeletePut(_credential!.uuid);
+            await ApiBaseData.apiCallWrapper(
+                api.credentialsSoftDeletePut(_credential!.uuid),
+                logMessage: (context.mounted)
+                    ? AppLocalizations.of(context)!.credentialSoftDeleteTimeout
+                    : null);
           }
-          if (widget.onSoftDeleteCallback != null)
+          if (widget.onSoftDeleteCallback != null) {
             widget.onSoftDeleteCallback!(_credential!.uuid);
+          }
           return true;
         } else {
           if (context.mounted) {
             NotificationPopup.apiError(context: context);
           }
-          return false;
         }
       } on ApiException catch (e) {
         if (context.mounted) {
           NotificationPopup.apiError(
               context: context, apiResponseMessage: e.message);
         }
-        return false;
+      } on AnonKeyServerOffline catch (e) {
+        if (context.mounted) {
+          NotificationPopup.popupErrorMessage(
+              context: context, message: e.message ?? "Timeout Error");
+        }
       }
+      return false;
     }
 
     /// Popup to confirm deletion
@@ -263,9 +287,15 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         actions: [
           if (!_enabled)
             IconButton(
-                onPressed: () => enableFields(),
-                icon: Icon(Icons.edit,
-                    color: Theme.of(context).colorScheme.onPrimary)),
+              onPressed: () => ApiBaseData.callFuncIfServerReachable(
+                enableFields,
+                context: context,
+              ),
+              icon: Icon(
+                Icons.edit,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
           if (_enabled)
             IconButton(
                 onPressed: () => {
@@ -295,7 +325,10 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       ),
       floatingActionButton: (_credential != null)
           ? FloatingActionButton(
-              onPressed: () => showDeleteConfirmDialog(_credential!),
+              onPressed: () => ApiBaseData.callFuncIfServerReachable(
+                () => showDeleteConfirmDialog(_credential!),
+                context: context,
+              ),
               backgroundColor: Theme.of(context).colorScheme.primary,
               child: Icon(
                 Icons.delete,

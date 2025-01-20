@@ -18,6 +18,14 @@ class Folder {
     IconCodePoint: $_iconData""";
   }
 
+  Folder clone() {
+    Folder origin = this;
+    return Folder(
+        displayName: origin.displayName,
+        iconData: origin._iconData,
+        uuid: origin.uuid);
+  }
+
   /// Function to deserialize json Map into Folder
   static Folder fromJson(Map<String, dynamic> json) {
     return Folder(
