@@ -1,6 +1,6 @@
 import 'package:anonkey_frontend/Utility/cryptography.dart';
 import 'package:encrypt/encrypt.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   late String encryptionKDF;
