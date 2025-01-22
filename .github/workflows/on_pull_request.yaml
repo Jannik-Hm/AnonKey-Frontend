@@ -46,10 +46,12 @@ jobs:
 
       # Step 2: Setup Dart
       - name: Setup Dart
-        uses: dart-lang/setup-dart@v1
+        uses: subosito/flutter-action@v2
         with:
-          sdk: stable
+          channel: master
+          # flutter-version: 3.7.7
 
+      - run: flutter pub get
       # Step 3: Run flutter test
       - name: Run flutter test
         run: flutter test --pub -r expanded
