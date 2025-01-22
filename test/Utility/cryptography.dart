@@ -5,8 +5,10 @@ import 'package:test/test.dart';
 void main() {
   late String encryptionKDF;
   late Key credentialKDF;
+  late String uuid;
 
   setUpAll(() async {
+    uuid = "ebd1ef35-cade-4e2a-8117-3ed58bd13143";
     encryptionKDF = await Cryptography.getKDFBase64(
       masterPassword: "test1234",
       salt: "anonkey_encryption",
@@ -14,7 +16,7 @@ void main() {
     );
     credentialKDF = await Cryptography.getKDFKey(
       masterPassword: encryptionKDF,
-      salt: "ebd1ef35-cade-4e2a-8117-3ed58bd13143",
+      salt: uuid,
       kdfMode: KDFMode.credential,
     );
   });
@@ -37,12 +39,12 @@ void main() {
       expect(encryptedString, "xFW26xJ+GvhxerJPEqfGBw==");
     });
 
-    test('Encrypt with given MasterPassword', () async {
+    test('Encrypt with given Password', () async {
       String encryptedString = await Cryptography.encryptString(
         clearString: "Google",
         encryptedSalt: "FkC3woj-MPraog==",
         masterPassword: encryptionKDF,
-        kdfSalt: "ebd1ef35-cade-4e2a-8117-3ed58bd13143",
+        kdfSalt: uuid,
         kdfMode: KDFMode.credential,
       );
       expect(encryptedString, "xFW26xJ+GvhxerJPEqfGBw==");
@@ -59,15 +61,53 @@ void main() {
       expect(decryptedString, "Test");
     });
 
-    test('Decrypt with given MasterPassword', () async {
+    test('Decrypt with given Password', () async {
       String decryptedString = await Cryptography.getClearString(
         encryptedString: "is4zOsVVvc4P/gdbyzeAlA==",
         encryptedSalt: "y8MA8gqAo7Bm6A==",
         masterPassword: encryptionKDF,
-        kdfSalt: "ebd1ef35-cade-4e2a-8117-3ed58bd13143",
+        kdfSalt: uuid,
         kdfMode: KDFMode.credential,
       );
       expect(decryptedString, "Test");
+    });
+  });
+
+  group('En- and Decryption', () {
+    test('En- and Decryption with given KDF', () async {
+      String origin = "Test1234";
+      String randomSalt = Cryptography.createCryptoRandomString(16);
+      String encryptedString = await Cryptography.encryptStringWithKey(
+        clearString: origin,
+        encryptedSalt: randomSalt,
+        kdfKey: credentialKDF,
+      );
+      String decryptedString = await Cryptography.getClearStringWithKey(
+        encryptedString: encryptedString,
+        encryptedSalt: randomSalt,
+        kdfKey: credentialKDF,
+      );
+      expect(decryptedString, origin);
+    });
+
+    test('En- and Decryption with given Password', () async {
+      String origin = "Test1234";
+      String randomSalt = Cryptography.createCryptoRandomString(16);
+      String encryptedString = await Cryptography.encryptString(
+        clearString: origin,
+        encryptedSalt: randomSalt,
+        masterPassword: encryptionKDF,
+        kdfSalt: uuid,
+        kdfMode: KDFMode.credential,
+      );
+      String decryptedString = await Cryptography.getClearString(
+        encryptedString: encryptedString,
+        encryptedSalt: randomSalt,
+        masterPassword: encryptionKDF,
+        kdfSalt: uuid,
+        kdfMode: KDFMode.credential,
+      );
+      expect(decryptedString, origin);
     });
   });
 }
