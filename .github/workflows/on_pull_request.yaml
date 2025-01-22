@@ -22,7 +22,7 @@ jobs:
 
       # Step 3: Run dart format
       - name: Format Dart code
-        run: dart format lib
+        run: dart format lib test
 
       # Step 4: Commit and push changes
       - name: Commit and push changes
