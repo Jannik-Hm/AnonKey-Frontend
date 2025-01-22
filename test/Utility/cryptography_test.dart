@@ -21,7 +21,7 @@ void main() {
     );
   });
 
-  test('Generate KDF', () async {
+  test('Generate KDFBase64', () async {
     String kdfKey = await Cryptography.getKDFBase64(
       masterPassword: "test1234",
       salt: "anonkey_authentication",
@@ -30,7 +30,7 @@ void main() {
   });
 
   group('Encryption', () {
-    test('Encrypt with given KDF', () async {
+    test('- With given KDF', () async {
       String encryptedString = await Cryptography.encryptStringWithKey(
         clearString: "Google",
         encryptedSalt: "FkC3woj-MPraog==",
@@ -39,7 +39,7 @@ void main() {
       expect(encryptedString, "xFW26xJ+GvhxerJPEqfGBw==");
     });
 
-    test('Encrypt with given Password', () async {
+    test('- With given Password', () async {
       String encryptedString = await Cryptography.encryptString(
         clearString: "Google",
         encryptedSalt: "FkC3woj-MPraog==",
@@ -52,7 +52,7 @@ void main() {
   });
 
   group('Decryption', () {
-    test('Decrypt with given KDF', () async {
+    test('- With given KDF', () async {
       String decryptedString = await Cryptography.getClearStringWithKey(
         encryptedString: "is4zOsVVvc4P/gdbyzeAlA==",
         encryptedSalt: "y8MA8gqAo7Bm6A==",
@@ -61,7 +61,7 @@ void main() {
       expect(decryptedString, "Test");
     });
 
-    test('Decrypt with given Password', () async {
+    test('- With given Password', () async {
       String decryptedString = await Cryptography.getClearString(
         encryptedString: "is4zOsVVvc4P/gdbyzeAlA==",
         encryptedSalt: "y8MA8gqAo7Bm6A==",
@@ -74,7 +74,7 @@ void main() {
   });
 
   group('En- and Decryption', () {
-    test('En- and Decryption with given KDF', () async {
+    test('- With given KDF', () async {
       String origin = "Test1234";
       String randomSalt = Cryptography.createCryptoRandomString(16);
       String encryptedString = await Cryptography.encryptStringWithKey(
@@ -90,7 +90,7 @@ void main() {
       expect(decryptedString, origin);
     });
 
-    test('En- and Decryption with given Password', () async {
+    test('- With given Password', () async {
       String origin = "Test1234";
       String randomSalt = Cryptography.createCryptoRandomString(16);
       String encryptedString = await Cryptography.encryptString(
