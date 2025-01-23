@@ -38,7 +38,8 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     const FlutterSecureStorage storage = FlutterSecureStorage();
-    String? skipSplashScreen = await storage.read(key: "skipSplashScreen");
+    String? skipSplashScreen =
+        await storage.read(key: "skipSplashScreen") ?? "false";
 
     if (skipSplashScreen == "false") {
       setState(() {
