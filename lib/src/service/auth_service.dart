@@ -179,7 +179,6 @@ class AuthService {
   static Future<AuthenticationCredentialsSingleton>
       getAuthenticationCredentials() async {
     const storage = FlutterSecureStorage();
-    await storage.deleteAll();
     var singleton = AuthenticationCredentialsSingleton();
     if (await AuthUtils.checkBiometricAvailability() &&
         singleton.encryptionKDF == null) {
