@@ -23,27 +23,25 @@ extension TokenTypeExtension on TokenType {
 
 // It should be more concise to pack each token in a class, so that all information such as expiration time can be easily accessible
 class Token {
-  String? token;
-  TokenType? tokenType;
-  int? expiration;
+  String token;
+  TokenType tokenType;
+  int expiration;
 
   Token(
-      {required String? token,
-      required TokenType? tokenType,
-      required int? expiration});
+      {required this.token, required this.tokenType, required this.expiration});
 }
 
 class AuthenticationCredentialsSingleton {
   static final AuthenticationCredentialsSingleton _singleton =
       AuthenticationCredentialsSingleton._internal();
 
-  String? encryptionKDF; // always in RAM if nor taken from the secure storage
+  String? encryptionKDF; // always in RAM if not taken from the secure storage
   Token? refreshToken;
   Token? accessToken;
 
   String? username;
   bool softLogout = true;
-  bool? skipSplashScreen;
+  bool skipSplashScreen = false;
 
   factory AuthenticationCredentialsSingleton() {
     return _singleton;
@@ -55,16 +53,18 @@ class AuthenticationCredentialsSingleton {
     encryptionKDF = null;
     username = null;
     softLogout = true;
-    skipSplashScreen = null;
+    skipSplashScreen = false;
   }
 
   areAuthenticationCredentialsAvailable() {
-    return (encryptionKDF != null &&
+    if (encryptionKDF != null &&
         refreshToken != null &&
         accessToken != null &&
-        username != null &&
-        softLogout == true &&
-        skipSplashScreen == null);
+        username != null) {
+      return true;
+    } else {
+      throw NoTokensFoundException();
+    }
   }
 
   AuthenticationCredentialsSingleton._internal();
@@ -106,9 +106,9 @@ class AuthService {
                 await storeAuthenticationCredentials(
                   username: username,
                   encryptionKDF: encryptionKDF,
-                  refreshToken: value!.refreshToken!.token,
+                  refreshToken: value!.refreshToken!.token!,
                   refreshExpiration: value.refreshToken!.expiryTimestamp!,
-                  accessToken: value.accessToken!.token,
+                  accessToken: value.accessToken!.token!,
                   accessExpiration: value.accessToken!.expiryTimestamp!,
                 ),
               }
@@ -152,9 +152,9 @@ class AuthService {
                 await storeAuthenticationCredentials(
                   username: username,
                   encryptionKDF: encryptionKDF,
-                  refreshToken: value!.refreshToken!.token,
+                  refreshToken: value!.refreshToken!.token!,
                   refreshExpiration: value.refreshToken!.expiryTimestamp!,
-                  accessToken: value.accessToken!.token,
+                  accessToken: value.accessToken!.token!,
                   accessExpiration: value.accessToken!.expiryTimestamp!,
                 ),
               }
@@ -179,6 +179,7 @@ class AuthService {
   static Future<AuthenticationCredentialsSingleton>
       getAuthenticationCredentials() async {
     const storage = FlutterSecureStorage();
+    await storage.deleteAll();
     var singleton = AuthenticationCredentialsSingleton();
     if (await AuthUtils.checkBiometricAvailability() &&
         singleton.encryptionKDF == null) {
@@ -187,19 +188,36 @@ class AuthService {
     singleton.username ??= await storage.read(key: "username");
     singleton.skipSplashScreen ??=
         await storage.read(key: "skipSplashScreen") == "true" ? true : false;
-    if (!singleton.areAuthenticationCredentialsAvailable()) {
-      throw NoCredentialException();
+    int refreshExpiration = await storage.containsKey(key: "refreshExpiration")
+        ? int.parse((await storage.read(key: "refreshExpiration"))!)
+        : 0;
+    if ((await storage.read(key: "refreshToken") != null) &&
+        (singleton.refreshToken == null)) {
+      singleton.refreshToken ??= Token(
+          token: (await storage.read(key: "refreshToken"))!,
+          tokenType: TokenType.refreshToken,
+          expiration: refreshExpiration);
     }
-    if (!validateToken(
-        singleton.accessToken?.expiration, TokenType.accessToken)) {
-      // Fetch tokens here and update them in singleton (and in secure storage if needed)
+    try {
+      singleton.areAuthenticationCredentialsAvailable();
+    } catch (_) {
+      rethrow;
     }
-
-    // if (!(await validateToken(
-    //         username, keys.timestamp, keys.refreshExpiration))) {
-    //   // Fetch tokens here
-    //   return getAuthenticationCredentials();
-    // }
+    if (singleton.accessToken == null) {
+      if (!validateToken(
+          timestamp: singleton.refreshToken?.expiration,
+          tokenType: TokenType.refreshToken)) {
+        // Fetch refresh token here
+      } else {
+        // Fetch access token here
+      }
+    } else {
+      if (!validateToken(
+          timestamp: singleton.accessToken!.expiration,
+          tokenType: TokenType.accessToken)) {
+        //Fetch access token here
+      }
+    }
     return singleton;
   }
 
@@ -207,40 +225,15 @@ class AuthService {
   ///
   /// \returns `true` if the token is invalid, `false` otherwise.
   ///
-  /// [username]: The username.
+  /// [timestamp]: The timestamp.
   ///
-  /// [password]: The password.
-  ///
-  /// [timestampStorage]: The timestamp when the token was stored.
-  ///
-  /// [expire]: The expiration time of the token.
-  // static Future<bool> validateToken(
-  //   String username,
-  //   DateTime? timestamp,
-  //   int? expire,
-  // ) async {
-  //   timestamp = (timestamp == null) ? DateTime.now() : timestamp;
-  //   expire = (expire == null) ? 0 : expire;
-  //   DateTime now = DateTime.now();
-  //   Duration difference = now.difference(timestamp);
-
-  //   int minRange = (expire * 0.8).toInt();
-
-  //   if (difference.inSeconds >= minRange) {
-  //     final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //     // TODO: Here the user shall be prompted to reenter the password, as we do not store it.
-  //     // Swap login with a fetch of a new accessTocken
-  //     await AuthService.login(username, password, prefs.getString("url")!);
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
-  static bool validateToken(int? timestamp, TokenType? tokenType) {
-    timestamp ??= 0; // Not sure whether this is the correct way to handle it
+  /// [tokenType]: The tokenType.
+  static bool validateToken(
+      {required int? timestamp, required TokenType tokenType}) {
+    if (timestamp == null) return false;
     DateTime validUntil = DateTime.fromMicrosecondsSinceEpoch(timestamp);
     Duration timeStampDifference = DateTime.now().difference(validUntil);
-    if (timeStampDifference < tokenType!.validationRange()) {
+    if (timeStampDifference * 0.8 < tokenType.validationRange()) {
       return false;
     }
     return true;
@@ -260,11 +253,11 @@ class AuthService {
   ///
   /// [accessExpiration]: The ime in seconds till the expiration of the access token.
   static Future<void> storeAuthenticationCredentials({
-    required String? username,
-    required String? encryptionKDF,
-    required String? refreshToken,
+    required String username,
+    required String encryptionKDF,
+    required String refreshToken,
     required int refreshExpiration,
-    required String? accessToken,
+    required String accessToken,
     required int accessExpiration,
   }) async {
     // Store in RAM
@@ -273,16 +266,14 @@ class AuthService {
     singleton.username = username;
     singleton.softLogout = true;
     singleton.skipSplashScreen = false;
-    Token localRefreshToken = Token(
+    singleton.refreshToken = Token(
         token: refreshToken,
         tokenType: TokenType.refreshToken,
         expiration: refreshExpiration);
-    Token localAccessToken = Token(
+    singleton.accessToken = Token(
         token: accessToken,
         tokenType: TokenType.accessToken,
         expiration: accessExpiration);
-    singleton.refreshToken = localRefreshToken;
-    singleton.accessToken = localAccessToken;
     // Store in secure storage
     const storage = FlutterSecureStorage();
     if (await AuthUtils.checkBiometricAvailability()) {
@@ -290,6 +281,8 @@ class AuthService {
     }
     await storage.write(key: "username", value: username);
     await storage.write(key: "refreshToken", value: refreshToken);
+    await storage.write(
+        key: "refreshExpiration", value: refreshExpiration.toString());
   }
 
   static Future<void> deleteAuthenticationCredentials() async {
@@ -303,6 +296,7 @@ class AuthService {
     }
     await storage.delete(key: "username");
     await storage.delete(key: "refreshToken");
+    await storage.delete(key: "refreshExpiration");
   }
 
   /// softLogout is used to indicate that the user has logged out without deleting the authentication data.

@@ -92,7 +92,7 @@ class AppRouter {
                   .accessToken
                   ?.token !=
               null;
-        } on NoCredentialException catch (e) {
+        } on NoTokensFoundException catch (e) {
           if (kDebugMode) {
             print(e.errMsg());
           }

@@ -3,3 +3,9 @@ class NoCredentialException implements Exception {
     return "No authentication data found";
   }
 }
+
+class NoTokensFoundException implements Exception {
+  String errMsg() {
+    return "No tokens found";
+  }
+}
