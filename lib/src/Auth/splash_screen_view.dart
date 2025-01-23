@@ -148,7 +148,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
                 context: context, message: "Login failed");
           }
         }
-      } on NoCredentialException {
+      } on NoTokensFoundException {
         if (context.mounted) {
           context.goNamed("login");
         }

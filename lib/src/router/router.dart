@@ -105,7 +105,7 @@ class AppRouter {
         //print(!isAuthenticated);
 
         if (!isAuthenticated || await AuthService.isSoftLogout()) {
-          if (await storage.containsKey(key: "password")) {
+          if (await storage.containsKey(key: "username")) {
             return "/splash";
           } else if (state.fullPath == "/login") {
             return "/login";
