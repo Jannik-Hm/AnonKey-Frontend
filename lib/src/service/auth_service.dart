@@ -63,9 +63,7 @@ class AuthenticationCredentialsSingleton {
   }
 
   areAuthenticationCredentialsAvailable() {
-    if (refreshToken != null &&
-        accessToken != null &&
-        username != null) {
+    if (refreshToken != null && accessToken != null && username != null) {
       return true;
     } else {
       throw NoTokensFoundException();
@@ -208,20 +206,27 @@ class AuthService {
           timestamp: singleton.refreshToken?.expiration,
           tokenType: TokenType.refreshToken)) {
         // Fetch refresh token here
-      } 
+      }
     } else {
-      if (singleton.accessToken == null || !validateToken(
-          timestamp: singleton.accessToken!.expiration,
-          tokenType: TokenType.accessToken)) {
+      if (singleton.accessToken == null ||
+          !validateToken(
+              timestamp: singleton.accessToken!.expiration,
+              tokenType: TokenType.accessToken)) {
         //Fetch access token here
         String? url = await ApiBaseData.getURL();
         print("test");
-        if(url != null){
-          ApiClient api = RequestUtility.getApiWithAuth(singleton.refreshToken!.token, url);
+        if (url != null) {
+          ApiClient api =
+              RequestUtility.getApiWithAuth(singleton.refreshToken!.token, url);
           AuthenticationApi authenticationApi = AuthenticationApi(api);
-          authenticationApi.authenticationRefreshAccessTokenPost().then((value) => {
-            singleton.accessToken = Token(token: value!.accessToken!.token!, tokenType: TokenType.accessToken, expiration: value.accessToken!.expiryTimestamp!)
-          });
+          authenticationApi
+              .authenticationRefreshAccessTokenPost()
+              .then((value) => {
+                    singleton.accessToken = Token(
+                        token: value!.accessToken!.token!,
+                        tokenType: TokenType.accessToken,
+                        expiration: value.accessToken!.expiryTimestamp!)
+                  });
         }
       }
     }
@@ -297,8 +302,6 @@ class AuthService {
     await storage.write(
         key: "refreshExpiration", value: refreshExpiration.toString());
   }
-
-
 
   static Future<void> deleteAuthenticationCredentials() async {
     // Clean up RAM
