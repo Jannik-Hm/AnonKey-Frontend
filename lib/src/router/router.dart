@@ -5,8 +5,8 @@ import 'package:anonkey_frontend/src/Credentials/credential_list_view.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Folders/folder_view.dart';
 import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
-import 'package:anonkey_frontend/src/home/home.dart';
 import 'package:anonkey_frontend/src/app_lifecycle_page.dart';
+import 'package:anonkey_frontend/src/home/home.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:anonkey_frontend/src/settings/settings_view.dart';
@@ -14,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
+
 import '../exception/auth_exception.dart';
 
 class AppRouter {

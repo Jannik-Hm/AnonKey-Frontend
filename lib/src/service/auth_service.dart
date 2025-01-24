@@ -200,8 +200,7 @@ class AuthService {
           tokenType: TokenType.refreshToken,
           expiration: refreshExpiration);
     }
-
-    if (singleton.accessToken == null) {
+    if (singleton.refreshToken == null) {
       if (!validateToken(
           timestamp: singleton.refreshToken?.expiration,
           tokenType: TokenType.refreshToken)) {
