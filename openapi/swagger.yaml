@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: AnonKey-Backend
-  version: '1.0'
+  version: '1.1'
 paths:
   /authentication/login:
     post:
@@ -53,6 +53,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseBody'
+  /authentication/logout:
+    put:
+      tags:
+        - Authentication
+      summary: Logs out the authenticated user.
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseBody'
+  /authentication/refreshAccessToken:
+    post:
+      tags:
+        - Authentication
+      summary: Creates a new access token based on a refresh token.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationRefreshAccessTokenResponseBody'
   /credentials/create:
     post:
       tags:
@@ -570,6 +602,30 @@ components:
           format: int64
       additionalProperties: false
       description: Represents a token object in the response to a Login request
+    AuthenticationRefreshAccessToken:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token that can be used for authentication.
+          nullable: true
+        tokenType:
+          type: string
+          description: 'The type of the token, either "AccessToken" or "RefreshToken"'
+          nullable: true
+        expiryTimestamp:
+          type: integer
+          description: The time in seconds the token expires on.
+          format: int64
+      additionalProperties: false
+      description: Represents a token object in the response to a Refresh access token request.
+    AuthenticationRefreshAccessTokenResponseBody:
+      type: object
+      properties:
+        accessToken:
+          $ref: '#/components/schemas/AuthenticationRefreshAccessToken'
+      additionalProperties: false
+      description: The body of the response to a Refresh access token request.
     CredentialsCreateCredential:
       type: object
       properties:

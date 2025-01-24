@@ -13,6 +13,8 @@ import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../Utility/cryptography.dart';
+
 class SplashScreenView extends StatefulWidget {
   const SplashScreenView({super.key});
 
@@ -125,13 +127,16 @@ class _SplashScreenViewState extends State<SplashScreenView> {
 
   Future<void> _loginWithoutUsername(BuildContext context) async {
     if (_loginFormKey.currentState!.validate()) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
       try {
         final AuthenticationCredentialsSingleton credentials =
             await AuthService.getAuthenticationCredentials();
-        bool req = await AuthService.login(
-            credentials.username!, password.text, prefs.getString("url") ?? "");
-        if (req) {
+        String encryptionKDF = await Cryptography.getKDFBase64(
+          masterPassword: password.text,
+          salt: "${credentials.username}_encryption",
+        );
+        credentials.encryptionKDF = encryptionKDF;
+        print(credentials.toString());
+        if (credentials.username == null) {
           if (context.mounted) {
             if (context.canPop()) {
               context.pop(true);

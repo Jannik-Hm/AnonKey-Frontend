@@ -1,10 +1,10 @@
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/auth_utils.dart';
 import 'package:anonkey_frontend/Utility/cryptography.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 enum TokenType {
   refreshToken,
@@ -43,6 +43,12 @@ class AuthenticationCredentialsSingleton {
   bool softLogout = true;
   bool skipSplashScreen = false;
 
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "Username: $username\nEncryptionKDF: $encryptionKDF\nRefreshToken: ${refreshToken?.token}\nRefreshExpiration: ${refreshToken?.expiration}\nAccessToken: ${accessToken?.token}\nAccessExpiration: ${accessToken?.expiration}\nSoftLogout: $softLogout\nSkipSplashScreen: $skipSplashScreen";
+  }
+
   factory AuthenticationCredentialsSingleton() {
     return _singleton;
   }
@@ -57,8 +63,7 @@ class AuthenticationCredentialsSingleton {
   }
 
   areAuthenticationCredentialsAvailable() {
-    if (encryptionKDF != null &&
-        refreshToken != null &&
+    if (refreshToken != null &&
         accessToken != null &&
         username != null) {
       return true;
@@ -180,7 +185,7 @@ class AuthService {
       getAuthenticationCredentials() async {
     const storage = FlutterSecureStorage();
     var singleton = AuthenticationCredentialsSingleton();
-    if (await AuthUtils.checkBiometricAvailability() &&
+    if (await AuthUtils.checkBiometricAvailability() ||
         singleton.encryptionKDF == null) {
       singleton.encryptionKDF = await storage.read(key: "encryptionKDF");
     } // otherwise the token is already in the singleton
@@ -197,25 +202,34 @@ class AuthService {
           tokenType: TokenType.refreshToken,
           expiration: refreshExpiration);
     }
-    try {
-      singleton.areAuthenticationCredentialsAvailable();
-    } catch (_) {
-      rethrow;
-    }
+
     if (singleton.accessToken == null) {
       if (!validateToken(
           timestamp: singleton.refreshToken?.expiration,
           tokenType: TokenType.refreshToken)) {
         // Fetch refresh token here
-      } else {
-        // Fetch access token here
-      }
+      } 
     } else {
-      if (!validateToken(
+      if (singleton.accessToken == null || !validateToken(
           timestamp: singleton.accessToken!.expiration,
           tokenType: TokenType.accessToken)) {
         //Fetch access token here
+        String? url = await ApiBaseData.getURL();
+        print("test");
+        if(url != null){
+          ApiClient api = RequestUtility.getApiWithAuth(singleton.refreshToken!.token, url);
+          AuthenticationApi authenticationApi = AuthenticationApi(api);
+          authenticationApi.authenticationRefreshAccessTokenPost().then((value) => {
+            singleton.accessToken = Token(token: value!.accessToken!.token!, tokenType: TokenType.accessToken, expiration: value.accessToken!.expiryTimestamp!)
+          });
+        }
       }
+    }
+    print(singleton.toString());
+    try {
+      singleton.areAuthenticationCredentialsAvailable();
+    } catch (_) {
+      rethrow;
     }
     return singleton;
   }
@@ -283,6 +297,8 @@ class AuthService {
     await storage.write(
         key: "refreshExpiration", value: refreshExpiration.toString());
   }
+
+
 
   static Future<void> deleteAuthenticationCredentials() async {
     // Clean up RAM
