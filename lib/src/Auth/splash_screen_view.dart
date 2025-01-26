@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/auth_utils.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Widgets/button_with_throbber.dart';
@@ -6,14 +7,11 @@ import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:anonkey_frontend/src/service/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../Utility/cryptography.dart';
 
 class SplashScreenView extends StatefulWidget {
   const SplashScreenView({super.key});
@@ -128,15 +126,11 @@ class _SplashScreenViewState extends State<SplashScreenView> {
   Future<void> _loginWithoutUsername(BuildContext context) async {
     if (_loginFormKey.currentState!.validate()) {
       try {
-        final AuthenticationCredentialsSingleton credentials =
+        var bool = await AuthService.loginWithoutUserName(password.text);
+        AuthenticationCredentialsSingleton singleton =
             await AuthService.getAuthenticationCredentials();
-        String encryptionKDF = await Cryptography.getKDFBase64(
-          masterPassword: password.text,
-          salt: "${credentials.username}_encryption",
-        );
-        credentials.encryptionKDF = encryptionKDF;
-        print(credentials.toString());
-        if (credentials.username == null) {
+        print(singleton);
+        if (bool) {
           if (context.mounted) {
             if (context.canPop()) {
               context.pop(true);
@@ -167,61 +161,28 @@ class _SplashScreenViewState extends State<SplashScreenView> {
   }
 
   Future<void> _loginWithBiometrics(BuildContext context) async {
-    try {
-      bool canCheckBiometrics = await auth.canCheckBiometrics;
-      if (!canCheckBiometrics) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content:
-                  Text(AppLocalizations.of(context)!.biometricNotAvailable)),
-        );
-        return;
-      }
-
-      bool authenticated = await auth.authenticate(
-        localizedReason: AppLocalizations.of(context)!.loginWithBiometrics,
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-        ),
-      );
-
-      if (authenticated) {
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        throw UnimplementedError(
-            "The revamp of the user service is not complete");
-        final AuthenticationCredentialsSingleton credentials =
-            await AuthService.getAuthenticationCredentials();
-        bool req = await AuthService.login(credentials.username!,
-            credentials.encryptionKDF!, prefs.getString("url") ?? "");
-        // bool req = LoginInWithRefreshToken(credentials.username!, (await FlutterSecureStorage()).read(key: "refreshToken"));
-        if (req) {
-          if (context.mounted) {
-            if (context.canPop()) {
-              context.pop(true);
-            } else {
-              context.goNamed("home");
-            }
-          }
-        } else {
-          setState(() {
-            notFirstTry = true;
-          });
-          if (context.mounted) {
-            NotificationPopup.popupErrorMessage(
-                context: context, message: "Login failed");
+    var success = await AuthUtils.biometricRender(context);
+    if (success) {
+      var loginSucess = await AuthService.loginWithBiometrics();
+      AuthenticationCredentialsSingleton singleton =
+          await AuthService.getAuthenticationCredentials();
+      if (loginSucess) {
+        if (context.mounted) {
+          if (context.canPop()) {
+            context.pop(true);
+          } else {
+            context.goNamed("home");
           }
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(AppLocalizations.of(context)!.biometricFailed)),
-        );
+        setState(() {
+          notFirstTry = true;
+        });
+        if (context.mounted) {
+          NotificationPopup.popupErrorMessage(
+              context: context, message: "Login failed");
+        }
       }
-    } on PlatformException catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(AppLocalizations.of(context)!.biometricNotAvailable)),
-      );
     }
   }
 }

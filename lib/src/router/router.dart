@@ -87,12 +87,10 @@ class AppRouter {
       ],
       redirect: (BuildContext context, GoRouterState state) async {
         bool isAuthenticated = false;
-
+        AuthenticationCredentialsSingleton singleton =
+            await AuthService.getAuthenticationCredentials();
         try {
-          isAuthenticated = (await AuthService.getAuthenticationCredentials())
-                  .accessToken
-                  ?.token !=
-              null;
+          isAuthenticated = singleton.encryptionKDF != null;
         } on NoTokensFoundException catch (e) {
           if (kDebugMode) {
             print(e.errMsg());
@@ -101,11 +99,12 @@ class AppRouter {
         }
 
         const storage = FlutterSecureStorage();
-
+        //storage.deleteAll();
         //print(await AuthService.isSoftLogout());
         //print(!isAuthenticated);
 
-        if (!isAuthenticated || await AuthService.isSoftLogout()) {
+        if ((!isAuthenticated || await AuthService.isSoftLogout()) &&
+            !singleton.skipSplashScreen) {
           if (await storage.containsKey(key: "username")) {
             return "/splash";
           } else if (state.fullPath == "/login") {

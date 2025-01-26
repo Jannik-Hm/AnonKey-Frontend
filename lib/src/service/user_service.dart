@@ -3,6 +3,7 @@ import 'package:anonkey_frontend/src/router/clear_and_navigate.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Utility/request_utility.dart';
 
@@ -49,6 +50,8 @@ class UserService {
 
   static void logout(BuildContext context) async {
     await AuthService.deleteAuthenticationCredentials();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("biometricEnabled", false.toString());
     if (!context.mounted) return;
     GoRouter.of(context).clearStackAndNavigate("/login");
   }

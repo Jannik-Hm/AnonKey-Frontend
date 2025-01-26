@@ -2,11 +2,11 @@ import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
+import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:anonkey_frontend/src/Credentials/list-entry/logo.dart';
 import 'package:anonkey_frontend/src/Widgets/clickable_tile.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CredentialTrashEntry extends StatefulWidget {
@@ -74,7 +74,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
     try {
       if (url != null) {
         ApiClient apiClient =
-            RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
+            RequestUtility.getApiWithAuth(authdata.accessToken!.token, url);
         CredentialsApi api = CredentialsApi(apiClient);
         await ApiBaseData.apiCallWrapper(
             api.credentialsDeleteDelete(_credential.uuid),

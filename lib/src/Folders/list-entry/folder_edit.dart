@@ -4,13 +4,13 @@ import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
-import 'package:anonkey_frontend/src/service/auth_service.dart';
-import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Widgets/icon_picker.dart';
-import 'package:form_validator/form_validator.dart';
+import 'package:anonkey_frontend/src/service/auth_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:form_validator/form_validator.dart';
 
 class FolderEditWidget extends StatefulWidget {
   final Folder? folder;
@@ -82,7 +82,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
       try {
         if (url != null) {
           ApiClient apiClient =
-              RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
+              RequestUtility.getApiWithAuth(authdata.accessToken!.token, url);
           FoldersApi api = FoldersApi(apiClient);
           if (_folder != null) {
             Folder temp = Folder(
@@ -148,7 +148,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
       try {
         if (url != null) {
           ApiClient apiClient =
-              RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
+              RequestUtility.getApiWithAuth(authdata.accessToken!.token, url);
           FoldersApi api = FoldersApi(apiClient);
           await ApiBaseData.apiCallWrapper(
               api.foldersDeleteDelete(_folder!.uuid!, recursive),

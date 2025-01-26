@@ -11,12 +11,14 @@ import 'package:anonkey_frontend/src/service/auth_service.dart';
 class FolderListTimeout implements Exception {
   FolderList fallbackData;
   static String message = "Folder fetch failed, using local data instead.";
+
   FolderListTimeout(this.fallbackData);
 }
 
 class FolderList {
   // Map of all folders, UUID as Key
   Map<String, Folder> byIDList = {};
+
   // Map of all folders, DisplayName as Key
   Map<String, Folder> byNameList = {};
 
@@ -114,7 +116,7 @@ class FolderList {
     Future<FolderList> futureLocalData = readFromDisk();
     if (url != null) {
       api.ApiClient apiClient =
-          RequestUtility.getApiWithAuth(authdata.accessToken!.token!, url);
+          RequestUtility.getApiWithAuth(authdata.accessToken!.token, url);
       api.FoldersApi apiPoint = api.FoldersApi(apiClient);
 
       Future<api.FoldersGetAllResponseBody?> responseFuture =
