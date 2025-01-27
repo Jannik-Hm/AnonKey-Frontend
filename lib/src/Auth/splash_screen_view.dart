@@ -127,9 +127,6 @@ class _SplashScreenViewState extends State<SplashScreenView> {
     if (_loginFormKey.currentState!.validate()) {
       try {
         var bool = await AuthService.loginWithoutUserName(password.text);
-        AuthenticationCredentialsSingleton singleton =
-            await AuthService.getAuthenticationCredentials();
-        print(singleton);
         if (bool) {
           if (context.mounted) {
             if (context.canPop()) {
@@ -164,8 +161,6 @@ class _SplashScreenViewState extends State<SplashScreenView> {
     var success = await AuthUtils.biometricRender(context);
     if (success) {
       var loginSucess = await AuthService.loginWithBiometrics();
-      AuthenticationCredentialsSingleton singleton =
-          await AuthService.getAuthenticationCredentials();
       if (loginSucess) {
         if (context.mounted) {
           if (context.canPop()) {

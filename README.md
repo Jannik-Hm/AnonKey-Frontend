@@ -94,15 +94,13 @@ dart run build_runner build --delete-conflicting-outputs
 
 #### Secure Storage
 
-| Variable Name       | Description                                                              | Key                 | Storage Type   |
-|---------------------|--------------------------------------------------------------------------|---------------------|----------------|
-| `encryptionKDF`     | The encryption Key Derivation Function used for encrypting data.         | `encryptionKDF`     | Secure Storage |
-| `username`          | The username of the authenticated user.                                  | `username`          | Secure Storage |
-| `refreshToken`      | The refresh token used to obtain new access tokens.                      | `refreshToken`      | Secure Storage |
-| `refreshExpiration` | The expiration timestamp of the refresh token.                           | `refreshExpiration` | Secure Storage |
-| `skipSplashScreen`  | A flag indicating whether to skip the splash screen on app startup.      | `skipSplashScreen`  | Secure Storage |
-| `softLogout`        | A flag indicating whether the user has logged out without deleting data. | `softLogout`        | Secure Storage |
-| `validationHash`    | The hash used to validate the user's encryptionKDF.                      | `validationHash`    | Secure Storage |
+| Variable Name       | Description                                                      | Key                 | Storage Type   |
+|---------------------|------------------------------------------------------------------|---------------------|----------------|
+| `encryptionKDF`     | The encryption Key Derivation Function used for encrypting data. | `encryptionKDF`     | Secure Storage |
+| `username`          | The username of the authenticated user.                          | `username`          | Secure Storage |
+| `refreshToken`      | The refresh token used to obtain new access tokens.              | `refreshToken`      | Secure Storage |
+| `refreshExpiration` | The expiration timestamp of the refresh token.                   | `refreshExpiration` | Secure Storage |
+| `validationHash`    | The hash used to validate the user's encryptionKDF.              | `validationHash`    | Secure Storage |
 
 #### Shared Preferences
 

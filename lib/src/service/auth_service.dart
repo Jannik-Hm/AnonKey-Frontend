@@ -199,8 +199,6 @@ class AuthService {
       singleton.encryptionKDF = await storage.read(key: "encryptionKDF");
     } // otherwise the token is already in the singleton
     singleton.username ??= await storage.read(key: "username");
-    singleton.skipSplashScreen ??=
-        await storage.read(key: "skipSplashScreen") == "true" ? true : false;
     int refreshExpiration = await storage.containsKey(key: "refreshExpiration")
         ? int.parse((await storage.read(key: "refreshExpiration"))!)
         : 0;
@@ -450,19 +448,15 @@ class AuthService {
   /// softLogout is used to indicate that the user has logged out without deleting the authentication data.
   /// This is useful to determine if the user should be redirected to the login page.
   static Future<void> softLogout() async {
-    const storage = FlutterSecureStorage();
-    var singleton = AuthenticationCredentialsSingleton();
+    var singleton = await getAuthenticationCredentials();
 
     singleton.softLogout = true;
-    await storage.write(key: "softLogout", value: true.toString());
   }
 
   static Future<void> deleteSoftLogout() async {
-    const storage = FlutterSecureStorage();
-    var singleton = AuthenticationCredentialsSingleton();
+    var singleton = await getAuthenticationCredentials();
 
     singleton.softLogout = false;
-    await storage.delete(key: "softLogout");
   }
 
   /// Checks if a soft logout is active.
@@ -471,22 +465,16 @@ class AuthService {
   /// A soft logout is active if the user has logged out without deleting the authentication data.
   /// This is useful to determine if the user should be redirected to the login page.
   static Future<bool> isSoftLogout() async {
-    const storage = FlutterSecureStorage();
+    AuthenticationCredentialsSingleton singleton =
+        await getAuthenticationCredentials();
 
-    if (!(await storage.containsKey(key: "softLogout"))) {
-      return false;
-    }
-
-    String? softLogout = await storage.read(key: "softLogout");
-    return softLogout == "true";
+    return singleton.softLogout;
   }
 
   static Future<void> setSkipSplashScreen(bool isSkipped) async {
-    const storage = FlutterSecureStorage();
     AuthenticationCredentialsSingleton singleton =
         await getAuthenticationCredentials();
 
     singleton.skipSplashScreen = isSkipped;
-    await storage.write(key: 'skipSplashScreen', value: isSkipped.toString());
   }
 }

@@ -1,6 +1,5 @@
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 
 class AppLifecyclePage extends StatefulWidget {
@@ -37,11 +36,11 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    const FlutterSecureStorage storage = FlutterSecureStorage();
-    String? skipSplashScreen =
-        await storage.read(key: "skipSplashScreen") ?? "false";
+    AuthenticationCredentialsSingleton authdata =
+        await AuthService.getAuthenticationCredentials();
+    bool skipSplashScreen = authdata.skipSplashScreen;
 
-    if (skipSplashScreen == "false") {
+    if (!skipSplashScreen) {
       setState(() {
         _notification = state;
       });

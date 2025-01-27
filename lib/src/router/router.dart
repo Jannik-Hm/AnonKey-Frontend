@@ -99,9 +99,6 @@ class AppRouter {
         }
 
         const storage = FlutterSecureStorage();
-        //storage.deleteAll();
-        //print(await AuthService.isSoftLogout());
-        //print(!isAuthenticated);
 
         if ((!isAuthenticated || await AuthService.isSoftLogout()) &&
             !singleton.skipSplashScreen) {
@@ -115,7 +112,6 @@ class AppRouter {
             return "/login";
           }
         } else {
-          // TODO checking the behavior of the app when the user is authenticated after starting the app
           return null; // return "null" to display the intended route without redirecting
         }
       },

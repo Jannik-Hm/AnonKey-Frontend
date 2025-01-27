@@ -114,7 +114,6 @@ class SettingsController with ChangeNotifier {
         isBiometricEnabled.value = isEnabled;
         if (isEnabled) {
           FlutterSecureStorage storage = const FlutterSecureStorage();
-          print(AuthenticationCredentialsSingleton().encryptionKDF);
           storage.write(
               key: "encryptionKDF",
               value: AuthenticationCredentialsSingleton().encryptionKDF);

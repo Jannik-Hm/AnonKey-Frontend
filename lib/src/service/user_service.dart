@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../Utility/api_base_data.dart';
 import '../../Utility/request_utility.dart';
 
 class UserService {
@@ -25,11 +26,8 @@ class UserService {
     UsersApi usersApi = UsersApi(apiClient);
 
     try {
-      // TODO password equal to credentials.encryptionKDF?
       final AuthenticationCredentialsSingleton credentials =
           await AuthService.getAuthenticationCredentials();
-      throw UnimplementedError(
-          "The revamp of the user service is not complete");
       if (credentials.encryptionKDF != password) {
         throw Exception("No credentials found");
       }
@@ -49,6 +47,19 @@ class UserService {
   }
 
   static void logout(BuildContext context) async {
+    var url = await ApiBaseData.getURL();
+    AuthenticationCredentialsSingleton authdata =
+        await AuthService.getAuthenticationCredentials();
+    if (authdata.accessToken?.token != null) {
+      ApiClient apiClient =
+          RequestUtility.getApiWithAuth(authdata.accessToken!.token, url!);
+      AuthenticationApi authenticationApi = AuthenticationApi(apiClient);
+      authenticationApi
+          .authenticationLogoutPutWithHttpInfo()
+          .then((value) async {})
+          .catchError((onError) => throw Exception(onError.toString()));
+    }
+
     await AuthService.deleteAuthenticationCredentials();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("biometricEnabled", false.toString());
