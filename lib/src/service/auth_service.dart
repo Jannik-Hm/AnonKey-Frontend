@@ -219,18 +219,16 @@ class AuthService {
         ApiClient api =
             RequestUtility.getApiWithAuth(singleton.refreshToken!.token, url);
         AuthenticationApi authenticationApi = AuthenticationApi(api);
-        authenticationApi
-            .authenticationRefreshRefreshTokenPost()
-            .then((value) {
-                  singleton.refreshToken = Token(
-                      token: value!.refreshToken!.token!,
-                      tokenType: TokenType.refreshToken,
-                      expiration: value.refreshToken!.expiryTimestamp!);
-                  singleton.accessToken = Token(
-                        token: value!.accessToken!.token!,
-                        tokenType: TokenType.accessToken,
-                        expiration: value.accessToken!.expiryTimestamp!);
-                });
+        authenticationApi.authenticationRefreshRefreshTokenPost().then((value) {
+          singleton.refreshToken = Token(
+              token: value!.refreshToken!.token!,
+              tokenType: TokenType.refreshToken,
+              expiration: value.refreshToken!.expiryTimestamp!);
+          singleton.accessToken = Token(
+              token: value!.accessToken!.token!,
+              tokenType: TokenType.accessToken,
+              expiration: value.accessToken!.expiryTimestamp!);
+        });
       }
     } else {
       if (singleton.accessToken == null ||
