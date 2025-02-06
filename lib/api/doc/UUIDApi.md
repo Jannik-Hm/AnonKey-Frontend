@@ -1,25 +1,23 @@
 # anonkey_frontend.api.UUIDApi
 
 ## Load the API package
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 ```
 
 All URIs are relative to *http://localhost*
 
- Method                                  | HTTP request      | Description                               
------------------------------------------|-------------------|-------------------------------------------
- [**uuidNewGet**](UUIDApi.md#uuidnewget) | **GET** /uuid/new | Returns a new UUID for several endpoints. 
+Method | HTTP request | Description
+------------- | ------------- | -------------
+[**uuidNewGet**](UUIDApi.md#uuidnewget) | **GET** /uuid/new | Returns a new UUID for several endpoints.
+
 
 # **uuidNewGet**
-
 > String uuidNewGet()
 
 Returns a new UUID for several endpoints.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -38,7 +36,6 @@ try {
 ```
 
 ### Parameters
-
 This endpoint does not need any parameter.
 
 ### Return type
@@ -51,8 +48,8 @@ This endpoint does not need any parameter.
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
-- **Accept**: application/json
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

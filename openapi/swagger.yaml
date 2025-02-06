@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: AnonKey-Backend
-  version: '1.1'
+  version: '1.0'
 paths:
   /authentication/login:
     post:
@@ -53,6 +53,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseBody'
+  /authentication/refreshAccessToken:
+    post:
+      tags:
+        - Authentication
+      summary: Creates a new access token based on a refresh token.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationRefreshAccessTokenResponseBody'
+  /authentication/refreshRefreshToken:
+    post:
+      tags:
+        - Authentication
+      summary: Creates a new refresh token based on a refresh token.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticationRefreshRefreshTokenResponseBody'
   /authentication/logout:
     put:
       tags:
@@ -73,18 +97,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponseBody'
-  /authentication/refreshAccessToken:
-    post:
+  /authentication/logoutAll:
+    put:
       tags:
         - Authentication
-      summary: Creates a new access token based on a refresh token.
+      summary: Logs out all users.
       responses:
         '200':
           description: OK
+        '400':
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthenticationRefreshAccessTokenResponseBody'
+                $ref: '#/components/schemas/ErrorResponseBody'
   /credentials/create:
     post:
       tags:
@@ -626,6 +652,32 @@ components:
           $ref: '#/components/schemas/AuthenticationRefreshAccessToken'
       additionalProperties: false
       description: The body of the response to a Refresh access token request.
+    AuthenticationRefreshRefreshToken:
+      type: object
+      properties:
+        token:
+          type: string
+          description: The token that can be used for authentication.
+          nullable: true
+        tokenType:
+          type: string
+          description: 'The type of the token, either "AccessToken" or "RefreshToken"'
+          nullable: true
+        expiryTimestamp:
+          type: integer
+          description: The time in seconds the token expires on.
+          format: int64
+      additionalProperties: false
+      description: Represents a token object in the response to a Refresh refresh token request.
+    AuthenticationRefreshRefreshTokenResponseBody:
+      type: object
+      properties:
+        accessToken:
+          $ref: '#/components/schemas/AuthenticationRefreshRefreshToken'
+        refreshToken:
+          $ref: '#/components/schemas/AuthenticationRefreshRefreshToken'
+      additionalProperties: false
+      description: The body of the response to a Refresh refresh token request.
     CredentialsCreateCredential:
       type: object
       properties:

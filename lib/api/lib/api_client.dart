@@ -241,6 +241,10 @@ class ApiClient {
           return AuthenticationRefreshAccessToken.fromJson(value);
         case 'AuthenticationRefreshAccessTokenResponseBody':
           return AuthenticationRefreshAccessTokenResponseBody.fromJson(value);
+        case 'AuthenticationRefreshRefreshToken':
+          return AuthenticationRefreshRefreshToken.fromJson(value);
+        case 'AuthenticationRefreshRefreshTokenResponseBody':
+          return AuthenticationRefreshRefreshTokenResponseBody.fromJson(value);
         case 'CredentialsCreateCredential':
           return CredentialsCreateCredential.fromJson(value);
         case 'CredentialsCreateRequestBody':

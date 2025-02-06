@@ -1,25 +1,23 @@
 # anonkey_frontend.api.ServiceApi
 
 ## Load the API package
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 ```
 
 All URIs are relative to *http://localhost*
 
- Method                                             | HTTP request          | Description                          
-----------------------------------------------------|-----------------------|--------------------------------------
- [**servicePingGet**](ServiceApi.md#servicepingget) | **GET** /service/ping | Checks the connection to the server. 
+Method | HTTP request | Description
+------------- | ------------- | -------------
+[**servicePingGet**](ServiceApi.md#servicepingget) | **GET** /service/ping | Checks the connection to the server.
+
 
 # **servicePingGet**
-
 > String servicePingGet()
 
 Checks the connection to the server.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -38,7 +36,6 @@ try {
 ```
 
 ### Parameters
-
 This endpoint does not need any parameter.
 
 ### Return type
@@ -51,8 +48,8 @@ This endpoint does not need any parameter.
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
-- **Accept**: text/plain
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

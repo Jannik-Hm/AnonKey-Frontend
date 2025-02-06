@@ -1,31 +1,29 @@
 # anonkey_frontend.api.CredentialsApi
 
 ## Load the API package
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 ```
 
 All URIs are relative to *http://localhost*
 
- Method                                                                         | HTTP request                       | Description                                          
---------------------------------------------------------------------------------|------------------------------------|------------------------------------------------------
- [**credentialsCreatePost**](CredentialsApi.md#credentialscreatepost)           | **POST** /credentials/create       | Creates a new credential object.                     
- [**credentialsDeleteDelete**](CredentialsApi.md#credentialsdeletedelete)       | **DELETE** /credentials/delete     | Deletes an existing credential object.               
- [**credentialsGetAllGet**](CredentialsApi.md#credentialsgetallget)             | **GET** /credentials/getAll        | Gets all available credential objects for this user. 
- [**credentialsGetGet**](CredentialsApi.md#credentialsgetget)                   | **GET** /credentials/get           | Gets information on a credential object.             
- [**credentialsSoftDeletePut**](CredentialsApi.md#credentialssoftdeleteput)     | **PUT** /credentials/soft-delete   | SoftDeletes an existing credential object.           
- [**credentialsSoftUndeletePut**](CredentialsApi.md#credentialssoftundeleteput) | **PUT** /credentials/soft-undelete | SoftUndeletes an existing credential object.         
- [**credentialsUpdatePut**](CredentialsApi.md#credentialsupdateput)             | **PUT** /credentials/update        | Updates a credential object.                         
+Method | HTTP request | Description
+------------- | ------------- | -------------
+[**credentialsCreatePost**](CredentialsApi.md#credentialscreatepost) | **POST** /credentials/create | Creates a new credential object.
+[**credentialsDeleteDelete**](CredentialsApi.md#credentialsdeletedelete) | **DELETE** /credentials/delete | Deletes an existing credential object.
+[**credentialsGetAllGet**](CredentialsApi.md#credentialsgetallget) | **GET** /credentials/getAll | Gets all available credential objects for this user.
+[**credentialsGetGet**](CredentialsApi.md#credentialsgetget) | **GET** /credentials/get | Gets information on a credential object.
+[**credentialsSoftDeletePut**](CredentialsApi.md#credentialssoftdeleteput) | **PUT** /credentials/soft-delete | SoftDeletes an existing credential object.
+[**credentialsSoftUndeletePut**](CredentialsApi.md#credentialssoftundeleteput) | **PUT** /credentials/soft-undelete | SoftUndeletes an existing credential object.
+[**credentialsUpdatePut**](CredentialsApi.md#credentialsupdateput) | **PUT** /credentials/update | Updates a credential object.
+
 
 # **credentialsCreatePost**
-
 > credentialsCreatePost(credentialsCreateRequestBody)
 
 Creates a new credential object.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -45,9 +43,9 @@ try {
 
 ### Parameters
 
- Name                             | Type                                                                | Description | Notes 
-----------------------------------|---------------------------------------------------------------------|-------------|-------
- **credentialsCreateRequestBody** | [**CredentialsCreateRequestBody**](CredentialsCreateRequestBody.md) |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **credentialsCreateRequestBody** | [**CredentialsCreateRequestBody**](CredentialsCreateRequestBody.md)|  | 
 
 ### Return type
 
@@ -59,19 +57,17 @@ void (empty response body)
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+ - **Content-Type**: application/json
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **credentialsDeleteDelete**
-
 > credentialsDeleteDelete(credentialUuid)
 
 Deletes an existing credential object.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -91,9 +87,9 @@ try {
 
 ### Parameters
 
- Name               | Type       | Description | Notes 
---------------------|------------|-------------|-------
- **credentialUuid** | **String** |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **credentialUuid** | **String**|  | 
 
 ### Return type
 
@@ -105,19 +101,17 @@ void (empty response body)
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
-- **Accept**: application/json
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **credentialsGetAllGet**
-
 > CredentialsGetAllResponseBody credentialsGetAllGet()
 
 Gets all available credential objects for this user.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -136,7 +130,6 @@ try {
 ```
 
 ### Parameters
-
 This endpoint does not need any parameter.
 
 ### Return type
@@ -149,19 +142,17 @@ This endpoint does not need any parameter.
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
-- **Accept**: application/json
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **credentialsGetGet**
-
 > CredentialsGetResponseBody credentialsGetGet(credentialUuid)
 
 Gets information on a credential object.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -182,9 +173,9 @@ try {
 
 ### Parameters
 
- Name               | Type       | Description | Notes 
---------------------|------------|-------------|-------
- **credentialUuid** | **String** |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **credentialUuid** | **String**|  | 
 
 ### Return type
 
@@ -196,19 +187,17 @@ try {
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
-- **Accept**: application/json
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **credentialsSoftDeletePut**
-
 > credentialsSoftDeletePut(credentialUuid)
 
 SoftDeletes an existing credential object.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -228,9 +217,9 @@ try {
 
 ### Parameters
 
- Name               | Type       | Description | Notes 
---------------------|------------|-------------|-------
- **credentialUuid** | **String** |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **credentialUuid** | **String**|  | 
 
 ### Return type
 
@@ -242,19 +231,17 @@ void (empty response body)
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
-- **Accept**: application/json
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **credentialsSoftUndeletePut**
-
 > credentialsSoftUndeletePut(credentialUuid)
 
 SoftUndeletes an existing credential object.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -274,9 +261,9 @@ try {
 
 ### Parameters
 
- Name               | Type       | Description | Notes 
---------------------|------------|-------------|-------
- **credentialUuid** | **String** |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **credentialUuid** | **String**|  | 
 
 ### Return type
 
@@ -288,19 +275,17 @@ void (empty response body)
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
-- **Accept**: application/json
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **credentialsUpdatePut**
-
 > CredentialsUpdateResponseBody credentialsUpdatePut(credentialsUpdateRequestBody)
 
 Updates a credential object.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -321,9 +306,9 @@ try {
 
 ### Parameters
 
- Name                             | Type                                                                | Description | Notes 
-----------------------------------|---------------------------------------------------------------------|-------------|-------
- **credentialsUpdateRequestBody** | [**CredentialsUpdateRequestBody**](CredentialsUpdateRequestBody.md) |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **credentialsUpdateRequestBody** | [**CredentialsUpdateRequestBody**](CredentialsUpdateRequestBody.md)|  | 
 
 ### Return type
 
@@ -335,8 +320,8 @@ try {
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+ - **Content-Type**: application/json
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

@@ -1,29 +1,27 @@
 # anonkey_frontend.api.FoldersApi
 
 ## Load the API package
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 ```
 
 All URIs are relative to *http://localhost*
 
- Method                                                       | HTTP request               | Description                             
---------------------------------------------------------------|----------------------------|-----------------------------------------
- [**foldersCreatePost**](FoldersApi.md#folderscreatepost)     | **POST** /folders/create   | Creates a new folder.                   
- [**foldersDeleteDelete**](FoldersApi.md#foldersdeletedelete) | **DELETE** /folders/delete | Deletes an existing folder.             
- [**foldersGetAllGet**](FoldersApi.md#foldersgetallget)       | **GET** /folders/getAll    | Gets all folders for a user.            
- [**foldersGetGet**](FoldersApi.md#foldersgetget)             | **GET** /folders/get       | Gets information on an existing folder. 
- [**foldersUpdatePut**](FoldersApi.md#foldersupdateput)       | **PUT** /folders/update    | Updates an existing folder object.      
+Method | HTTP request | Description
+------------- | ------------- | -------------
+[**foldersCreatePost**](FoldersApi.md#folderscreatepost) | **POST** /folders/create | Creates a new folder.
+[**foldersDeleteDelete**](FoldersApi.md#foldersdeletedelete) | **DELETE** /folders/delete | Deletes an existing folder.
+[**foldersGetAllGet**](FoldersApi.md#foldersgetallget) | **GET** /folders/getAll | Gets all folders for a user.
+[**foldersGetGet**](FoldersApi.md#foldersgetget) | **GET** /folders/get | Gets information on an existing folder.
+[**foldersUpdatePut**](FoldersApi.md#foldersupdateput) | **PUT** /folders/update | Updates an existing folder object.
+
 
 # **foldersCreatePost**
-
 > FoldersCreateResponseBody foldersCreatePost(foldersCreateRequestBody)
 
 Creates a new folder.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -44,9 +42,9 @@ try {
 
 ### Parameters
 
- Name                         | Type                                                        | Description | Notes 
-------------------------------|-------------------------------------------------------------|-------------|-------
- **foldersCreateRequestBody** | [**FoldersCreateRequestBody**](FoldersCreateRequestBody.md) |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **foldersCreateRequestBody** | [**FoldersCreateRequestBody**](FoldersCreateRequestBody.md)|  | 
 
 ### Return type
 
@@ -58,19 +56,17 @@ try {
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+ - **Content-Type**: application/json
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **foldersDeleteDelete**
-
 > foldersDeleteDelete(folderUuid, recursive)
 
 Deletes an existing folder.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -91,10 +87,10 @@ try {
 
 ### Parameters
 
- Name           | Type       | Description | Notes 
-----------------|------------|-------------|-------
- **folderUuid** | **String** |             |
- **recursive**  | **bool**   |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **folderUuid** | **String**|  | 
+ **recursive** | **bool**|  | 
 
 ### Return type
 
@@ -106,19 +102,17 @@ void (empty response body)
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
-- **Accept**: application/json
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **foldersGetAllGet**
-
 > FoldersGetAllResponseBody foldersGetAllGet()
 
 Gets all folders for a user.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -137,7 +131,6 @@ try {
 ```
 
 ### Parameters
-
 This endpoint does not need any parameter.
 
 ### Return type
@@ -150,19 +143,17 @@ This endpoint does not need any parameter.
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
-- **Accept**: application/json
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **foldersGetGet**
-
 > FoldersGetResponseBody foldersGetGet(folderUuid)
 
 Gets information on an existing folder.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -183,9 +174,9 @@ try {
 
 ### Parameters
 
- Name           | Type       | Description | Notes 
-----------------|------------|-------------|-------
- **folderUuid** | **String** |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **folderUuid** | **String**|  | 
 
 ### Return type
 
@@ -197,19 +188,17 @@ try {
 
 ### HTTP request headers
 
-- **Content-Type**: Not defined
-- **Accept**: application/json
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **foldersUpdatePut**
-
 > FoldersUpdateResponseBody foldersUpdatePut(foldersUpdateRequestBody)
 
 Updates an existing folder object.
 
 ### Example
-
 ```dart
 import 'package:anonkey_frontend/api.dart';
 // TODO Configure API key authorization: Bearer
@@ -230,9 +219,9 @@ try {
 
 ### Parameters
 
- Name                         | Type                                                        | Description | Notes 
-------------------------------|-------------------------------------------------------------|-------------|-------
- **foldersUpdateRequestBody** | [**FoldersUpdateRequestBody**](FoldersUpdateRequestBody.md) |             |
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **foldersUpdateRequestBody** | [**FoldersUpdateRequestBody**](FoldersUpdateRequestBody.md)|  | 
 
 ### Return type
 
@@ -244,8 +233,8 @@ try {
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+ - **Content-Type**: application/json
+ - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

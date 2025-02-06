@@ -209,11 +209,28 @@ class AuthService {
           tokenType: TokenType.refreshToken,
           expiration: refreshExpiration);
     }
-    if (singleton.refreshToken == null) {
-      if (!validateToken(
-          timestamp: singleton.refreshToken?.expiration,
-          tokenType: TokenType.refreshToken)) {
-        // Fetch refresh token here
+    if (singleton.refreshToken == null ||
+        !validateToken(
+            timestamp: singleton.refreshToken?.expiration,
+            tokenType: TokenType.refreshToken)) {
+      // Fetch refresh token here
+      String? url = await ApiBaseData.getURL();
+      if (url != null) {
+        ApiClient api =
+            RequestUtility.getApiWithAuth(singleton.refreshToken!.token, url);
+        AuthenticationApi authenticationApi = AuthenticationApi(api);
+        authenticationApi
+            .authenticationRefreshRefreshTokenPost()
+            .then((value) {
+                  singleton.refreshToken = Token(
+                      token: value!.refreshToken!.token!,
+                      tokenType: TokenType.refreshToken,
+                      expiration: value.refreshToken!.expiryTimestamp!);
+                  singleton.accessToken = Token(
+                        token: value!.accessToken!.token!,
+                        tokenType: TokenType.accessToken,
+                        expiration: value.accessToken!.expiryTimestamp!);
+                });
       }
     } else {
       if (singleton.accessToken == null ||
