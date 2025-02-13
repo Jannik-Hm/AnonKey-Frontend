@@ -8,10 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class HomeCredentialsDisplayWidget extends StatefulWidget {
   final CombinedListData combinedData;
 
-  const HomeCredentialsDisplayWidget({
-    super.key,
-    required this.combinedData,
-  });
+  const HomeCredentialsDisplayWidget({super.key, required this.combinedData});
 
   @override
   State<StatefulWidget> createState() => _HomeCredentialsDisplayWidget();

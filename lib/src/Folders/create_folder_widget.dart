@@ -7,10 +7,7 @@ class CreateFolderWidget extends StatefulWidget {
   final Function(Folder) addFolderToList;
 
   /// [addFolderToList] must contain `setState(() {folderList.add(folder);});`
-  const CreateFolderWidget({
-    super.key,
-    required this.addFolderToList,
-  });
+  const CreateFolderWidget({super.key, required this.addFolderToList});
 
   @override
   State<StatefulWidget> createState() => _CreateFolderWidget();
@@ -30,21 +27,21 @@ class _CreateFolderWidget extends State<CreateFolderWidget> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () => ApiBaseData.callFuncIfServerReachable(
-          () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => FolderEditWidget(
-                    folder: null,
-                    onSaveCallback: onSaveCallback,
-                  ),
-                ),
+      onPressed:
+          () => ApiBaseData.callFuncIfServerReachable(
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (_) => FolderEditWidget(
+                      folder: null,
+                      onSaveCallback: onSaveCallback,
+                    ),
               ),
-          context: context),
-      icon: Icon(
-        Icons.add,
-        color: Theme.of(context).colorScheme.onSurface,
-      ),
+            ),
+            context: context,
+          ),
+      icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onSurface),
     );
   }
 }

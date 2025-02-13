@@ -63,28 +63,30 @@ class _SplashScreenViewState extends State<SplashScreenView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Image(
-                image: AssetImage('assets/images/Logo.png'),
-                width: 200,
-                height: 200),
+              image: AssetImage('assets/images/Logo.png'),
+              width: 200,
+              height: 200,
+            ),
             const SizedBox(height: 16),
             Form(
-                key: _loginFormKey,
-                child: Column(
-                  children: [
-                    FractionallySizedBox(
-                      widthFactor: 0.6,
-                      child: EntryInput(
-                        controller: password,
-                        label: AppLocalizations.of(context)!.password,
-                        obscureText: true,
-                        focus: _passwordFocus,
-                        validator: ValidationBuilder().required().build(),
-                        onEnterPressed: () => _loginWithoutUsername(context),
-                      ),
+              key: _loginFormKey,
+              child: Column(
+                children: [
+                  FractionallySizedBox(
+                    widthFactor: 0.6,
+                    child: EntryInput(
+                      controller: password,
+                      label: AppLocalizations.of(context)!.password,
+                      obscureText: true,
+                      focus: _passwordFocus,
+                      validator: ValidationBuilder().required().build(),
+                      onEnterPressed: () => _loginWithoutUsername(context),
                     ),
-                    const SizedBox(height: 16),
-                  ],
-                )),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
             const SizedBox(height: 16),
             if (_isBiometricAvailable)
               ButtonWithThrobber(
@@ -141,7 +143,9 @@ class _SplashScreenViewState extends State<SplashScreenView> {
           });
           if (context.mounted) {
             NotificationPopup.popupErrorMessage(
-                context: context, message: "Login failed");
+              context: context,
+              message: "Login failed",
+            );
           }
         }
       } on NoTokensFoundException {
@@ -151,7 +155,9 @@ class _SplashScreenViewState extends State<SplashScreenView> {
       } on ApiException catch (e) {
         if (context.mounted) {
           NotificationPopup.apiError(
-              context: context, apiResponseMessage: e.message);
+            context: context,
+            apiResponseMessage: e.message,
+          );
         }
       }
     }
@@ -175,7 +181,9 @@ class _SplashScreenViewState extends State<SplashScreenView> {
         });
         if (context.mounted) {
           NotificationPopup.popupErrorMessage(
-              context: context, message: "Login failed");
+            context: context,
+            message: "Login failed",
+          );
         }
       }
     }

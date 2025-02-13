@@ -21,8 +21,8 @@ class AuthUtils {
       if (!canCheckBiometrics) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content:
-                  Text(AppLocalizations.of(context)!.biometricNotAvailable)),
+            content: Text(AppLocalizations.of(context)!.biometricNotAvailable),
+          ),
         );
         return false;
       }
@@ -39,14 +39,16 @@ class AuthUtils {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text(AppLocalizations.of(context)!.biometricFailed)),
+            content: Text(AppLocalizations.of(context)!.biometricFailed),
+          ),
         );
         return false;
       }
     } on PlatformException catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(AppLocalizations.of(context)!.biometricNotAvailable)),
+          content: Text(AppLocalizations.of(context)!.biometricNotAvailable),
+        ),
       );
       return false;
     }
