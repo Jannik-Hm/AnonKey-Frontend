@@ -424,7 +424,7 @@ class AuthService {
     var singleton = AuthenticationCredentialsSingleton();
     singleton.encryptionKDF = encryptionKDF;
     singleton.username = username;
-    singleton.softLogout = true;
+    singleton.softLogout = false;
     singleton.skipSplashScreen = false;
     singleton.refreshToken = Token(
         token: refreshToken,
