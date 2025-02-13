@@ -50,7 +50,9 @@ class SettingsController with ChangeNotifier {
 
   /// Update and persist the ThemeMode based on the user's selection.
   Future<void> updateThemeMode(
-      ThemeMode? newThemeMode, BuildContext context) async {
+    ThemeMode? newThemeMode,
+    BuildContext context,
+  ) async {
     if (newThemeMode == null) return;
 
     // Do not perform any work if new and old ThemeMode are identical
@@ -97,7 +99,9 @@ class SettingsController with ChangeNotifier {
   }
 
   Future<void> updateBiometricSetting(
-      BuildContext context, bool isEnabled) async {
+    BuildContext context,
+    bool isEnabled,
+  ) async {
     bool success = false;
     try {
       await AuthService.setSkipSplashScreen(true);

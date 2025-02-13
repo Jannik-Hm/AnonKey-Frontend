@@ -25,8 +25,8 @@ class AuthUtils {
       if (!canCheckBiometrics) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content:
-                  Text(AppLocalizations.of(context)!.biometricNotAvailable)),
+            content: Text(AppLocalizations.of(context)!.biometricNotAvailable),
+          ),
         );
         return false;
       }
@@ -43,8 +43,11 @@ class AuthUtils {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         final Map<String, String> credentials =
             await AuthService.getAuthenticationCredentials();
-        bool req = await AuthService.login(credentials["username"]!,
-            credentials["password"]!, prefs.getString("url") ?? "");
+        bool req = await AuthService.login(
+          credentials["username"]!,
+          credentials["password"]!,
+          prefs.getString("url") ?? "",
+        );
         if (req) {
           if (context.mounted) {
             if (context.canPop()) {
@@ -56,21 +59,25 @@ class AuthUtils {
         } else {
           if (context.mounted) {
             NotificationPopup.popupErrorMessage(
-                context: context, message: "Login failed");
+              context: context,
+              message: "Login failed",
+            );
           }
         }
         return true;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text(AppLocalizations.of(context)!.biometricFailed)),
+            content: Text(AppLocalizations.of(context)!.biometricFailed),
+          ),
         );
         return false;
       }
     } on PlatformException catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(AppLocalizations.of(context)!.biometricNotAvailable)),
+          content: Text(AppLocalizations.of(context)!.biometricNotAvailable),
+        ),
       );
       return false;
     }

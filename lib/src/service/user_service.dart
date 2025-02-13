@@ -19,7 +19,10 @@ class UserService {
   ///
   /// Throws an exception if the user was not deleted successfully
   static Future<bool> deleteUser(
-      String url, String token, String password) async {
+    String url,
+    String token,
+    String password,
+  ) async {
     ApiClient apiClient = RequestUtility.getApiWithAuth(token, url);
     UsersApi usersApi = UsersApi(apiClient);
 
@@ -34,12 +37,12 @@ class UserService {
     }
     await usersApi
         .userDeleteDeleteWithHttpInfo()
-        .then((value) async => {
-              if (value.statusCode == 200)
-                {
-                  await AuthService.deleteAuthenticationCredentials(),
-                }
-            })
+        .then(
+          (value) async => {
+            if (value.statusCode == 200)
+              {await AuthService.deleteAuthenticationCredentials()},
+          },
+        )
         .catchError((onError) => throw Exception(onError.toString()));
     return true;
   }

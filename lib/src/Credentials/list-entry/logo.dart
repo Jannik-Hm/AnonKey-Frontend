@@ -27,32 +27,34 @@ Future<String?> _getBestLogoUrlFromUrl(String url) async {
 //TODO: Backend API to Scan for favicons to prevent CORS error
 Future<Uint8List> _getBestLogoFromUrl(String url) async {
   var response = await http.get(
-      Uri.parse("https://icons.duckduckgo.com/ip3/${_extractDomain(url)}.ico"));
+    Uri.parse("https://icons.duckduckgo.com/ip3/${_extractDomain(url)}.ico"),
+  );
   return response.bodyBytes;
 }
 
 StatefulWidget getNetworkLogoFromUrl(String url) {
   return FutureBuilder(
-      future: _getBestLogoUrlFromUrl(url),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          // While the future is loading, show a progress indicator
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          // If there's an error, show a fallback icon or error message
-          // print(snapshot.error); // Debugging information
-          return Icon(
-            Icons.public,
-            color: Theme.of(context).colorScheme.onTertiary,
-          );
-        } else if (snapshot.hasData) {
-          return Image.network(snapshot.data!);
-        } else {
-          // Fallback if no data is present
-          return Icon(
-            Icons.public,
-            color: Theme.of(context).colorScheme.onTertiary,
-          );
-        }
-      });
+    future: _getBestLogoUrlFromUrl(url),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        // While the future is loading, show a progress indicator
+        return const CircularProgressIndicator();
+      } else if (snapshot.hasError) {
+        // If there's an error, show a fallback icon or error message
+        // print(snapshot.error); // Debugging information
+        return Icon(
+          Icons.public,
+          color: Theme.of(context).colorScheme.onTertiary,
+        );
+      } else if (snapshot.hasData) {
+        return Image.network(snapshot.data!);
+      } else {
+        // Fallback if no data is present
+        return Icon(
+          Icons.public,
+          color: Theme.of(context).colorScheme.onTertiary,
+        );
+      }
+    },
+  );
 }

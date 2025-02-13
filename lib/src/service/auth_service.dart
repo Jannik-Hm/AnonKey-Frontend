@@ -19,7 +19,10 @@ class AuthService {
   /// [password]: The password.
   ///
   static Future<bool> login(
-      String username, String password, String url) async {
+    String username,
+    String password,
+    String url,
+  ) async {
     ApiClient apiClient = RequestUtility.getApiWithoutAuth(url);
     AuthenticationApi authApi = AuthenticationApi(apiClient);
     String masterKDF = await Cryptography.getKDFBase64(
@@ -31,13 +34,21 @@ class AuthService {
         userName: username,
         kdfPasswordResult: masterKDF,
       );
-      await authApi.authenticationLoginPost(loginBody).then((value) async => {
-            if (value?.token != null)
-              {
-                await storeAuthenticationCredentials(
-                    value?.token, username, password, value!.expiresInSeconds!),
-              }
-          });
+      await authApi
+          .authenticationLoginPost(loginBody)
+          .then(
+            (value) async => {
+              if (value?.token != null)
+                {
+                  await storeAuthenticationCredentials(
+                    value?.token,
+                    username,
+                    password,
+                    value!.expiresInSeconds!,
+                  ),
+                },
+            },
+          );
       return true;
     } catch (e) {
       return false;
@@ -55,7 +66,11 @@ class AuthService {
   /// [displayName]: The display name.
   ///
   static Future<bool> register(
-      String username, String password, String? displayName, String url) async {
+    String username,
+    String password,
+    String? displayName,
+    String url,
+  ) async {
     displayName = username;
 
     ApiClient apiClient = RequestUtility.getApiWithoutAuth(url);
@@ -70,13 +85,21 @@ class AuthService {
         userDisplayName: username,
         kdfPasswordResult: masterKDF,
       );
-      await authApi.userCreatePost(registerBody).then((value) async => {
-            if (value?.token != null)
-              {
-                await storeAuthenticationCredentials(
-                    value?.token, username, password, value!.expiresInSeconds!),
-              }
-          });
+      await authApi
+          .userCreatePost(registerBody)
+          .then(
+            (value) async => {
+              if (value?.token != null)
+                {
+                  await storeAuthenticationCredentials(
+                    value?.token,
+                    username,
+                    password,
+                    value!.expiresInSeconds!,
+                  ),
+                },
+            },
+          );
       return true;
     } catch (e) {
       return false;
@@ -99,12 +122,14 @@ class AuthService {
     String? token = await storage.read(key: "token");
     String? username = await storage.read(key: "username");
     String? password = await storage.read(key: "password");
-    String? encryptionKDF = (password == null || username == null)
-        ? ""
-        : await Cryptography.getKDFBase64(
-            masterPassword: password,
-            salt: "${username}_encryption",
-            kdfMode: KDFMode.master);
+    String? encryptionKDF =
+        (password == null || username == null)
+            ? ""
+            : await Cryptography.getKDFBase64(
+              masterPassword: password,
+              salt: "${username}_encryption",
+              kdfMode: KDFMode.master,
+            );
     String? timestampStorage = await storage.read(key: "timestamp");
     int expire = int.parse(await storage.read(key: "expire") ?? "0");
     if (token == null ||
@@ -120,7 +145,7 @@ class AuthService {
       "token": token,
       "username": username,
       "password": password,
-      "encryptionKDF": encryptionKDF
+      "encryptionKDF": encryptionKDF,
     };
   }
 
@@ -164,11 +189,17 @@ class AuthService {
   ///
   /// [password]: The password.
   static Future<void> storeAuthenticationCredentials(
-      String? token, String username, String password, int expire) async {
+    String? token,
+    String username,
+    String password,
+    int expire,
+  ) async {
     const storage = FlutterSecureStorage();
     await storage.write(key: "token", value: token);
     await storage.write(
-        key: "timestamp", value: DateTime.now().toIso8601String());
+      key: "timestamp",
+      value: DateTime.now().toIso8601String(),
+    );
     await storage.write(key: "password", value: password);
     await storage.write(key: "username", value: username);
     await storage.write(key: "expire", value: expire.toString());

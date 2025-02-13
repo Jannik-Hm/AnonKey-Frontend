@@ -99,10 +99,7 @@ class CredentialList {
   }
 
   /// Function to serialize CredentialList to store in App Storage
-  List<dynamic> toJson() => {
-        ...byIDList,
-        ...deletedList,
-      }.values.toList();
+  List<dynamic> toJson() => {...byIDList, ...deletedList}.values.toList();
 
   /// Function to write encrypted CredentialList to App Document Directory
   Future<void> saveToDisk() async {
@@ -111,30 +108,35 @@ class CredentialList {
   }
 
   /// Function to get new CredentialList from `All` API endpoint response
-  static Future<CredentialList> getFromAPI(
-      {required api.CredentialsGetAllResponseBody credentials,
-      required String masterPassword}) async {
+  static Future<CredentialList> getFromAPI({
+    required api.CredentialsGetAllResponseBody credentials,
+    required String masterPassword,
+  }) async {
     CredentialList data = CredentialList._();
 
-    List<Future<Credential>> futures = credentials.credentials!
-        .map((credential) => Credential.fromApi(
-            uuid: credential.uuid!,
-            masterPassword: masterPassword,
-            encryptedWebsiteUrl: credential.websiteUrl!,
-            websiteUrlSalt: credential.websiteUrlSalt!,
-            encryptedUsername: credential.username!,
-            usernameSalt: credential.usernameSalt!,
-            encryptedPassword: credential.password!,
-            passwordSalt: credential.passwordSalt!,
-            encryptedDisplayName: credential.displayName!,
-            displayNameSalt: credential.displayNameSalt!,
-            encryptedNote: credential.note!,
-            noteSalt: credential.noteSalt!,
-            folderUuid: credential.folderUuid,
-            createdTimeStamp: credential.createdTimestamp,
-            changedTimeStamp: credential.changedTimestamp,
-            deletedTimeStamp: credential.deletedTimestamp))
-        .toList();
+    List<Future<Credential>> futures =
+        credentials.credentials!
+            .map(
+              (credential) => Credential.fromApi(
+                uuid: credential.uuid!,
+                masterPassword: masterPassword,
+                encryptedWebsiteUrl: credential.websiteUrl!,
+                websiteUrlSalt: credential.websiteUrlSalt!,
+                encryptedUsername: credential.username!,
+                usernameSalt: credential.usernameSalt!,
+                encryptedPassword: credential.password!,
+                passwordSalt: credential.passwordSalt!,
+                encryptedDisplayName: credential.displayName!,
+                displayNameSalt: credential.displayNameSalt!,
+                encryptedNote: credential.note!,
+                noteSalt: credential.noteSalt!,
+                folderUuid: credential.folderUuid,
+                createdTimeStamp: credential.createdTimestamp,
+                changedTimeStamp: credential.changedTimestamp,
+                deletedTimeStamp: credential.deletedTimestamp,
+              ),
+            )
+            .toList();
     List<Credential> futureCredentials = await Future.wait(futures);
     futureCredentials.forEach(data.add);
     await data.saveToDisk();
@@ -156,7 +158,8 @@ class CredentialList {
     Credential? temp = byIDList[uuid];
     if (temp != null) {
       remove(uuid);
-      add(await Credential.newEntry(
+      add(
+        await Credential.newEntry(
           masterPassword: masterPassword,
           uuid: uuid,
           clearWebsiteUrl: clearWebsiteUrl,
@@ -166,7 +169,9 @@ class CredentialList {
           folderUuid: folderUuid,
           createdTimeStamp:
               temp.getCreatedTimeStamp()!.millisecondsSinceEpoch ~/ 1000,
-          clearNote: clearNote));
+          clearNote: clearNote,
+        ),
+      );
       await saveToDisk();
     }
   }
@@ -183,53 +188,56 @@ class CredentialList {
   }
 
   /// Function to update this entire CredentialList using `All` API endpoint (with minimal decryption)
-  Future<CredentialList> updateFromAPI(
-      {required api.CredentialsGetAllResponseBody credentials,
-      required String masterPassword}) async {
+  Future<CredentialList> updateFromAPI({
+    required api.CredentialsGetAllResponseBody credentials,
+    required String masterPassword,
+  }) async {
     CredentialList data = CredentialList._();
 
     List<Future<Credential>> futures =
         credentials.credentials!.map((credential) {
-      Credential? origin = this.byIDList[credential.uuid!];
-      Future<Credential> temp;
-      if (origin != null) {
-        temp = origin.updateFromApi(
-            masterPassword: masterPassword,
-            encryptedWebsiteUrl: credential.websiteUrl!,
-            websiteUrlSalt: credential.websiteUrlSalt!,
-            encryptedUsername: credential.username!,
-            usernameSalt: credential.usernameSalt!,
-            encryptedPassword: credential.password!,
-            passwordSalt: credential.passwordSalt!,
-            encryptedDisplayName: credential.displayName!,
-            displayNameSalt: credential.displayNameSalt!,
-            encryptedNote: credential.note!,
-            noteSalt: credential.noteSalt!,
-            folderUuid: credential.folderUuid,
-            createdTimeStamp: credential.createdTimestamp,
-            changedTimeStamp: credential.changedTimestamp,
-            deletedTimeStamp: credential.deletedTimestamp);
-      } else {
-        temp = Credential.fromApi(
-            uuid: credential.uuid!,
-            masterPassword: masterPassword,
-            encryptedWebsiteUrl: credential.websiteUrl!,
-            websiteUrlSalt: credential.websiteUrlSalt!,
-            encryptedUsername: credential.username!,
-            usernameSalt: credential.usernameSalt!,
-            encryptedPassword: credential.password!,
-            passwordSalt: credential.passwordSalt!,
-            encryptedDisplayName: credential.displayName!,
-            displayNameSalt: credential.displayNameSalt!,
-            encryptedNote: credential.note!,
-            noteSalt: credential.noteSalt!,
-            folderUuid: credential.folderUuid,
-            createdTimeStamp: credential.createdTimestamp,
-            changedTimeStamp: credential.changedTimestamp,
-            deletedTimeStamp: credential.deletedTimestamp);
-      }
-      return temp;
-    }).toList();
+          Credential? origin = this.byIDList[credential.uuid!];
+          Future<Credential> temp;
+          if (origin != null) {
+            temp = origin.updateFromApi(
+              masterPassword: masterPassword,
+              encryptedWebsiteUrl: credential.websiteUrl!,
+              websiteUrlSalt: credential.websiteUrlSalt!,
+              encryptedUsername: credential.username!,
+              usernameSalt: credential.usernameSalt!,
+              encryptedPassword: credential.password!,
+              passwordSalt: credential.passwordSalt!,
+              encryptedDisplayName: credential.displayName!,
+              displayNameSalt: credential.displayNameSalt!,
+              encryptedNote: credential.note!,
+              noteSalt: credential.noteSalt!,
+              folderUuid: credential.folderUuid,
+              createdTimeStamp: credential.createdTimestamp,
+              changedTimeStamp: credential.changedTimestamp,
+              deletedTimeStamp: credential.deletedTimestamp,
+            );
+          } else {
+            temp = Credential.fromApi(
+              uuid: credential.uuid!,
+              masterPassword: masterPassword,
+              encryptedWebsiteUrl: credential.websiteUrl!,
+              websiteUrlSalt: credential.websiteUrlSalt!,
+              encryptedUsername: credential.username!,
+              usernameSalt: credential.usernameSalt!,
+              encryptedPassword: credential.password!,
+              passwordSalt: credential.passwordSalt!,
+              encryptedDisplayName: credential.displayName!,
+              displayNameSalt: credential.displayNameSalt!,
+              encryptedNote: credential.note!,
+              noteSalt: credential.noteSalt!,
+              folderUuid: credential.folderUuid,
+              createdTimeStamp: credential.createdTimestamp,
+              changedTimeStamp: credential.changedTimestamp,
+              deletedTimeStamp: credential.deletedTimestamp,
+            );
+          }
+          return temp;
+        }).toList();
 
     List<Credential> futureCredentials = await Future.wait(futures);
     futureCredentials.forEach(data.add);
@@ -242,18 +250,22 @@ class CredentialList {
   /// Helper to get `All` API endpoint
   /// throws [TimeoutException] if timeout is specified and exceeded
   static Future<api.CredentialsGetAllResponseBody?>
-      _getResponseFromAllAPI() async {
+  _getResponseFromAllAPI() async {
     String? url = await ApiBaseData.getURL();
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
     if (url != null) {
-      api.ApiClient apiClient =
-          RequestUtility.getApiWithAuth(authdata["token"]!, url);
+      api.ApiClient apiClient = RequestUtility.getApiWithAuth(
+        authdata["token"]!,
+        url,
+      );
       api.CredentialsApi credentialApi = api.CredentialsApi(apiClient);
       api.CredentialsGetAllResponseBody? response =
-          await ApiBaseData.apiCallWrapper(credentialApi.credentialsGetAllGet(),
-              logMessage: "Credential Fetch failed, using local data instead.",
-              returnNullOnTimeout: true);
+          await ApiBaseData.apiCallWrapper(
+            credentialApi.credentialsGetAllGet(),
+            logMessage: "Credential Fetch failed, using local data instead.",
+            returnNullOnTimeout: true,
+          );
       return response;
     }
     return null;
@@ -261,20 +273,23 @@ class CredentialList {
 
   /// Function to get entire CredentialList from Backend
   static Future<CredentialList?> getFromAPIFull() async {
-    Future<api.CredentialsGetAllResponseBody?> responseFuture = (() async {
-      try {
-        return await _getResponseFromAllAPI();
-      } on AnonKeyServerOffline catch (_) {
-        return null;
-      }
-    })();
+    Future<api.CredentialsGetAllResponseBody?> responseFuture =
+        (() async {
+          try {
+            return await _getResponseFromAllAPI();
+          } on AnonKeyServerOffline catch (_) {
+            return null;
+          }
+        })();
     Map<String, String> authdata =
         await AuthService.getAuthenticationCredentials();
 
     Future<CredentialList> futureLocalData = readFromDisk();
 
-    List<dynamic> futureData =
-        await Future.wait([responseFuture, futureLocalData]);
+    List<dynamic> futureData = await Future.wait([
+      responseFuture,
+      futureLocalData,
+    ]);
 
     api.CredentialsGetAllResponseBody? response =
         (futureData[0] as api.CredentialsGetAllResponseBody?);
@@ -283,7 +298,9 @@ class CredentialList {
 
     if (response != null) {
       CredentialList data = await localData.updateFromAPI(
-          credentials: response, masterPassword: authdata["encryptionKDF"]!);
+        credentials: response,
+        masterPassword: authdata["encryptionKDF"]!,
+      );
       return data;
     }
     throw CredentialListTimeout(localData);
@@ -298,7 +315,9 @@ class CredentialList {
 
     if (response != null) {
       CredentialList data = await updateFromAPI(
-          credentials: response, masterPassword: authdata["encryptionKDF"]!);
+        credentials: response,
+        masterPassword: authdata["encryptionKDF"]!,
+      );
       return data;
     } else {
       throw CredentialListTimeout(this);

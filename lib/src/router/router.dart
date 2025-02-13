@@ -17,9 +17,7 @@ import 'package:go_router/go_router.dart';
 import '../exception/auth_exception.dart';
 
 class AppRouter {
-  AppRouter({
-    required this.settingsController,
-  });
+  AppRouter({required this.settingsController});
 
   final SettingsController settingsController;
 
@@ -37,12 +35,10 @@ class AppRouter {
         GoRoute(
           name: "home",
           path: '/',
-          builder: (context, state) => AppLifecyclePage(
-            child: HomeScreen(
-              controller: settingsController,
-              index: 0,
-            ),
-          ),
+          builder:
+              (context, state) => AppLifecyclePage(
+                child: HomeScreen(controller: settingsController, index: 0),
+              ),
         ),
         GoRoute(
           name: "login",
@@ -61,26 +57,23 @@ class AppRouter {
         GoRoute(
           name: "settings",
           path: "/settings",
-          builder: (context, state) =>
-              SettingsView(controller: settingsController),
+          builder:
+              (context, state) => SettingsView(controller: settingsController),
         ),
         GoRoute(
           path: '/folder',
           builder: (context, state) {
-            final data = state.extra
-                as CredentialListWidgetData; // Access the passed object
-            return FolderView(
-              data: data,
-            );
+            final data =
+                state.extra
+                    as CredentialListWidgetData; // Access the passed object
+            return FolderView(data: data);
           },
         ),
         GoRoute(
           path: '/folderDetail',
           builder: (context, state) {
             final folder = state.extra as Folder; // Access the passed object
-            return FolderEditWidget(
-              folder: folder,
-            );
+            return FolderEditWidget(folder: folder);
           },
         ),
       ],
@@ -90,7 +83,7 @@ class AppRouter {
         try {
           isAuthenticated =
               (await AuthService.getAuthenticationCredentials())['token'] !=
-                  null;
+              null;
         } on NoCredentialException catch (e) {
           if (kDebugMode) {
             print(e.errMsg());

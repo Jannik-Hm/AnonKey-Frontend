@@ -63,28 +63,30 @@ class _SplashScreenViewState extends State<SplashScreenView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Image(
-                image: AssetImage('assets/images/Logo.png'),
-                width: 200,
-                height: 200),
+              image: AssetImage('assets/images/Logo.png'),
+              width: 200,
+              height: 200,
+            ),
             const SizedBox(height: 16),
             Form(
-                key: _loginFormKey,
-                child: Column(
-                  children: [
-                    FractionallySizedBox(
-                      widthFactor: 0.6,
-                      child: EntryInput(
-                        controller: password,
-                        label: AppLocalizations.of(context)!.password,
-                        obscureText: true,
-                        focus: _passwordFocus,
-                        validator: ValidationBuilder().required().build(),
-                        onEnterPressed: () => _loginWithoutUsername(context),
-                      ),
+              key: _loginFormKey,
+              child: Column(
+                children: [
+                  FractionallySizedBox(
+                    widthFactor: 0.6,
+                    child: EntryInput(
+                      controller: password,
+                      label: AppLocalizations.of(context)!.password,
+                      obscureText: true,
+                      focus: _passwordFocus,
+                      validator: ValidationBuilder().required().build(),
+                      onEnterPressed: () => _loginWithoutUsername(context),
                     ),
-                    const SizedBox(height: 16),
-                  ],
-                )),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
             const SizedBox(height: 16),
             if (_isBiometricAvailable)
               ButtonWithThrobber(
@@ -129,8 +131,11 @@ class _SplashScreenViewState extends State<SplashScreenView> {
       try {
         final Map<String, String> credentials =
             await AuthService.getAuthenticationCredentials();
-        bool req = await AuthService.login(credentials["username"]!,
-            password.text, prefs.getString("url") ?? "");
+        bool req = await AuthService.login(
+          credentials["username"]!,
+          password.text,
+          prefs.getString("url") ?? "",
+        );
         if (req) {
           if (context.mounted) {
             if (context.canPop()) {
@@ -145,7 +150,9 @@ class _SplashScreenViewState extends State<SplashScreenView> {
           });
           if (context.mounted) {
             NotificationPopup.popupErrorMessage(
-                context: context, message: "Login failed");
+              context: context,
+              message: "Login failed",
+            );
           }
         }
       } on NoCredentialException {
@@ -155,7 +162,9 @@ class _SplashScreenViewState extends State<SplashScreenView> {
       } on ApiException catch (e) {
         if (context.mounted) {
           NotificationPopup.apiError(
-              context: context, apiResponseMessage: e.message);
+            context: context,
+            apiResponseMessage: e.message,
+          );
         }
       }
     }
@@ -167,25 +176,26 @@ class _SplashScreenViewState extends State<SplashScreenView> {
       if (!canCheckBiometrics) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content:
-                  Text(AppLocalizations.of(context)!.biometricNotAvailable)),
+            content: Text(AppLocalizations.of(context)!.biometricNotAvailable),
+          ),
         );
         return;
       }
 
       bool authenticated = await auth.authenticate(
         localizedReason: AppLocalizations.of(context)!.loginWithBiometrics,
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-        ),
+        options: const AuthenticationOptions(biometricOnly: true),
       );
 
       if (authenticated) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         final Map<String, String> credentials =
             await AuthService.getAuthenticationCredentials();
-        bool req = await AuthService.login(credentials["username"]!,
-            credentials["password"]!, prefs.getString("url") ?? "");
+        bool req = await AuthService.login(
+          credentials["username"]!,
+          credentials["password"]!,
+          prefs.getString("url") ?? "",
+        );
         if (req) {
           if (context.mounted) {
             if (context.canPop()) {
@@ -200,19 +210,23 @@ class _SplashScreenViewState extends State<SplashScreenView> {
           });
           if (context.mounted) {
             NotificationPopup.popupErrorMessage(
-                context: context, message: "Login failed");
+              context: context,
+              message: "Login failed",
+            );
           }
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text(AppLocalizations.of(context)!.biometricFailed)),
+            content: Text(AppLocalizations.of(context)!.biometricFailed),
+          ),
         );
       }
     } on PlatformException catch (_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(AppLocalizations.of(context)!.biometricNotAvailable)),
+          content: Text(AppLocalizations.of(context)!.biometricNotAvailable),
+        ),
       );
     }
   }

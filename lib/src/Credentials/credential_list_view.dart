@@ -46,19 +46,22 @@ class _CredentialListWidget extends State<CredentialListWidget> {
       credential: credential,
       onSaveCallback: (credential) {
         setState(() {
-          credentials =
-              credentials.updateFromLocalObject(credential: credential);
-          credentialList = ((widget.currentFolderUuid == null)
-              ? credentials.byIDList.values.toList()
-              : (credentials.byFolderMap[widget.currentFolderUuid] ?? []));
+          credentials = credentials.updateFromLocalObject(
+            credential: credential,
+          );
+          credentialList =
+              ((widget.currentFolderUuid == null)
+                  ? credentials.byIDList.values.toList()
+                  : (credentials.byFolderMap[widget.currentFolderUuid] ?? []));
         });
       },
       onSoftDeleteCallback: (uuid) {
         setState(() {
           credentials.softDelete(uuid);
-          credentialList = ((widget.currentFolderUuid == null)
-              ? credentials.byIDList.values.toList()
-              : (credentials.byFolderMap[widget.currentFolderUuid] ?? []));
+          credentialList =
+              ((widget.currentFolderUuid == null)
+                  ? credentials.byIDList.values.toList()
+                  : (credentials.byFolderMap[widget.currentFolderUuid] ?? []));
         });
       },
       availableFolders: widget.availableFolders!.toList(),
@@ -69,9 +72,10 @@ class _CredentialListWidget extends State<CredentialListWidget> {
   void initState() {
     super.initState();
     credentials = widget.credentials;
-    credentialList = ((widget.currentFolderUuid == null)
-        ? credentials.byIDList.values.toList()
-        : (credentials.byFolderMap[widget.currentFolderUuid] ?? []));
+    credentialList =
+        ((widget.currentFolderUuid == null)
+            ? credentials.byIDList.values.toList()
+            : (credentials.byFolderMap[widget.currentFolderUuid] ?? []));
     // Initialize the mutable object from the widget field
   }
 
@@ -79,7 +83,8 @@ class _CredentialListWidget extends State<CredentialListWidget> {
   Widget build(BuildContext context) {
     // Order Credentials by Displayname
     credentialList.sort(
-        (x, y) => x.getClearDisplayName().compareTo(y.getClearDisplayName()));
+      (x, y) => x.getClearDisplayName().compareTo(y.getClearDisplayName()),
+    );
     return Column(children: credentialList.map(_fromList).toList());
   }
 }
