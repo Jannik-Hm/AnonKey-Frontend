@@ -38,9 +38,10 @@ class LoginController extends State<LoginView> {
                 child: Column(
                   children: [
                     const Image(
-                        image: AssetImage('assets/images/Logo.png'),
-                        width: 200,
-                        height: 200),
+                      image: AssetImage('assets/images/Logo.png'),
+                      width: 200,
+                      height: 200,
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       AppLocalizations.of(context)!.login,
@@ -54,15 +55,16 @@ class LoginController extends State<LoginView> {
                         label: AppLocalizations.of(context)!.url,
                         obscureText: false,
                         focus: _urlFocus,
-                        validator: (kDebugMode)
-                            ? null
-                            : ValidationBuilder().url().add((value) {
-                                if (value != null &&
-                                    !value.startsWith('https://')) {
-                                  return 'Only HTTPS URLs are allowed';
-                                }
-                                return null;
-                              }).build(),
+                        validator:
+                            (kDebugMode)
+                                ? null
+                                : ValidationBuilder().url().add((value) {
+                                  if (value != null &&
+                                      !value.startsWith('https://')) {
+                                    return 'Only HTTPS URLs are allowed';
+                                  }
+                                  return null;
+                                }).build(),
                         onEnterPressed: () => _usernameFocus.requestFocus(),
                       ),
                     ),
@@ -119,13 +121,18 @@ class LoginController extends State<LoginView> {
   Future<void> _showDialog() async {
     if (_loginFormKey.currentState!.validate()) {
       try {
-        bool test =
-            await AuthService.login(username.text, password.text, url.text);
+        bool test = await AuthService.login(
+          username.text,
+          password.text,
+          url.text,
+        );
 
         if (test) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString(
-              'url', url.text); // Ensure the preferences are saved
+            'url',
+            url.text,
+          ); // Ensure the preferences are saved
           if (!mounted) return;
           context.goNamed("home");
         } else {
@@ -133,16 +140,16 @@ class LoginController extends State<LoginView> {
           return showDialog(
             context: context,
             builder: (context) {
-              return const AlertDialog(
-                content: Text('Login failed'),
-              );
+              return const AlertDialog(content: Text('Login failed'));
             },
           );
         }
       } on ApiException catch (e) {
         if (context.mounted) {
           NotificationPopup.apiError(
-              context: context, apiResponseMessage: e.message);
+            context: context,
+            apiResponseMessage: e.message,
+          );
         }
       }
     }

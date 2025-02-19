@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-// @dart=2.12
+// @dart=2.18
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -16,15 +16,13 @@ void main() {
   // final instance = UsersCreateResponseBody();
 
   group('test UsersCreateResponseBody', () {
-    // The token that can be used for authentication.
-    // String token
-    test('to test the property `token`', () async {
+    // UsersCreateResponseToken accessToken
+    test('to test the property `accessToken`', () async {
       // TODO
     });
 
-    // The time in seconds the token expires in.
-    // int expiresInSeconds
-    test('to test the property `expiresInSeconds`', () async {
+    // UsersCreateResponseToken refreshToken
+    test('to test the property `refreshToken`', () async {
       // TODO
     });
   });

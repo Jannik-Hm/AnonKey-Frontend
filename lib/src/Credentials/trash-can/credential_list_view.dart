@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 class CredentialTrashListWidget extends StatefulWidget {
   final CredentialList credentials;
 
-  const CredentialTrashListWidget({
-    super.key,
-    required this.credentials,
-  });
+  const CredentialTrashListWidget({super.key, required this.credentials});
 
   @override
   State<StatefulWidget> createState() => _CredentialTrashListWidget();
@@ -56,7 +53,8 @@ class _CredentialTrashListWidget extends State<CredentialTrashListWidget> {
   @override
   Widget build(BuildContext context) {
     credentialList.sort(
-        (x, y) => x.getClearDisplayName().compareTo(y.getClearDisplayName()));
+      (x, y) => x.getClearDisplayName().compareTo(y.getClearDisplayName()),
+    );
     return Column(
       key: UniqueKey(),
       children: credentialList.map(_fromList).toList(),

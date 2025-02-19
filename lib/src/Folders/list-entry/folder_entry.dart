@@ -15,7 +15,7 @@ class FolderEntry extends StatefulWidget {
   final CredentialList credentials;
   final FolderList? availableFolders;
   final Function({required String uuid, required bool recursive})?
-      onDeleteCallback;
+  onDeleteCallback;
   final Function({required Folder folderData})? onSaveCallback;
 
   const FolderEntry({
@@ -45,53 +45,49 @@ class _FolderEntry extends State<FolderEntry> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     return ClickableTile(
-      onTap: () => {
-        context.push('/folder',
-            extra: CredentialListWidgetData(
+      onTap:
+          () => {
+            context.push(
+              '/folder',
+              extra: CredentialListWidgetData(
                 availableFolders: widget.availableFolders,
                 credentials: widget.credentials,
-                currentFolderUuid: widget.folder.uuid!)),
-      },
+                currentFolderUuid: widget.folder.uuid!,
+              ),
+            ),
+          },
       leading: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 70.0),
-        child: _folder.getIcon(
-          color: theme.colorScheme.onTertiary,
-        ),
+        child: _folder.getIcon(color: theme.colorScheme.onTertiary),
       ),
       title: Text(
         _folder.displayName,
-        style: TextStyle(
-          fontSize: 20.0,
-          color: theme.colorScheme.onTertiary,
-        ),
+        style: TextStyle(fontSize: 20.0, color: theme.colorScheme.onTertiary),
       ),
       trailing: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context)
-              .colorScheme
-              .primary, // Set the primary color from ColorScheme
-        ),
-        onPressed: () => {
-          ApiBaseData.callFuncIfServerReachable(
-            () {
-              Navigator.push(
+          backgroundColor:
+              Theme.of(
                 context,
-                MaterialPageRoute(
-                  builder: (_) => FolderEditWidget(
-                    folder: _folder,
-                    onDeleteCallback: widget.onDeleteCallback,
-                    onSaveCallback: widget.onSaveCallback,
-                  ),
-                ),
-              );
-            },
-            context: context,
-          ),
-        },
-        child: Icon(
-          Icons.edit,
-          color: Theme.of(context).colorScheme.onPrimary,
+              ).colorScheme.primary, // Set the primary color from ColorScheme
         ),
+        onPressed:
+            () => {
+              ApiBaseData.callFuncIfServerReachable(() {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (_) => FolderEditWidget(
+                          folder: _folder,
+                          onDeleteCallback: widget.onDeleteCallback,
+                          onSaveCallback: widget.onSaveCallback,
+                        ),
+                  ),
+                );
+              }, context: context),
+            },
+        child: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary),
       ),
     );
   }

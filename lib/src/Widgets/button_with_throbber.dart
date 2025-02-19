@@ -14,8 +14,10 @@ class ButtonWithThrobber extends StatefulWidget {
     this.onPressedAsync,
     this.icon,
     this.style = const ButtonStyle(),
-  }) : assert(onPressed != null || onPressedAsync != null,
-            'Either onPressed or onPressedAsync must be provided');
+  }) : assert(
+         onPressed != null || onPressedAsync != null,
+         'Either onPressed or onPressedAsync must be provided',
+       );
 
   @override
   _ButtonWithThrobberState createState() => _ButtonWithThrobberState();
@@ -49,29 +51,31 @@ class _ButtonWithThrobberState extends State<ButtonWithThrobber> {
         onPressed: _isLoading ? null : _functionWrapper,
         style: widget.style,
         icon: widget.icon!,
-        label: _isLoading
-            ? const SizedBox(
+        label:
+            _isLoading
+                ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                )
+                : Text(widget.text),
+      );
+    }
+    return ElevatedButton(
+      onPressed: _isLoading ? null : _functionWrapper,
+      style: widget.style,
+      child:
+          _isLoading
+              ? const SizedBox(
                 height: 20,
                 width: 20,
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
-            : Text(widget.text),
-      );
-    }
-    return ElevatedButton(
-      onPressed: _isLoading ? null : _functionWrapper,
-      style: widget.style,
-      child: _isLoading
-          ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            )
-          : Text(widget.text),
+              : Text(widget.text),
     );
   }
 }

@@ -27,8 +27,12 @@ class _LoginInput extends State<LoginInput> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:
-          const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
+      padding: const EdgeInsets.only(
+        left: 20.0,
+        top: 5.0,
+        right: 20.0,
+        bottom: 5.0,
+      ),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(25)),
         color: Theme.of(context).colorScheme.secondary,
@@ -46,10 +50,12 @@ class _LoginInput extends State<LoginInput> {
           controller: widget.controller,
           obscureText: widget.obscureText,
           decoration: InputDecoration(
-              border: InputBorder.none,
-              labelText: widget.label,
-              labelStyle:
-                  TextStyle(color: Theme.of(context).colorScheme.onSecondary)),
+            border: InputBorder.none,
+            labelText: widget.label,
+            labelStyle: TextStyle(
+              color: Theme.of(context).colorScheme.onSecondary,
+            ),
+          ),
         ),
       ),
     );

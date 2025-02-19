@@ -13,50 +13,54 @@ part of openapi.api;
 class AuthenticationLoginResponseBody {
   /// Returns a new [AuthenticationLoginResponseBody] instance.
   AuthenticationLoginResponseBody({
-    this.token,
-    this.expiresInSeconds,
+    this.accessToken,
+    this.refreshToken,
   });
 
-  /// The token that can be used for authentication.
-  String? token;
-
-  /// The time in seconds the token expires in.
   ///
   /// Please note: This property should have been non-nullable! Since the specification file
   /// does not include a default value (using the "default:" property), however, the generated
   /// source code must fall back to having a nullable type.
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
-  int? expiresInSeconds;
+  AuthenticationLoginToken? accessToken;
+
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  AuthenticationLoginToken? refreshToken;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AuthenticationLoginResponseBody &&
-          other.token == token &&
-          other.expiresInSeconds == expiresInSeconds;
+          other.accessToken == accessToken &&
+          other.refreshToken == refreshToken;
 
   @override
   int get hashCode =>
       // ignore: unnecessary_parenthesis
-      (token == null ? 0 : token!.hashCode) +
-      (expiresInSeconds == null ? 0 : expiresInSeconds!.hashCode);
+      (accessToken == null ? 0 : accessToken!.hashCode) +
+      (refreshToken == null ? 0 : refreshToken!.hashCode);
 
   @override
   String toString() =>
-      'AuthenticationLoginResponseBody[token=$token, expiresInSeconds=$expiresInSeconds]';
+      'AuthenticationLoginResponseBody[accessToken=$accessToken, refreshToken=$refreshToken]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-    if (this.token != null) {
-      json[r'token'] = this.token;
+    if (this.accessToken != null) {
+      json[r'accessToken'] = this.accessToken;
     } else {
-      json[r'token'] = null;
+      json[r'accessToken'] = null;
     }
-    if (this.expiresInSeconds != null) {
-      json[r'expiresInSeconds'] = this.expiresInSeconds;
+    if (this.refreshToken != null) {
+      json[r'refreshToken'] = this.refreshToken;
     } else {
-      json[r'expiresInSeconds'] = null;
+      json[r'refreshToken'] = null;
     }
     return json;
   }
@@ -82,8 +86,8 @@ class AuthenticationLoginResponseBody {
       }());
 
       return AuthenticationLoginResponseBody(
-        token: mapValueOfType<String>(json, r'token'),
-        expiresInSeconds: mapValueOfType<int>(json, r'expiresInSeconds'),
+        accessToken: AuthenticationLoginToken.fromJson(json[r'accessToken']),
+        refreshToken: AuthenticationLoginToken.fromJson(json[r'refreshToken']),
       );
     }
     return null;

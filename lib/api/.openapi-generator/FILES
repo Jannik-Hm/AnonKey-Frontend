@@ -6,6 +6,11 @@ doc/AuthenticationApi.md
 doc/AuthenticationChangePasswordRequestBody.md
 doc/AuthenticationLoginRequestBody.md
 doc/AuthenticationLoginResponseBody.md
+doc/AuthenticationLoginToken.md
+doc/AuthenticationRefreshAccessToken.md
+doc/AuthenticationRefreshAccessTokenResponseBody.md
+doc/AuthenticationRefreshRefreshToken.md
+doc/AuthenticationRefreshRefreshTokenResponseBody.md
 doc/CredentialsApi.md
 doc/CredentialsCreateCredential.md
 doc/CredentialsCreateRequestBody.md
@@ -34,6 +39,7 @@ doc/UUIDApi.md
 doc/UsersApi.md
 doc/UsersCreateRequestBody.md
 doc/UsersCreateResponseBody.md
+doc/UsersCreateResponseToken.md
 doc/UsersGetResponseBody.md
 doc/UsersGetUser.md
 doc/UsersUpdateRequestBody.md
@@ -57,6 +63,11 @@ lib/auth/oauth.dart
 lib/model/authentication_change_password_request_body.dart
 lib/model/authentication_login_request_body.dart
 lib/model/authentication_login_response_body.dart
+lib/model/authentication_login_token.dart
+lib/model/authentication_refresh_access_token.dart
+lib/model/authentication_refresh_access_token_response_body.dart
+lib/model/authentication_refresh_refresh_token.dart
+lib/model/authentication_refresh_refresh_token_response_body.dart
 lib/model/credentials_create_credential.dart
 lib/model/credentials_create_request_body.dart
 lib/model/credentials_get_all_credential.dart
@@ -80,8 +91,11 @@ lib/model/folders_update_request_body.dart
 lib/model/folders_update_response_body.dart
 lib/model/users_create_request_body.dart
 lib/model/users_create_response_body.dart
+lib/model/users_create_response_token.dart
 lib/model/users_get_response_body.dart
 lib/model/users_get_user.dart
 lib/model/users_update_request_body.dart
 lib/model/users_update_user.dart
 pubspec.yaml
+test/authentication_refresh_refresh_token_response_body_test.dart
+test/authentication_refresh_refresh_token_test.dart

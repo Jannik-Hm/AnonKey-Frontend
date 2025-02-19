@@ -11,12 +11,14 @@ import 'package:anonkey_frontend/src/service/auth_service.dart';
 class FolderListTimeout implements Exception {
   FolderList fallbackData;
   static String message = "Folder fetch failed, using local data instead.";
+
   FolderListTimeout(this.fallbackData);
 }
 
 class FolderList {
   // Map of all folders, UUID as Key
   Map<String, Folder> byIDList = {};
+
   // Map of all folders, DisplayName as Key
   Map<String, Folder> byNameList = {};
 
@@ -81,14 +83,16 @@ class FolderList {
   }
 
   /// Function to get new FolderList from `All` API endpoint response
-  static FolderList getFromAPI(
-      {required api.FoldersGetAllResponseBody folders}) {
+  static FolderList getFromAPI({
+    required api.FoldersGetAllResponseBody folders,
+  }) {
     FolderList data = FolderList._();
     for (var folder in folders.folder!) {
       Folder? temp = Folder(
-          uuid: folder.uuid!,
-          displayName: folder.name!,
-          iconData: folder.icon!);
+        uuid: folder.uuid!,
+        displayName: folder.name!,
+        iconData: folder.icon!,
+      );
       data.add(temp);
     }
     data.saveToDisk();
@@ -109,21 +113,27 @@ class FolderList {
   /// Function to get entire FolderList from Backend
   static Future<FolderList?> getFromAPIFull() async {
     String? url = await ApiBaseData.getURL(); // Get Backend URL
-    Map<String, String> authdata =
+    AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
     Future<FolderList> futureLocalData = readFromDisk();
     if (url != null) {
-      api.ApiClient apiClient =
-          RequestUtility.getApiWithAuth(authdata["token"]!, url);
+      api.ApiClient apiClient = RequestUtility.getApiWithAuth(
+        authdata.accessToken!.token,
+        url,
+      );
       api.FoldersApi apiPoint = api.FoldersApi(apiClient);
 
       Future<api.FoldersGetAllResponseBody?> responseFuture =
-          ApiBaseData.apiCallWrapper(apiPoint.foldersGetAllGet(),
-              logMessage: "Exceeded Folder Fetch, using local data instead.",
-              returnNullOnTimeout: true);
+          ApiBaseData.apiCallWrapper(
+            apiPoint.foldersGetAllGet(),
+            logMessage: "Exceeded Folder Fetch, using local data instead.",
+            returnNullOnTimeout: true,
+          );
 
-      List<dynamic> futureData =
-          await Future.wait([responseFuture, futureLocalData]);
+      List<dynamic> futureData = await Future.wait([
+        responseFuture,
+        futureLocalData,
+      ]);
 
       api.FoldersGetAllResponseBody? response =
           (futureData[0] as api.FoldersGetAllResponseBody?);

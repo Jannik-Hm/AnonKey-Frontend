@@ -1,6 +1,7 @@
 import 'package:anonkey_frontend/Utility/auth_utils.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'settings_service.dart';
@@ -50,7 +51,9 @@ class SettingsController with ChangeNotifier {
 
   /// Update and persist the ThemeMode based on the user's selection.
   Future<void> updateThemeMode(
-      ThemeMode? newThemeMode, BuildContext context) async {
+    ThemeMode? newThemeMode,
+    BuildContext context,
+  ) async {
     if (newThemeMode == null) return;
 
     // Do not perform any work if new and old ThemeMode are identical
@@ -97,20 +100,29 @@ class SettingsController with ChangeNotifier {
   }
 
   Future<void> updateBiometricSetting(
-      BuildContext context, bool isEnabled) async {
+    BuildContext context,
+    bool isEnabled,
+  ) async {
     bool success = false;
     try {
       await AuthService.setSkipSplashScreen(true);
       if (context.mounted) {
-        success = await AuthUtils.loginWithBiometrics(context);
+        success = await AuthUtils.biometricRender(context);
       }
-      await Future.delayed(const Duration(milliseconds: 50), () {
-        AuthService.setSkipSplashScreen(false);
+      await Future.delayed(const Duration(milliseconds: 200), () async {
+        await AuthService.setSkipSplashScreen(false);
       });
       if (success) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isBiometricEnabled', isEnabled);
         isBiometricEnabled.value = isEnabled;
+        if (isEnabled) {
+          FlutterSecureStorage storage = const FlutterSecureStorage();
+          storage.write(
+            key: "encryptionKDF",
+            value: AuthenticationCredentialsSingleton().encryptionKDF,
+          );
+        }
       }
     } catch (e) {
       errorMessage.value = e.toString();

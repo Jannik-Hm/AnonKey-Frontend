@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 class RefreshButton extends StatefulWidget {
   final Function() onRefreshCallback;
 
-  const RefreshButton({
-    super.key,
-    required this.onRefreshCallback,
-  });
+  const RefreshButton({super.key, required this.onRefreshCallback});
 
   @override
   State<StatefulWidget> createState() => _RefreshButton();
@@ -22,8 +19,9 @@ class _RefreshButton extends State<RefreshButton>
     // Initialize the mutable object from the widget field
     _controller = AnimationController(
       vsync: this,
-      duration:
-          const Duration(milliseconds: 500), // The duration of the rotation
+      duration: const Duration(
+        milliseconds: 500,
+      ), // The duration of the rotation
     );
   }
 
@@ -48,7 +46,8 @@ class _RefreshButton extends State<RefreshButton>
       animation: _controller,
       builder: (context, child) {
         return Transform.rotate(
-          angle: _controller.value *
+          angle:
+              _controller.value *
               2.0 *
               3.14159265359, // Full rotation (2 * pi radians)
           child: child, // The icon button to rotate
@@ -58,8 +57,10 @@ class _RefreshButton extends State<RefreshButton>
         onPressed: () {
           refresh();
         },
-        icon:
-            Icon(Icons.refresh, color: Theme.of(context).colorScheme.onPrimary),
+        icon: Icon(
+          Icons.refresh,
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
       ),
     );
   }

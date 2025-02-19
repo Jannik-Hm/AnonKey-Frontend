@@ -31,9 +31,13 @@ class _FolderView extends State<FolderView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(data.availableFolders?.byIDList[data.currentFolderUuid]
-                ?.displayName ??
-            ""),
+        title: Text(
+          data
+                  .availableFolders
+                  ?.byIDList[data.currentFolderUuid]
+                  ?.displayName ??
+              "",
+        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         actions: [
           CreateCredentialWidget(
