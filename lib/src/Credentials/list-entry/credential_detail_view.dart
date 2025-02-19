@@ -123,7 +123,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
           );
           CredentialsApi api = CredentialsApi(apiClient);
           if (_credential != null) {
-            temp = await _credential!.updateFromLocal(
+            temp = await _credential!.clone().updateFromLocal(
               masterPassword: authdata.encryptionKDF!,
               clearWebsiteUrl: websiteUrl.text,
               clearUsername: username.text,
