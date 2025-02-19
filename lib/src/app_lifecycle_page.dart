@@ -35,9 +35,7 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
-    bool skipSplashScreen = authdata.skipSplashScreen;
-
-    if (!skipSplashScreen) {
+    if (!authdata.skipSplashScreen) {
       setState(() {
         _notification = state;
       });

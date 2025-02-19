@@ -132,9 +132,11 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               clearNote: note.text,
               folderUuid: newFolderUUID,
             );
-            await api.credentialsUpdatePut(
-              temp.updateAPICredentialRequestBody(),
-            );
+            await ApiBaseData.apiCallWrapper(
+                api.credentialsUpdatePut(temp.updateAPICredentialRequestBody()),
+                logMessage: (context.mounted)
+                    ? AppLocalizations.of(context)!.credentialUpdateTimeout
+                    : null);
           } else {
             UUIDApi uuidApi = UUIDApi(apiClient);
             String? uuid = await ApiBaseData.apiCallWrapper(

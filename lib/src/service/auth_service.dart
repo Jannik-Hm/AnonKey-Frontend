@@ -266,9 +266,9 @@ class AuthService {
     AuthenticationApi authenticationApi = AuthenticationApi(api);
 
     var singleton = AuthenticationCredentialsSingleton();
-    await authenticationApi
-        .authenticationRefreshAccessTokenPost()
-        .then((value) {
+        await ApiBaseData.apiCallWrapper(
+                authenticationApi.authenticationRefreshAccessTokenPost(),
+                logMessage: "Fetching Access Token").then((value) {
           singleton.accessToken = Token(
             token: value!.accessToken!.token!,
             tokenType: TokenType.accessToken,

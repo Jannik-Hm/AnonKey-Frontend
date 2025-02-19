@@ -10,8 +10,7 @@ The repository containing the backend code can be found [here](https://github.co
 
 ## Flutter Installation
 
-Please install the Flutter IDE and SDK using [this Guide](https://docs.flutter.dev/get-started/install) after reading
-the following.
+Please install the Flutter IDE and SDK using [this Guide](https://docs.flutter.dev/get-started/install) after reading the following.
 
 Currently tested platforms for running and testing the app:
 

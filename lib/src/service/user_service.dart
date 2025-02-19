@@ -4,6 +4,7 @@ import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../Utility/api_base_data.dart';
 import '../../Utility/request_utility.dart';
@@ -59,9 +60,11 @@ class UserService {
         url!,
       );
       AuthenticationApi authenticationApi = AuthenticationApi(apiClient);
-      authenticationApi
-          .authenticationLogoutPutWithHttpInfo()
-          .then((value) async {})
+      await ApiBaseData.apiCallWrapper(
+                authenticationApi.authenticationLogoutPutWithHttpInfo(),
+                logMessage: (context.mounted)
+                    ? AppLocalizations.of(context)!.logout
+                    : null).then((value) async {})
           .catchError((onError) => throw Exception(onError.toString()));
     }
 
