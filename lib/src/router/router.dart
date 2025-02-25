@@ -32,10 +32,9 @@ class AppRouter {
         GoRoute(
           name: "home",
           path: '/',
-          builder:
-              (context, state) => AppLifecyclePage(
-                child: HomeScreen(controller: settingsController, index: 0),
-              ),
+          builder: (context, state) => AppLifecyclePage(
+            child: HomeScreen(controller: settingsController, index: 0),
+          ),
         ),
         GoRoute(
           name: "login",
@@ -54,15 +53,14 @@ class AppRouter {
         GoRoute(
           name: "settings",
           path: "/settings",
-          builder:
-              (context, state) => SettingsView(controller: settingsController),
+          builder: (context, state) =>
+              SettingsView(controller: settingsController),
         ),
         GoRoute(
           path: '/folder',
           builder: (context, state) {
-            final data =
-                state.extra
-                    as CredentialListWidgetData; // Access the passed object
+            final data = state.extra
+                as CredentialListWidgetData; // Access the passed object
             return FolderView(data: data);
           },
         ),

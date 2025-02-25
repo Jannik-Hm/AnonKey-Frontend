@@ -116,9 +116,7 @@ class AuthService {
         userName: username,
         kdfPasswordResult: masterKDF,
       );
-      await authApi
-          .authenticationLoginPost(loginBody)
-          .then(
+      await authApi.authenticationLoginPost(loginBody).then(
             (value) async => {
               if (value?.accessToken != null && value?.refreshToken != null)
                 {
@@ -173,9 +171,7 @@ class AuthService {
         userDisplayName: username,
         kdfPasswordResult: masterKDF,
       );
-      await authApi
-          .userCreatePost(registerBody)
-          .then(
+      await authApi.userCreatePost(registerBody).then(
             (value) async => {
               if (value?.accessToken != null && value?.refreshToken != null)
                 {
@@ -209,7 +205,7 @@ class AuthService {
   ///
   /// \throws [NoCredentialException] if no data is found.
   static Future<AuthenticationCredentialsSingleton>
-  getAuthenticationCredentials() async {
+      getAuthenticationCredentials() async {
     const storage = FlutterSecureStorage();
     var singleton = AuthenticationCredentialsSingleton();
 
@@ -261,24 +257,22 @@ class AuthService {
     );
     AuthenticationApi authenticationApi = AuthenticationApi(api);
     await ApiBaseData.apiCallWrapper(
-          authenticationApi.authenticationRefreshRefreshTokenPost(),
-          logMessage: "Fetching Refresh Token",
-        )
-        .then((value) async {
-          singleton.refreshToken = Token(
-            token: value!.refreshToken!.token!,
-            tokenType: TokenType.refreshToken,
-            expiration: value.refreshToken!.expiryTimestamp!,
-          );
-          await storage.write(
-            key: "refreshToken",
-            value: value!.refreshToken!.token!,
-          );
-        })
-        .onError((error, stackTrace) {
-          singleton.deleteAuthenticationCredentialsSingleton();
-          storage.deleteAll();
-        });
+      authenticationApi.authenticationRefreshRefreshTokenPost(),
+      logMessage: "Fetching Refresh Token",
+    ).then((value) async {
+      singleton.refreshToken = Token(
+        token: value!.refreshToken!.token!,
+        tokenType: TokenType.refreshToken,
+        expiration: value.refreshToken!.expiryTimestamp!,
+      );
+      await storage.write(
+        key: "refreshToken",
+        value: value.refreshToken!.token!,
+      );
+    }).onError((error, stackTrace) {
+      singleton.deleteAuthenticationCredentialsSingleton();
+      storage.deleteAll();
+    });
   }
 
   static Future<bool> isOffline() async {
@@ -286,22 +280,20 @@ class AuthService {
       RequestUtility.getApiWithoutAuth((await ApiBaseData.getURL()) as String),
     );
     return ApiBaseData.apiCallWrapper(
-          serviceApi.servicePingGet(),
-          logMessage: "Checking if device is online",
-        )
-        .then((value) {
-          return false; //
-        })
-        .onError((error, stackTrace) {
-          return true;
-        });
+      serviceApi.servicePingGet(),
+      logMessage: "Checking if device is online",
+    ).then((value) {
+      return false; //
+    }).onError((error, stackTrace) {
+      return true;
+    });
   }
 
   /// Retrieves the access token from the server.
   /// \returns a [AuthenticationCredentialsSingleton] containing the access token.
   /// \throws [AuthException] if the access token could not be retrieved.
   static FutureOr<AuthenticationCredentialsSingleton>
-  _getAccessTokenFromApi() async {
+      _getAccessTokenFromApi() async {
     ApiClient api = RequestUtility.getApiWithAuth(
       AuthenticationCredentialsSingleton().refreshToken!.token,
       (await ApiBaseData.getURL()) as String,
@@ -310,19 +302,17 @@ class AuthService {
 
     var singleton = AuthenticationCredentialsSingleton();
     await ApiBaseData.apiCallWrapper(
-          authenticationApi.authenticationRefreshAccessTokenPost(),
-          logMessage: "Fetching Access Token",
-        )
-        .then((value) {
-          singleton.accessToken = Token(
-            token: value!.accessToken!.token!,
-            tokenType: TokenType.accessToken,
-            expiration: value.accessToken!.expiryTimestamp!,
-          );
-        })
-        .onError((error, stackTrace) {
-          throw AuthException("Failed to get access token");
-        });
+      authenticationApi.authenticationRefreshAccessTokenPost(),
+      logMessage: "Fetching Access Token",
+    ).then((value) {
+      singleton.accessToken = Token(
+        token: value!.accessToken!.token!,
+        tokenType: TokenType.accessToken,
+        expiration: value.accessToken!.expiryTimestamp!,
+      );
+    }).onError((error, stackTrace) {
+      throw AuthException("Failed to get access token");
+    });
 
     if (singleton.areAuthenticationCredentialsAvailable()) {
       throw AuthException("Failed to get access token");
