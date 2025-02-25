@@ -60,10 +60,10 @@ class UserService {
       );
       AuthenticationApi authenticationApi = AuthenticationApi(apiClient);
       await ApiBaseData.apiCallWrapper(
-        authenticationApi.authenticationLogoutPutWithHttpInfo(),
-        logMessage:
-            (context.mounted) ? AppLocalizations.of(context)!.logout : null,
-      )
+            authenticationApi.authenticationLogoutPutWithHttpInfo(),
+            logMessage:
+                (context.mounted) ? AppLocalizations.of(context)!.logout : null,
+          )
           .then((value) async {})
           .catchError((onError) => throw Exception(onError.toString()));
     }
