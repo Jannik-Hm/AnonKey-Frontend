@@ -215,7 +215,6 @@ class AuthService {
     const storage = FlutterSecureStorage();
     var singleton = AuthenticationCredentialsSingleton();
 
-
     //if(!(await AuthService.isOffline()) && singleton.accessToken.)
 
     if (!singleton.areAuthenticationCredentialsAvailable()) {
@@ -243,19 +242,18 @@ class AuthService {
           refreshTimestamp: refreshTimestamp,
         );
       }
-   }
-    
+    }
 
-          if (!validateToken(
-            timestamp: singleton.refreshToken?.expiration,
-          ) && !(await AuthService.isOffline()) && (await storage.read(key: "refreshToken") != null)){
-              await _refreshRefreshToken();
-      }
-      if (!validateToken(
-            timestamp: singleton.accessToken?.expiration,
-          ) && !(await AuthService.isOffline()) && (await storage.read(key: "refreshToken") != null)){
-            await _getAccessTokenFromApi();
-          }
+    if (!validateToken(timestamp: singleton.refreshToken?.expiration) &&
+        !(await AuthService.isOffline()) &&
+        (await storage.read(key: "refreshToken") != null)) {
+      await _refreshRefreshToken();
+    }
+    if (!validateToken(timestamp: singleton.accessToken?.expiration) &&
+        !(await AuthService.isOffline()) &&
+        (await storage.read(key: "refreshToken") != null)) {
+      await _getAccessTokenFromApi();
+    }
 
     return singleton;
   }
@@ -278,13 +276,25 @@ class AuthService {
             token: value!.refreshToken!.token!,
             tokenType: TokenType.refreshToken,
             expiration: value!.refreshToken!.expiryTimestamp!,
-            refreshTimestamp: (value!.refreshToken!.expiryTimestamp! + (value!.refreshToken!.expiryTimestamp! - (DateTime.now().millisecondsSinceEpoch/1000)) * 0.8).floor(),
+            refreshTimestamp:
+                (value!.refreshToken!.expiryTimestamp! +
+                        (value!.refreshToken!.expiryTimestamp! -
+                                (DateTime.now().millisecondsSinceEpoch /
+                                    1000)) *
+                            0.8)
+                    .floor(),
           );
           singleton.accessToken = Token(
             token: value!.accessToken!.token!,
             tokenType: TokenType.accessToken,
             expiration: value!.accessToken!.expiryTimestamp!,
-            refreshTimestamp: (value!.accessToken!.expiryTimestamp! + (value!.accessToken!.expiryTimestamp! - (DateTime.now().millisecondsSinceEpoch/1000)) * 0.8).floor(),
+            refreshTimestamp:
+                (value!.accessToken!.expiryTimestamp! +
+                        (value!.accessToken!.expiryTimestamp! -
+                                (DateTime.now().millisecondsSinceEpoch /
+                                    1000)) *
+                            0.8)
+                    .floor(),
           );
           await storage.write(
             key: "refreshToken",
@@ -335,7 +345,13 @@ class AuthService {
             token: value!.accessToken!.token!,
             tokenType: TokenType.accessToken,
             expiration: value.accessToken!.expiryTimestamp!,
-            refreshTimestamp: (value!.accessToken!.expiryTimestamp! + (value!.accessToken!.expiryTimestamp! - (DateTime.now().millisecondsSinceEpoch/1000)) * 0.8).floor(),
+            refreshTimestamp:
+                (value!.accessToken!.expiryTimestamp! +
+                        (value!.accessToken!.expiryTimestamp! -
+                                (DateTime.now().millisecondsSinceEpoch /
+                                    1000)) *
+                            0.8)
+                    .floor(),
           );
         })
         .onError((error, stackTrace) {
@@ -359,9 +375,7 @@ class AuthService {
         password == singleton.encryptionKDF) {
       var isOffline = await AuthService.isOffline();
       if (singleton.accessToken == null &&
-          !validateToken(
-            timestamp: singleton.accessToken?.expiration,
-          ) &&
+          !validateToken(timestamp: singleton.accessToken?.expiration) &&
           !isOffline) {
         try {
           singleton = await _getAccessTokenFromApi();
@@ -403,11 +417,11 @@ class AuthService {
   /// [timestamp]: The timestamp.
   ///
   /// [tokenType]: The tokenType.
-  static bool validateToken({
-    required int? timestamp,
-  }) {
+  static bool validateToken({required int? timestamp}) {
     if (timestamp == null) return false;
-    DateTime validUntil = DateTime.fromMillisecondsSinceEpoch((timestamp * 1000).floor());
+    DateTime validUntil = DateTime.fromMillisecondsSinceEpoch(
+      (timestamp * 1000).floor(),
+    );
     print(validUntil);
     if (DateTime.now().isAfter(validUntil)) {
       return false;
@@ -443,14 +457,24 @@ class AuthService {
     singleton.username = username;
     singleton.softLogout = softLogout;
     singleton.skipSplashScreen = false;
-    int refreshRefreshTimestamp = (refreshExpiration + (refreshExpiration - (DateTime.now().millisecondsSinceEpoch/1000)) * 0.8).floor();
+    int refreshRefreshTimestamp =
+        (refreshExpiration +
+                (refreshExpiration -
+                        (DateTime.now().millisecondsSinceEpoch / 1000)) *
+                    0.8)
+            .floor();
     singleton.refreshToken = Token(
       token: refreshToken,
       tokenType: TokenType.refreshToken,
       expiration: refreshExpiration,
       refreshTimestamp: refreshRefreshTimestamp,
     );
-    int refreshAccessTimestamp = (accessExpiration + (accessExpiration - (DateTime.now().millisecondsSinceEpoch/1000)) * 0.8).floor();
+    int refreshAccessTimestamp =
+        (accessExpiration +
+                (accessExpiration -
+                        (DateTime.now().millisecondsSinceEpoch / 1000)) *
+                    0.8)
+            .floor();
     singleton.accessToken = Token(
       token: accessToken,
       tokenType: TokenType.accessToken,
