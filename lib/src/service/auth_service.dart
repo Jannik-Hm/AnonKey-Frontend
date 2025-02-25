@@ -244,17 +244,19 @@ class AuthService {
   }
 
   static Future<bool> isOffline() async {
-    ServiceApi serviceApi = ServiceApi(RequestUtility.getApiWithoutAuth(
-      (await ApiBaseData.getURL()) as String,
-    ));
+    ServiceApi serviceApi = ServiceApi(
+      RequestUtility.getApiWithoutAuth((await ApiBaseData.getURL()) as String),
+    );
     return ApiBaseData.apiCallWrapper(
-      serviceApi.servicePingGet(),
-      logMessage: "Checking if device is online",
-    ).then((value) {
-      return false; //
-    }).onError((error, stackTrace) {
-      return true;
-    });
+          serviceApi.servicePingGet(),
+          logMessage: "Checking if device is online",
+        )
+        .then((value) {
+          return false; //
+        })
+        .onError((error, stackTrace) {
+          return true;
+        });
   }
 
   /// Retrieves the access token from the server.
