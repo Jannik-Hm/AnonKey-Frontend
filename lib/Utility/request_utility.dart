@@ -1,9 +1,11 @@
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:flutter/foundation.dart';
 
 class RequestUtility {
   static ApiClient getApiWithAuth(String authentication, String basePath) {
     if (kDebugMode && basePath.isEmpty) {
+      ApiBaseData.setURL("https://api.beta.anonkey.lightjack.de");
       basePath = "https://api.beta.anonkey.lightjack.de";
     }
     ApiClient client = ApiClient(basePath: basePath);
@@ -13,6 +15,7 @@ class RequestUtility {
 
   static ApiClient getApiWithoutAuth(String basePath) {
     if (kDebugMode && basePath.isEmpty) {
+      ApiBaseData.setURL("https://api.beta.anonkey.lightjack.de");
       basePath = "https://api.beta.anonkey.lightjack.de";
     }
     return ApiClient(basePath: basePath);

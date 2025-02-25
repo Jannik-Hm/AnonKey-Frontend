@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/auth_utils.dart';
@@ -214,6 +213,8 @@ class AuthService {
     const storage = FlutterSecureStorage();
     var singleton = AuthenticationCredentialsSingleton();
 
+    //if(!(await AuthService.isOffline()) && singleton.accessToken.)
+
     if (!singleton.areAuthenticationCredentialsAvailable()) {
       if (await storage.containsKey(key: "encryptionKDF") &&
           await AuthUtils.checkBiometricAvailability() &&
@@ -243,17 +244,17 @@ class AuthService {
   }
 
   static Future<bool> isOffline() async {
-    try {
-      final result = await InternetAddress.lookup(
-        await ApiBaseData.getURL() as String,
-      );
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        return false; // Device is online
-      }
-    } on SocketException catch (_) {
-      return true; // Device is offline
-    }
-    return true; // Default to offline if lookup fails
+    ServiceApi serviceApi = ServiceApi(RequestUtility.getApiWithoutAuth(
+      (await ApiBaseData.getURL()) as String,
+    ));
+    return ApiBaseData.apiCallWrapper(
+      serviceApi.servicePingGet(),
+      logMessage: "Checking if device is online",
+    ).then((value) {
+      return false; //
+    }).onError((error, stackTrace) {
+      return true;
+    });
   }
 
   /// Retrieves the access token from the server.
