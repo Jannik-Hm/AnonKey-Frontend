@@ -238,9 +238,42 @@ class AuthService {
           expiration: refreshExpiration,
         );
       }
+
+      if(!validateToken(
+            timestamp: singleton.refreshToken?.expiration,
+            tokenType: TokenType.refreshToken,
+          ) && !(await AuthService.isOffline())){
+              await _refreshRefreshToken();
+      }
     }
 
     return singleton;
+  }
+
+  static Future<void> _refreshRefreshToken() async {
+    const storage = FlutterSecureStorage();
+    var singleton = AuthenticationCredentialsSingleton();
+    ApiClient api = RequestUtility.getApiWithAuth(
+          AuthenticationCredentialsSingleton().refreshToken!.token,
+          (await ApiBaseData.getURL()) as String,
+        );
+    AuthenticationApi authenticationApi = AuthenticationApi(api);
+    await ApiBaseData.apiCallWrapper(
+      authenticationApi.authenticationRefreshRefreshTokenPost(),
+      logMessage: "Fetching Refresh Token",
+    )
+    .then((value) async {
+      singleton.refreshToken = Token(
+        token: value!.refreshToken!.token!,
+        tokenType: TokenType.refreshToken,
+        expiration: value.refreshToken!.expiryTimestamp!,
+      );
+      await storage.write(key: "refreshToken", value: value!.refreshToken!.token!);
+    })
+    .onError((error, stackTrace) {
+      singleton.deleteAuthenticationCredentialsSingleton();
+      storage.deleteAll();
+    });
   }
 
   static Future<bool> isOffline() async {
