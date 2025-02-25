@@ -10,7 +10,8 @@ The repository containing the backend code can be found [here](https://github.co
 
 ## Flutter Installation
 
-Please install the Flutter IDE and SDK using [this Guide](https://docs.flutter.dev/get-started/install) after reading the following.
+Please install the Flutter IDE and SDK using [this Guide](https://docs.flutter.dev/get-started/install) after reading
+the following.
 
 Currently tested platforms for running and testing the app:
 
@@ -108,7 +109,7 @@ dart run build_runner build --delete-conflicting-outputs
 | `themeMode`            | The theme mode selected by the user (e.g., light or dark mode). | `themeMode`            | Shared Preferences |
 | `language_code`        | The language selected by the user for the app interface.        | `language_code`        | Shared Preferences |
 | `countryCode`          | The country code selected by the user for the app interface.    | `countryCode`          | Shared Preferences |
-| `biometricEnabled`     | A flag indicating whether the user has enabled biometrics.      | `biometricEnabled`     | Shared Preferences |
+| `biometricEnabled`     | A flag indicating whether the user has enabled biometrics.      | `isBiometricEnabled`   | Shared Preferences |
 | `notificationsEnabled` | A flag indicating whether the user has enabled notifications.   | `notificationsEnabled` | Shared Preferences |
 
 ### Singleton Pattern
