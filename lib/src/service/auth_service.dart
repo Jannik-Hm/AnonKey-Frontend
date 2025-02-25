@@ -117,9 +117,7 @@ class AuthService {
         userName: username,
         kdfPasswordResult: masterKDF,
       );
-      await authApi
-          .authenticationLoginPost(loginBody)
-          .then(
+      await authApi.authenticationLoginPost(loginBody).then(
             (value) async => {
               if (value?.accessToken != null && value?.refreshToken != null)
                 {
@@ -130,6 +128,7 @@ class AuthService {
                     refreshExpiration: value.refreshToken!.expiryTimestamp!,
                     accessToken: value.accessToken!.token!,
                     accessExpiration: value.accessToken!.expiryTimestamp!,
+                    softLogout: true,
                   ),
                 },
             },
@@ -173,9 +172,7 @@ class AuthService {
         userDisplayName: username,
         kdfPasswordResult: masterKDF,
       );
-      await authApi
-          .userCreatePost(registerBody)
-          .then(
+      await authApi.userCreatePost(registerBody).then(
             (value) async => {
               if (value?.accessToken != null && value?.refreshToken != null)
                 {
@@ -186,6 +183,7 @@ class AuthService {
                     refreshExpiration: value.refreshToken!.expiryTimestamp!,
                     accessToken: value.accessToken!.token!,
                     accessExpiration: value.accessToken!.expiryTimestamp!,
+                    softLogout: true,
                   ),
                 },
             },
@@ -208,7 +206,7 @@ class AuthService {
   ///
   /// \throws [NoCredentialException] if no data is found.
   static Future<AuthenticationCredentialsSingleton>
-  getAuthenticationCredentials() async {
+      getAuthenticationCredentials() async {
     const storage = FlutterSecureStorage();
     var singleton = AuthenticationCredentialsSingleton();
 
@@ -240,7 +238,7 @@ class AuthService {
     return singleton;
   }
 
-  static Future<bool> _isOffline() async {
+  static Future<bool> isOffline() async {
     try {
       final result = await InternetAddress.lookup(
         await ApiBaseData.getURL() as String,
@@ -258,7 +256,7 @@ class AuthService {
   /// \returns a [AuthenticationCredentialsSingleton] containing the access token.
   /// \throws [AuthException] if the access token could not be retrieved.
   static FutureOr<AuthenticationCredentialsSingleton>
-  _getAccessTokenFromApi() async {
+      _getAccessTokenFromApi() async {
     ApiClient api = RequestUtility.getApiWithAuth(
       AuthenticationCredentialsSingleton().refreshToken!.token,
       (await ApiBaseData.getURL()) as String,
@@ -267,19 +265,17 @@ class AuthService {
 
     var singleton = AuthenticationCredentialsSingleton();
     await ApiBaseData.apiCallWrapper(
-          authenticationApi.authenticationRefreshAccessTokenPost(),
-          logMessage: "Fetching Access Token",
-        )
-        .then((value) {
-          singleton.accessToken = Token(
-            token: value!.accessToken!.token!,
-            tokenType: TokenType.accessToken,
-            expiration: value.accessToken!.expiryTimestamp!,
-          );
-        })
-        .onError((error, stackTrace) {
-          throw AuthException("Failed to get access token");
-        });
+      authenticationApi.authenticationRefreshAccessTokenPost(),
+      logMessage: "Fetching Access Token",
+    ).then((value) {
+      singleton.accessToken = Token(
+        token: value!.accessToken!.token!,
+        tokenType: TokenType.accessToken,
+        expiration: value.accessToken!.expiryTimestamp!,
+      );
+    }).onError((error, stackTrace) {
+      throw AuthException("Failed to get access token");
+    });
 
     if (singleton.areAuthenticationCredentialsAvailable()) {
       throw AuthException("Failed to get access token");
@@ -296,20 +292,20 @@ class AuthService {
 
     if (singleton.validationHash == passwordHash ||
         password == singleton.encryptionKDF) {
-      var isOffline = await _isOffline();
-      if (singleton.accessToken == null ||
+      var isOffline = await AuthService.isOffline();
+      if (singleton.accessToken == null &&
           !validateToken(
-                timestamp: singleton.accessToken?.expiration,
-                tokenType: TokenType.accessToken,
-              ) &&
-              !isOffline) {
+            timestamp: singleton.accessToken?.expiration,
+            tokenType: TokenType.accessToken,
+          ) &&
+          !isOffline) {
         try {
           singleton = await _getAccessTokenFromApi();
         } on AuthException catch (_) {
           return false;
         }
       }
-      await deleteSoftLogout();
+      softLogout();
       singleton.encryptionKDF =
           password == singleton.encryptionKDF ? password : encryptionKDF;
       return true;
@@ -376,12 +372,13 @@ class AuthService {
     required int refreshExpiration,
     required String accessToken,
     required int accessExpiration,
+    required bool softLogout,
   }) async {
     // Store in RAM
     var singleton = AuthenticationCredentialsSingleton();
     singleton.encryptionKDF = encryptionKDF;
     singleton.username = username;
-    singleton.softLogout = false;
+    singleton.softLogout = softLogout;
     singleton.skipSplashScreen = false;
     singleton.refreshToken = Token(
       token: refreshToken,
@@ -423,14 +420,14 @@ class AuthService {
 
   /// softLogout is used to indicate that the user has logged out without deleting the authentication data.
   /// This is useful to determine if the user should be redirected to the login page.
-  static Future<void> softLogout() async {
-    var singleton = await getAuthenticationCredentials();
+  static void softLogout() {
+    var singleton = AuthenticationCredentialsSingleton();
 
     singleton.softLogout = true;
   }
 
-  static Future<void> deleteSoftLogout() async {
-    var singleton = await getAuthenticationCredentials();
+  static void deleteSoftLogout() {
+    var singleton = AuthenticationCredentialsSingleton();
 
     singleton.softLogout = false;
   }

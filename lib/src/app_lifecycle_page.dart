@@ -51,7 +51,7 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
       }
       if (state == AppLifecycleState.paused ||
           state == AppLifecycleState.inactive) {
-        await AuthService.softLogout();
+        AuthService.softLogout();
       }
     }
   }

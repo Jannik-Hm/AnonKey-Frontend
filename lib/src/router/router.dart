@@ -11,12 +11,7 @@ import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:anonkey_frontend/src/settings/settings_view.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../exception/auth_exception.dart';
 
 class AppRouter {
   AppRouter({required this.settingsController});
@@ -37,10 +32,9 @@ class AppRouter {
         GoRoute(
           name: "home",
           path: '/',
-          builder:
-              (context, state) => AppLifecyclePage(
-                child: HomeScreen(controller: settingsController, index: 0),
-              ),
+          builder: (context, state) => AppLifecyclePage(
+            child: HomeScreen(controller: settingsController, index: 0),
+          ),
         ),
         GoRoute(
           name: "login",
@@ -59,15 +53,14 @@ class AppRouter {
         GoRoute(
           name: "settings",
           path: "/settings",
-          builder:
-              (context, state) => SettingsView(controller: settingsController),
+          builder: (context, state) =>
+              SettingsView(controller: settingsController),
         ),
         GoRoute(
           path: '/folder',
           builder: (context, state) {
-            final data =
-                state.extra
-                    as CredentialListWidgetData; // Access the passed object
+            final data = state.extra
+                as CredentialListWidgetData; // Access the passed object
             return FolderView(data: data);
           },
         ),
@@ -80,28 +73,12 @@ class AppRouter {
         ),
       ],
       redirect: (BuildContext context, GoRouterState state) async {
-        bool isAuthenticated = false;
         AuthenticationCredentialsSingleton singleton =
             await AuthService.getAuthenticationCredentials();
-        try {
-          var sharedPreferences = await SharedPreferences.getInstance();
-          if (sharedPreferences.containsKey("isBiometricEnabled")) {
-            isAuthenticated = singleton.accessToken != null;
-          } else {
-            isAuthenticated = singleton.encryptionKDF != null;
-          }
-        } on NoTokensFoundException catch (e) {
-          if (kDebugMode) {
-            print(e.errMsg());
-          }
-          isAuthenticated = false;
-        }
 
-        const storage = FlutterSecureStorage();
-
-        if ((!isAuthenticated || await AuthService.isSoftLogout()) &&
+        if (!(await AuthService.isSoftLogout()) &&
             !singleton.skipSplashScreen) {
-          if (await storage.containsKey(key: "username")) {
+          if (singleton.username != null) {
             return "/splash";
           } else if (state.fullPath == "/login") {
             return "/login";
