@@ -242,8 +242,10 @@ class AuthService {
       if (!validateToken(
             timestamp: singleton.refreshToken?.expiration,
             tokenType: TokenType.refreshToken,
-          ) && !(await AuthService.isOffline()) && (await storage.read(key: "refreshToken") != null)){
-              await _refreshRefreshToken();
+          ) &&
+          !(await AuthService.isOffline()) &&
+          (await storage.read(key: "refreshToken") != null)) {
+        await _refreshRefreshToken();
       }
     }
 
@@ -389,7 +391,9 @@ class AuthService {
     required TokenType tokenType,
   }) {
     if (timestamp == null) return false;
-    DateTime validUntil = DateTime.fromMicrosecondsSinceEpoch((timestamp * 0.8).toInt());
+    DateTime validUntil = DateTime.fromMicrosecondsSinceEpoch(
+      (timestamp * 0.8).toInt(),
+    );
     if (DateTime.now().isAfter(validUntil)) {
       return false;
     }
