@@ -137,6 +137,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
               context,
             )!.confirmCredentialDeleteText(credential.getClearDisplayName()),
           ),
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           actions: [
             Row(
               children: [
