@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 class RequestUtility {
   static ApiClient getApiWithAuth(String authentication, String basePath) {
     if (kDebugMode && basePath.isEmpty) {
-      ApiBaseData.setURL("https://api.beta.anonkey.lightjack.de");
-      basePath = "https://api.beta.anonkey.lightjack.de";
+      ApiBaseData.setURL("https://api.anonkey.lightjack.de");
+      basePath = "https://api.anonkey.lightjack.de";
     }
     ApiClient client = ApiClient(basePath: basePath);
     client.addDefaultHeader("Authorization", "Bearer $authentication");
@@ -15,8 +15,8 @@ class RequestUtility {
 
   static ApiClient getApiWithoutAuth(String basePath) {
     if (kDebugMode && basePath.isEmpty) {
-      ApiBaseData.setURL("https://api.beta.anonkey.lightjack.de");
-      basePath = "https://api.beta.anonkey.lightjack.de";
+      ApiBaseData.setURL("https://api.anonkey.lightjack.de");
+      basePath = "https://api.anonkey.lightjack.de";
     }
     return ApiClient(basePath: basePath);
   }
