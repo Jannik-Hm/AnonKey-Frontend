@@ -140,7 +140,10 @@ class LoginController extends State<LoginView> {
           return showDialog(
             context: context,
             builder: (context) {
-              return const AlertDialog(content: Text('Login failed'));
+              return AlertDialog(
+                content: Text('Login failed'),
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+              );
             },
           );
         }

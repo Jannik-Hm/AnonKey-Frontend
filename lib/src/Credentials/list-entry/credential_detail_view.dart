@@ -267,6 +267,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                 credential.getClearDisplayName(),
               ),
             ),
+            backgroundColor: Theme.of(context).colorScheme.secondary,
             actions: [
               Row(
                 children: [

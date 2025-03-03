@@ -214,6 +214,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
                 context,
               )!.confirmFolderDeleteText(folder.displayName),
             ),
+            backgroundColor: Theme.of(context).colorScheme.secondary,
             actions: [
               Row(
                 children: [
