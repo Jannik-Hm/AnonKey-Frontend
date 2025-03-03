@@ -44,8 +44,8 @@ class ApiBaseData {
       return result;
     } catch (e) {
       if (e is TimeoutException || e is ApiException && e.innerException != null
-          // might rather specifically look for inner SocketException, TlsException, IOException, ClientException
-          ) {
+      // might rather specifically look for inner SocketException, TlsException, IOException, ClientException
+      ) {
         log("TimeoutException: $logMessage");
         await setlastCallSuccessful(false);
         if (returnNullOnTimeout) {
@@ -63,24 +63,23 @@ class ApiBaseData {
     required BuildContext context,
     String? offlineErrorMessageOverride,
   }) {
-    String offlineErrorMessage = offlineErrorMessageOverride ??
+    String offlineErrorMessage =
+        offlineErrorMessageOverride ??
         AppLocalizations.of(context)!.offlineDisabledFeature;
-    lastCallSuccessful().then(
-      (lastapicallsuccess) {
-        if (lastapicallsuccess ?? false) {
-          func();
+    lastCallSuccessful().then((lastapicallsuccess) {
+      if (lastapicallsuccess ?? false) {
+        func();
+      } else {
+        if (context.mounted) {
+          NotificationPopup.popupErrorMessage(
+            context: context,
+            message: offlineErrorMessage,
+          );
         } else {
-          if (context.mounted) {
-            NotificationPopup.popupErrorMessage(
-              context: context,
-              message: offlineErrorMessage,
-            );
-          } else {
-            throw MissingBuildContextException();
-          }
+          throw MissingBuildContextException();
         }
-      },
-    );
+      }
+    });
   }
 
   static Future<void Function()?> aCallFuncIfServerReachable(
@@ -88,7 +87,8 @@ class ApiBaseData {
     required BuildContext context,
     String? offlineErrorMessageOverride,
   }) async {
-    String offlineErrorMessage = offlineErrorMessageOverride ??
+    String offlineErrorMessage =
+        offlineErrorMessageOverride ??
         AppLocalizations.of(context)!.offlineDisabledFeature;
     bool lastapicallsuccess = await lastCallSuccessful() ?? false;
     if (lastapicallsuccess) {

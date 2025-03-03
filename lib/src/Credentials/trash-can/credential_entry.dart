@@ -2,11 +2,11 @@ import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
+import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:anonkey_frontend/src/Credentials/list-entry/logo.dart';
 import 'package:anonkey_frontend/src/Widgets/clickable_tile.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CredentialTrashEntry extends StatefulWidget {
@@ -30,18 +30,22 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
 
   Future<bool> restore() async {
     String? url = await ApiBaseData.getURL(); // Get Backend URL
-    Map<String, String> authdata =
+    AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
     try {
       if (url != null) {
-        ApiClient apiClient =
-            RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        ApiClient apiClient = RequestUtility.getApiWithAuth(
+          authdata.accessToken!.token!,
+          url,
+        );
         CredentialsApi api = CredentialsApi(apiClient);
         await ApiBaseData.apiCallWrapper(
-            api.credentialsSoftUndeletePut(_credential.uuid),
-            logMessage: (mounted)
-                ? AppLocalizations.of(context)!.credentialRestoreTimeout
-                : null);
+          api.credentialsSoftUndeletePut(_credential.uuid),
+          logMessage:
+              (mounted)
+                  ? AppLocalizations.of(context)!.credentialRestoreTimeout
+                  : null,
+        );
         return true;
       } else {
         if (context.mounted) {
@@ -52,16 +56,18 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
     } on ApiException catch (e) {
       if (context.mounted) {
         NotificationPopup.apiError(
-            // ignore: use_build_context_synchronously
-            context: context,
-            apiResponseMessage: e.message);
+          // ignore: use_build_context_synchronously
+          context: context,
+          apiResponseMessage: e.message,
+        );
       }
     } on AnonKeyServerOffline catch (e) {
       if (context.mounted) {
         NotificationPopup.popupErrorMessage(
-            // ignore: use_build_context_synchronously
-            context: context,
-            message: e.message ?? "Timeout Error");
+          // ignore: use_build_context_synchronously
+          context: context,
+          message: e.message ?? "Timeout Error",
+        );
       }
     }
     return false;
@@ -69,18 +75,22 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
 
   Future<bool> deleteForever() async {
     String? url = await ApiBaseData.getURL(); // Get Backend URL
-    Map<String, String> authdata =
+    AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
     try {
       if (url != null) {
-        ApiClient apiClient =
-            RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        ApiClient apiClient = RequestUtility.getApiWithAuth(
+          authdata.accessToken!.token,
+          url,
+        );
         CredentialsApi api = CredentialsApi(apiClient);
         await ApiBaseData.apiCallWrapper(
-            api.credentialsDeleteDelete(_credential.uuid),
-            logMessage: (mounted)
-                ? AppLocalizations.of(context)!.credentialFinalDeleteTimeout
-                : null);
+          api.credentialsDeleteDelete(_credential.uuid),
+          logMessage:
+              (mounted)
+                  ? AppLocalizations.of(context)!.credentialFinalDeleteTimeout
+                  : null,
+        );
         return true;
       } else {
         if (context.mounted) {
@@ -91,16 +101,18 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
     } on ApiException catch (e) {
       if (context.mounted) {
         NotificationPopup.apiError(
-            // ignore: use_build_context_synchronously
-            context: context,
-            apiResponseMessage: e.message);
+          // ignore: use_build_context_synchronously
+          context: context,
+          apiResponseMessage: e.message,
+        );
       }
     } on AnonKeyServerOffline catch (e) {
       if (context.mounted) {
         NotificationPopup.popupErrorMessage(
-            // ignore: use_build_context_synchronously
-            context: context,
-            message: e.message ?? "Timeout Error");
+          // ignore: use_build_context_synchronously
+          context: context,
+          message: e.message ?? "Timeout Error",
+        );
       }
     }
     return false;
@@ -114,11 +126,17 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         return AlertDialog(
           // Retrieve the text the that user has entered by using the
           // TextEditingController.
-          title: Text(AppLocalizations.of(context)!
-              .confirmCredentialDeleteTitle(credential.getClearDisplayName())),
+          title: Text(
+            AppLocalizations.of(
+              context,
+            )!.confirmCredentialDeleteTitle(credential.getClearDisplayName()),
+          ),
           //content: Text('Are you sure you want to move Credential "${credential.getClearDisplayName()}" into the deleted Folder?'),
-          content: Text(AppLocalizations.of(context)!
-              .confirmCredentialDeleteText(credential.getClearDisplayName())),
+          content: Text(
+            AppLocalizations.of(
+              context,
+            )!.confirmCredentialDeleteText(credential.getClearDisplayName()),
+          ),
           actions: [
             Row(
               children: [
@@ -135,14 +153,13 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
                       });
                     },
                     style: TextButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white),
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
+                    ),
                     child: Text(AppLocalizations.of(context)!.restore),
                   ),
                 ),
-                const SizedBox(
-                  width: 20.0,
-                ),
+                const SizedBox(width: 20.0),
                 Expanded(
                   child: TextButton(
                     onPressed: () {
@@ -156,8 +173,9 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
                       });
                     },
                     style: TextButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white),
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                    ),
                     child: Text(AppLocalizations.of(context)!.deleteForever),
                   ),
                 ),
@@ -180,12 +198,10 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     return ClickableTile(
-      onTap: () => ApiBaseData.callFuncIfServerReachable(
-        () {
-          showDeleteConfirmDialog(_credential);
-        },
-        context: context,
-      ),
+      onTap:
+          () => ApiBaseData.callFuncIfServerReachable(() {
+            showDeleteConfirmDialog(_credential);
+          }, context: context),
       leading: SizedBox(
         width: 40.0,
         child: ConstrainedBox(
@@ -195,17 +211,11 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
       ),
       title: Text(
         _credential.getClearDisplayName(),
-        style: TextStyle(
-          fontSize: 20.0,
-          color: theme.colorScheme.onTertiary,
-        ),
+        style: TextStyle(fontSize: 20.0, color: theme.colorScheme.onTertiary),
       ),
       subTitle: Text(
         _credential.getClearUsername(),
-        style: TextStyle(
-          fontSize: 15.0,
-          color: theme.colorScheme.onTertiary,
-        ),
+        style: TextStyle(fontSize: 15.0, color: theme.colorScheme.onTertiary),
       ),
     );
   }

@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-// @dart=2.12
+// @dart=2.18
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -52,15 +52,33 @@ void main() {
       // TODO
     });
 
+    // The WebsiteUrlSalt of the credetial
+    // String websiteUrlSalt
+    test('to test the property `websiteUrlSalt`', () async {
+      // TODO
+    });
+
     // A note attached to the credential.
     // String note
     test('to test the property `note`', () async {
       // TODO
     });
 
+    // The NoteSalt  of the credetial
+    // String noteSalt
+    test('to test the property `noteSalt`', () async {
+      // TODO
+    });
+
     // The display name of the credential..
     // String displayName
     test('to test the property `displayName`', () async {
+      // TODO
+    });
+
+    // The DisplayNameSalt of the credetial
+    // String displayNameSalt
+    test('to test the property `displayNameSalt`', () async {
       // TODO
     });
 

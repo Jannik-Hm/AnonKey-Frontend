@@ -64,6 +64,10 @@ Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
 *AuthenticationApi* | [**authenticationChangePasswordPut**](doc//AuthenticationApi.md#authenticationchangepasswordput) | **PUT** /authentication/changePassword | Changes a users password.
 *AuthenticationApi* | [**authenticationLoginPost**](doc//AuthenticationApi.md#authenticationloginpost) | **POST** /authentication/login | Authenticates the user and returns an access token.
+*AuthenticationApi* | [**authenticationLogoutAllPut**](doc//AuthenticationApi.md#authenticationlogoutallput) | **PUT** /authentication/logoutAll | Logs out all users.
+*AuthenticationApi* | [**authenticationLogoutPut**](doc//AuthenticationApi.md#authenticationlogoutput) | **PUT** /authentication/logout | Logs out the authenticated user.
+*AuthenticationApi* | [**authenticationRefreshAccessTokenPost**](doc//AuthenticationApi.md#authenticationrefreshaccesstokenpost) | **POST** /authentication/refreshAccessToken | Creates a new access token based on a refresh token.
+*AuthenticationApi* | [**authenticationRefreshRefreshTokenPost**](doc//AuthenticationApi.md#authenticationrefreshrefreshtokenpost) | **POST** /authentication/refreshRefreshToken | Creates a new refresh token based on a refresh token.
 *CredentialsApi* | [**credentialsCreatePost**](doc//CredentialsApi.md#credentialscreatepost) | **POST** /credentials/create | Creates a new credential object.
 *CredentialsApi* | [**credentialsDeleteDelete**](doc//CredentialsApi.md#credentialsdeletedelete) | **DELETE** /credentials/delete | Deletes an existing credential object.
 *CredentialsApi* | [**credentialsGetAllGet**](doc//CredentialsApi.md#credentialsgetallget) | **GET** /credentials/getAll | Gets all available credential objects for this user.
@@ -89,6 +93,11 @@ Class | Method | HTTP request | Description
  - [AuthenticationChangePasswordRequestBody](doc//AuthenticationChangePasswordRequestBody.md)
  - [AuthenticationLoginRequestBody](doc//AuthenticationLoginRequestBody.md)
  - [AuthenticationLoginResponseBody](doc//AuthenticationLoginResponseBody.md)
+ - [AuthenticationLoginToken](doc//AuthenticationLoginToken.md)
+ - [AuthenticationRefreshAccessToken](doc//AuthenticationRefreshAccessToken.md)
+ - [AuthenticationRefreshAccessTokenResponseBody](doc//AuthenticationRefreshAccessTokenResponseBody.md)
+ - [AuthenticationRefreshRefreshToken](doc//AuthenticationRefreshRefreshToken.md)
+ - [AuthenticationRefreshRefreshTokenResponseBody](doc//AuthenticationRefreshRefreshTokenResponseBody.md)
  - [CredentialsCreateCredential](doc//CredentialsCreateCredential.md)
  - [CredentialsCreateRequestBody](doc//CredentialsCreateRequestBody.md)
  - [CredentialsGetAllCredential](doc//CredentialsGetAllCredential.md)
@@ -112,6 +121,7 @@ Class | Method | HTTP request | Description
  - [FoldersUpdateResponseBody](doc//FoldersUpdateResponseBody.md)
  - [UsersCreateRequestBody](doc//UsersCreateRequestBody.md)
  - [UsersCreateResponseBody](doc//UsersCreateResponseBody.md)
+ - [UsersCreateResponseToken](doc//UsersCreateResponseToken.md)
  - [UsersGetResponseBody](doc//UsersGetResponseBody.md)
  - [UsersGetUser](doc//UsersGetUser.md)
  - [UsersUpdateRequestBody](doc//UsersUpdateRequestBody.md)

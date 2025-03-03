@@ -53,7 +53,11 @@ class _IconPicker extends State<IconPicker> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(
-          left: 20.0, top: 10.0, right: 20.0, bottom: 10.0),
+        left: 20.0,
+        top: 10.0,
+        right: 20.0,
+        bottom: 10.0,
+      ),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(25)),
         color: Theme.of(context).colorScheme.secondary,
@@ -63,22 +67,24 @@ class _IconPicker extends State<IconPicker> {
         children: [
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
-            child: (_iconData != null)
-                ? Icon(
-                    _iconData,
-                    color: Theme.of(context).colorScheme.onSurface,
-                    size: 40.0,
-                  )
-                : Container(),
+            child:
+                (_iconData != null)
+                    ? Icon(
+                      _iconData,
+                      color: Theme.of(context).colorScheme.onSurface,
+                      size: 40.0,
+                    )
+                    : Container(),
           ),
           const SizedBox(width: 20.0),
           if (_enabled)
             TextButton(
               onPressed: _pickIcon,
               style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.onPrimary),
+                backgroundColor: Theme.of(context).colorScheme.onPrimary,
+              ),
               child: Text(AppLocalizations.of(context)!.chooseIcon),
-            )
+            ),
         ],
       ),
     );
