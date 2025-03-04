@@ -1,4 +1,5 @@
 import 'package:anonkey_frontend/api/lib/api.dart';
+import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/router/clear_and_navigate.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/widgets.dart';
@@ -29,9 +30,7 @@ class UserService {
     UsersApi usersApi = UsersApi(apiClient);
 
     try {
-      final AuthenticationCredentialsSingleton credentials =
-          await AuthService.getAuthenticationCredentials();
-      if (credentials.encryptionKDF != password) {
+      if (await AuthService.getEncryptionKDF() != password) {
         throw Exception("No credentials found");
       }
     } catch (e) {
@@ -51,22 +50,27 @@ class UserService {
 
   static void logout(BuildContext context) async {
     var url = await ApiBaseData.getURL();
-    AuthenticationCredentialsSingleton authdata =
-        await AuthService.getAuthenticationCredentials();
-    if (authdata.accessToken?.token != null) {
-      ApiClient apiClient = RequestUtility.getApiWithAuth(
-        authdata.accessToken!.token,
-        url!,
-      );
-      AuthenticationApi authenticationApi = AuthenticationApi(apiClient);
-      await ApiBaseData.apiCallWrapper(
-            authenticationApi.authenticationLogoutPutWithHttpInfo(),
-            logMessage:
-                (context.mounted) ? AppLocalizations.of(context)!.logout : null,
-          )
-          .then((value) async {})
-          .catchError((onError) => throw Exception(onError.toString()));
-    }
+    try {
+      AuthenticationCredentialsSingleton authdata =
+          await AuthService.getAuthenticationCredentials();
+      if (authdata.accessToken?.token != null) {
+        ApiClient apiClient = RequestUtility.getApiWithAuth(
+          authdata.accessToken!.token,
+          url!,
+        );
+        AuthenticationApi authenticationApi = AuthenticationApi(apiClient);
+        await ApiBaseData.apiCallWrapper(
+          authenticationApi.authenticationLogoutPutWithHttpInfo(),
+          logMessage:
+              (context.mounted) ? AppLocalizations.of(context)!.logout : null,
+        );
+      }
+      // Note: the current handling will result in an unused valid refresh token, otherwise we cant allow a user to logout when being offline
+    } on ApiException catch (_) {
+    } on AnonKeyServerOffline catch (_) {
+    } on AuthException catch (
+      _
+    ) {} // still want to do the following when tokens are invalid
 
     await AuthService.deleteAuthenticationCredentials();
     if (!context.mounted) return;
