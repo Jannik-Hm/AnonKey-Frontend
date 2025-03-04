@@ -116,7 +116,7 @@ class FolderList {
     AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
     Future<FolderList> futureLocalData = readFromDisk();
-    if (url != null) {
+    if (url != null && authdata.accessToken != null) {
       api.ApiClient apiClient = RequestUtility.getApiWithAuth(
         authdata.accessToken!.token,
         url,

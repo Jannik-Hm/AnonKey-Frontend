@@ -33,9 +33,9 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
     AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
     try {
-      if (url != null) {
+      if (url != null && authdata.accessToken != null) {
         ApiClient apiClient = RequestUtility.getApiWithAuth(
-          authdata.accessToken!.token!,
+          authdata.accessToken!.token,
           url,
         );
         CredentialsApi api = CredentialsApi(apiClient);
@@ -78,7 +78,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
     AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
     try {
-      if (url != null) {
+      if (url != null && authdata.accessToken != null) {
         ApiClient apiClient = RequestUtility.getApiWithAuth(
           authdata.accessToken!.token,
           url,

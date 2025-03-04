@@ -29,9 +29,7 @@ class UserService {
     UsersApi usersApi = UsersApi(apiClient);
 
     try {
-      final AuthenticationCredentialsSingleton credentials =
-          await AuthService.getAuthenticationCredentials();
-      if (credentials.encryptionKDF != password) {
+      if (await AuthService.getEncryptionKDF() != password) {
         throw Exception("No credentials found");
       }
     } catch (e) {

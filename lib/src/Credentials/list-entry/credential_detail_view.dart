@@ -116,9 +116,9 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       AuthenticationCredentialsSingleton authdata =
           await AuthService.getAuthenticationCredentials();
       try {
-        if (url != null) {
+        if (url != null && authdata.accessToken != null) {
           ApiClient apiClient = RequestUtility.getApiWithAuth(
-            authdata.accessToken!.token!,
+            authdata.accessToken!.token,
             url,
           );
           CredentialsApi api = CredentialsApi(apiClient);
@@ -205,9 +205,9 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
           String? url = await ApiBaseData.getURL(); // Get Backend URL
           AuthenticationCredentialsSingleton authdata =
               await AuthService.getAuthenticationCredentials();
-          if (url != null) {
+          if (url != null && authdata.accessToken != null) {
             ApiClient apiClient = RequestUtility.getApiWithAuth(
-              authdata.accessToken!.token!,
+              authdata.accessToken!.token,
               url,
             );
             CredentialsApi api = CredentialsApi(apiClient);

@@ -80,7 +80,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
       AuthenticationCredentialsSingleton authdata =
           await AuthService.getAuthenticationCredentials();
       try {
-        if (url != null) {
+        if (url != null && authdata.accessToken != null) {
           ApiClient apiClient = RequestUtility.getApiWithAuth(
             authdata.accessToken!.token,
             url,
@@ -153,7 +153,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
       AuthenticationCredentialsSingleton authdata =
           await AuthService.getAuthenticationCredentials();
       try {
-        if (url != null) {
+        if (url != null && authdata.accessToken != null) {
           ApiClient apiClient = RequestUtility.getApiWithAuth(
             authdata.accessToken!.token,
             url,
