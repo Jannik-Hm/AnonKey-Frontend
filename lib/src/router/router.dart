@@ -6,6 +6,7 @@ import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Folders/folder_view.dart';
 import 'package:anonkey_frontend/src/Folders/list-entry/folder_edit.dart';
 import 'package:anonkey_frontend/src/app_lifecycle_page.dart';
+import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/home/home.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
@@ -75,8 +76,19 @@ class AppRouter {
         ),
       ],
       redirect: (BuildContext context, GoRouterState state) async {
-        AuthenticationCredentialsSingleton singleton =
-            await AuthService.getAuthenticationCredentials();
+        AuthenticationCredentialsSingleton singleton;
+        try {
+          singleton = await AuthService.getAuthenticationCredentials();
+        } on AuthException catch (_) {
+          // hit when Token validation failed -> logout and login from user required
+          await AuthService.deleteAuthenticationCredentials();
+          switch (state.fullPath) {
+            case "/register":
+              return "/register";
+            default:
+              return "/login";
+          }
+        }
 
         if (!(await AuthService.isSoftLogout()) &&
             !singleton.skipSplashScreen) {
