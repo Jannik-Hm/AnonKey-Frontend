@@ -59,19 +59,16 @@ class UserService {
           url!,
         );
         AuthenticationApi authenticationApi = AuthenticationApi(apiClient);
-        await ApiBaseData.apiCallWrapper(
-              authenticationApi.authenticationLogoutPutWithHttpInfo(),
-              logMessage:
-                  (context.mounted)
-                      ? AppLocalizations.of(context)!.logout
-                      : null,
-            )
-            .then((value) async {})
-            .catchError((onError) => throw Exception(onError.toString()));
+          await ApiBaseData.apiCallWrapper(
+                authenticationApi.authenticationLogoutPutWithHttpInfo(),
+                logMessage:
+                    (context.mounted) ? AppLocalizations.of(context)!.logout : null,
+              );
       }
-    } on AuthException catch (
-      _
-    ) {} // still want to do the following when tokens are invalid
+      // Note: the current handling will result in an unused valid refresh token, otherwise we cant allow a user to logout when being offline
+    } on ApiException catch (_) {
+    } on AnonKeyServerOffline catch (_) {
+    } on AuthException catch (_) {} // still want to do the following when tokens are invalid
 
     await AuthService.deleteAuthenticationCredentials();
     if (!context.mounted) return;
