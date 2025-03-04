@@ -8,6 +8,7 @@ import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Widgets/folder_dropdown.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/exception/missing_build_context_exception.dart';
+import 'package:anonkey_frontend/src/router/clear_and_navigate.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
@@ -200,8 +201,8 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         }
       } on AuthException catch (_) {
         await AuthService.deleteAuthenticationCredentials();
-        if (context.mounted) {
-          context.push("/login");
+        if(context.mounted) {
+          GoRouter.of(context).clearStackAndNavigate("/login");
           return false;
         } else {
           throw MissingBuildContextException();
@@ -257,8 +258,8 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         }
       } on AuthException catch (_) {
         await AuthService.deleteAuthenticationCredentials();
-        if (context.mounted) {
-          context.push("/login");
+        if(context.mounted) {
+          GoRouter.of(context).clearStackAndNavigate("/login");
           return false;
         } else {
           throw MissingBuildContextException();

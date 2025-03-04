@@ -9,6 +9,7 @@ import 'package:anonkey_frontend/src/Widgets/home_folders_display.dart';
 import 'package:anonkey_frontend/src/Widgets/refresh_button.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/exception/missing_build_context_exception.dart';
+import 'package:anonkey_frontend/src/router/clear_and_navigate.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
@@ -50,20 +51,20 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? AppLocalizations.of(context)!.credentialFetchTimeout
                       : "Timeout Error",
             );
-            return e.fallbackData;
-          } else if (e is AuthException) {
-            AuthService.deleteAuthenticationCredentials().then((_) {
-              if (mounted) {
-                context.push("/login");
-              } else {
-                throw MissingBuildContextException();
-              }
-            });
-            return null;
-          }
-        } else {
-          throw MissingBuildContextException();
+          return e.fallbackData;
+        } else if( e is AuthException) {
+          AuthService.deleteAuthenticationCredentials().then((_) {
+            if (mounted) {
+              GoRouter.of(context).clearStackAndNavigate("/login");
+            }else {
+              throw MissingBuildContextException();
+            }
+          },);
+          return null;
         }
+          } else {
+            throw MissingBuildContextException();
+          }
       }),
       FolderList.getFromAPIFull().catchError((e) {
         if (mounted) {
@@ -75,16 +76,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? AppLocalizations.of(context)!.folderFetchTimeout
                       : "Timeout Error",
             );
-          } else if (e is AuthException) {
-            AuthService.deleteAuthenticationCredentials().then((_) {
-              if (mounted) {
-                context.push("/login");
-              } else {
-                throw MissingBuildContextException();
-              }
-            });
-            return null;
-          }
+          } else if( e is AuthException) {
+          AuthService.deleteAuthenticationCredentials().then((_) {
+            if (mounted) {
+              GoRouter.of(context).clearStackAndNavigate("/login");
+            }else {
+              throw MissingBuildContextException();
+            }
+          },);
+          return null;
+        }
         } else {
           throw MissingBuildContextException();
         }
@@ -168,8 +169,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             _,
                           ) {
                             if (context.mounted) {
-                              context.push("/login");
-                            } else {
+                              GoRouter.of(context).clearStackAndNavigate("/login");
+                            }else {
                               throw MissingBuildContextException();
                             }
                           });
@@ -197,8 +198,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             _,
                           ) {
                             if (context.mounted) {
-                              context.push("/login");
-                            } else {
+                              GoRouter.of(context).clearStackAndNavigate("/login");
+                            }else {
                               throw MissingBuildContextException();
                             }
                           });

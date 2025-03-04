@@ -7,6 +7,7 @@ import 'package:anonkey_frontend/src/Credentials/list-entry/logo.dart';
 import 'package:anonkey_frontend/src/Widgets/clickable_tile.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/exception/missing_build_context_exception.dart';
+import 'package:anonkey_frontend/src/router/clear_and_navigate.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -72,7 +73,7 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
     } on AuthException catch (_) {
       await AuthService.deleteAuthenticationCredentials();
       if (mounted) {
-        context.push("/login");
+        GoRouter.of(context).clearStackAndNavigate("/login");
         return false;
       } else {
         throw MissingBuildContextException();
@@ -120,14 +121,14 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         );
       }
     } on AuthException catch (_) {
-      await AuthService.deleteAuthenticationCredentials();
-      if (mounted) {
-        context.push("/login");
-        return false;
-      } else {
-        throw MissingBuildContextException();
+        await AuthService.deleteAuthenticationCredentials();
+        if(mounted) {
+          GoRouter.of(context).clearStackAndNavigate("/login");
+          return false;
+        } else {
+          throw MissingBuildContextException();
+        }
       }
-    }
     return false;
   }
 
