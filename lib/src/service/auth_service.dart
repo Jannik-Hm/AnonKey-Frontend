@@ -259,7 +259,6 @@ class AuthService {
   }
 
   static Future<void> _refreshRefreshToken() async {
-    print("Here");
     const storage = FlutterSecureStorage();
     var singleton = AuthenticationCredentialsSingleton();
     ApiClient api = RequestUtility.getApiWithAuth(
@@ -302,7 +301,6 @@ class AuthService {
           );
         })
         .onError((error, stackTrace) {
-          print("Something fishy");
           singleton.deleteAuthenticationCredentialsSingleton();
           storage.deleteAll();
         });
@@ -422,7 +420,6 @@ class AuthService {
     DateTime validUntil = DateTime.fromMillisecondsSinceEpoch(
       (timestamp * 1000).floor(),
     );
-    print(validUntil);
     if (DateTime.now().isAfter(validUntil)) {
       return false;
     }
