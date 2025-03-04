@@ -1,5 +1,6 @@
 import 'package:anonkey_frontend/Utility/cryptography.dart';
 import 'package:anonkey_frontend/api/lib/api.dart' as api;
+import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
@@ -101,10 +102,13 @@ class Credential {
 
   /// Function to deserialize json Map into Credential
   static Future<Credential> fromJson(Map<String, dynamic> json) async {
+    String? masterPassword = await AuthService.getEncryptionKDF();
+    if (masterPassword == null) {
+      throw ArgumentError("Decryption failed as Encryption KDF is empty");
+    }
     return Credential.fromApi(
       uuid: json["uuid"],
-      masterPassword:
-          (await AuthService.getAuthenticationCredentials()).encryptionKDF!,
+      masterPassword: masterPassword,
       encryptedWebsiteUrl: json["encryptedWebsiteUrl"],
       websiteUrlSalt: json["websiteUrlSalt"],
       encryptedUsername: json["encryptedUsername"],

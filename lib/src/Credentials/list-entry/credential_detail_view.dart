@@ -6,11 +6,15 @@ import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Widgets/folder_dropdown.dart';
+import 'package:anonkey_frontend/src/exception/auth_exception.dart';
+import 'package:anonkey_frontend/src/exception/missing_build_context_exception.dart';
+import 'package:anonkey_frontend/src/router/clear_and_navigate.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 
 /// Widget for Editing and Displaying Credential Data
 ///
@@ -116,9 +120,9 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
       AuthenticationCredentialsSingleton authdata =
           await AuthService.getAuthenticationCredentials();
       try {
-        if (url != null) {
+        if (url != null && authdata.accessToken != null) {
           ApiClient apiClient = RequestUtility.getApiWithAuth(
-            authdata.accessToken!.token!,
+            authdata.accessToken!.token,
             url,
           );
           CredentialsApi api = CredentialsApi(apiClient);
@@ -195,6 +199,14 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             message: e.message ?? "Timeout Error",
           );
         }
+      } on AuthException catch (_) {
+        await AuthService.deleteAuthenticationCredentials();
+        if (context.mounted) {
+          GoRouter.of(context).clearStackAndNavigate("/login");
+          return false;
+        } else {
+          throw MissingBuildContextException();
+        }
       }
       return false;
     }
@@ -205,9 +217,9 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
           String? url = await ApiBaseData.getURL(); // Get Backend URL
           AuthenticationCredentialsSingleton authdata =
               await AuthService.getAuthenticationCredentials();
-          if (url != null) {
+          if (url != null && authdata.accessToken != null) {
             ApiClient apiClient = RequestUtility.getApiWithAuth(
-              authdata.accessToken!.token!,
+              authdata.accessToken!.token,
               url,
             );
             CredentialsApi api = CredentialsApi(apiClient);
@@ -243,6 +255,14 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
             context: context,
             message: e.message ?? "Timeout Error",
           );
+        }
+      } on AuthException catch (_) {
+        await AuthService.deleteAuthenticationCredentials();
+        if (context.mounted) {
+          GoRouter.of(context).clearStackAndNavigate("/login");
+          return false;
+        } else {
+          throw MissingBuildContextException();
         }
       }
       return false;

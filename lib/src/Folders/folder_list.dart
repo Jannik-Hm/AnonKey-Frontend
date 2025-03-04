@@ -28,6 +28,7 @@ class FolderList {
   void add(Folder folder) {
     byIDList[folder.uuid!] = folder;
     byNameList[folder.displayName] = folder;
+    saveToDisk();
   }
 
   /// remove Folder with ID [folderUUID] from this FolderList
@@ -36,6 +37,7 @@ class FolderList {
     if (temp != null) {
       byIDList.remove(folderUUID);
       byNameList.remove(temp.displayName);
+      saveToDisk();
     }
   }
 
@@ -116,7 +118,7 @@ class FolderList {
     AuthenticationCredentialsSingleton authdata =
         await AuthService.getAuthenticationCredentials();
     Future<FolderList> futureLocalData = readFromDisk();
-    if (url != null) {
+    if (url != null && authdata.accessToken != null) {
       api.ApiClient apiClient = RequestUtility.getApiWithAuth(
         authdata.accessToken!.token,
         url,
