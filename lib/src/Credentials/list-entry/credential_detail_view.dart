@@ -200,7 +200,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         }
       } on AuthException catch (_) {
         await AuthService.deleteAuthenticationCredentials();
-        if(context.mounted) {
+        if (context.mounted) {
           context.push("/login");
           return false;
         } else {
@@ -257,7 +257,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         }
       } on AuthException catch (_) {
         await AuthService.deleteAuthenticationCredentials();
-        if(context.mounted) {
+        if (context.mounted) {
           context.push("/login");
           return false;
         } else {

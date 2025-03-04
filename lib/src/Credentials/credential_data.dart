@@ -103,12 +103,12 @@ class Credential {
   /// Function to deserialize json Map into Credential
   static Future<Credential> fromJson(Map<String, dynamic> json) async {
     String? masterPassword = await AuthService.getEncryptionKDF();
-    if(masterPassword == null) {
+    if (masterPassword == null) {
       throw ArgumentError("Decryption failed as Encryption KDF is empty");
     }
     return Credential.fromApi(
       uuid: json["uuid"],
-      masterPassword:masterPassword,
+      masterPassword: masterPassword,
       encryptedWebsiteUrl: json["encryptedWebsiteUrl"],
       websiteUrlSalt: json["websiteUrlSalt"],
       encryptedUsername: json["encryptedUsername"],

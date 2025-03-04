@@ -70,14 +70,14 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         );
       }
     } on AuthException catch (_) {
-        await AuthService.deleteAuthenticationCredentials();
-        if(mounted) {
-          context.push("/login");
-          return false;
-        } else {
-          throw MissingBuildContextException();
-        }
+      await AuthService.deleteAuthenticationCredentials();
+      if (mounted) {
+        context.push("/login");
+        return false;
+      } else {
+        throw MissingBuildContextException();
       }
+    }
     return false;
   }
 
@@ -120,14 +120,14 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         );
       }
     } on AuthException catch (_) {
-        await AuthService.deleteAuthenticationCredentials();
-        if(mounted) {
-          context.push("/login");
-          return false;
-        } else {
-          throw MissingBuildContextException();
-        }
+      await AuthService.deleteAuthenticationCredentials();
+      if (mounted) {
+        context.push("/login");
+        return false;
+      } else {
+        throw MissingBuildContextException();
       }
+    }
     return false;
   }
 

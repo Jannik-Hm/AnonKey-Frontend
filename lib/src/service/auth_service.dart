@@ -259,10 +259,12 @@ class AuthService {
   }
 
   static Future<String?> getEncryptionKDF() async {
-    AuthenticationCredentialsSingleton singleton = AuthenticationCredentialsSingleton();
+    AuthenticationCredentialsSingleton singleton =
+        AuthenticationCredentialsSingleton();
     const storage = FlutterSecureStorage();
-    if(singleton.encryptionKDF == null && await storage.containsKey(key: "encryptionKDF") &&
-          await AuthUtils.checkBiometricAvailability()) {
+    if (singleton.encryptionKDF == null &&
+        await storage.containsKey(key: "encryptionKDF") &&
+        await AuthUtils.checkBiometricAvailability()) {
       singleton.encryptionKDF = await storage.read(key: "encryptionKDF");
     }
     return singleton.encryptionKDF;

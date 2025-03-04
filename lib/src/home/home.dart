@@ -41,8 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
     _initializeSettings();
     combinedData = Future.wait([
       CredentialList.getFromAPIFull().catchError((e) {
-          if (mounted) {
-        if( e is CredentialListTimeout ) {
+        if (mounted) {
+          if (e is CredentialListTimeout) {
             NotificationPopup.popupErrorMessage(
               context: context,
               message:
@@ -50,24 +50,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? AppLocalizations.of(context)!.credentialFetchTimeout
                       : "Timeout Error",
             );
-          return e.fallbackData;
-        } else if( e is AuthException) {
-          AuthService.deleteAuthenticationCredentials().then((_) {
-            if (mounted) {
-              context.push("/login");
-            }else {
-              throw MissingBuildContextException();
-            }
-          },);
-          return null;
-        }
-          } else {
-            throw MissingBuildContextException();
+            return e.fallbackData;
+          } else if (e is AuthException) {
+            AuthService.deleteAuthenticationCredentials().then((_) {
+              if (mounted) {
+                context.push("/login");
+              } else {
+                throw MissingBuildContextException();
+              }
+            });
+            return null;
           }
+        } else {
+          throw MissingBuildContextException();
+        }
       }),
       FolderList.getFromAPIFull().catchError((e) {
         if (mounted) {
-          if(e is FolderListTimeout) {
+          if (e is FolderListTimeout) {
             NotificationPopup.popupErrorMessage(
               context: context,
               message:
@@ -75,16 +75,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? AppLocalizations.of(context)!.folderFetchTimeout
                       : "Timeout Error",
             );
-          } else if( e is AuthException) {
-          AuthService.deleteAuthenticationCredentials().then((_) {
-            if (mounted) {
-              context.push("/login");
-            }else {
-              throw MissingBuildContextException();
-            }
-          },);
-          return null;
-        }
+          } else if (e is AuthException) {
+            AuthService.deleteAuthenticationCredentials().then((_) {
+              if (mounted) {
+                context.push("/login");
+              } else {
+                throw MissingBuildContextException();
+              }
+            });
+            return null;
+          }
         } else {
           throw MissingBuildContextException();
         }
@@ -153,24 +153,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     data.credentials!.updateFromAPIFull().catchError((e) {
                       if (context.mounted) {
                         if (e is CredentialListTimeout) {
-                        NotificationPopup.popupErrorMessage(
-                          context: context,
-                          message:
-                              (context.mounted)
-                                  ? AppLocalizations.of(
-                                    context,
-                                  )!.credentialFetchTimeout
-                                  : "Timeout Error",
-                        );
-                        return e.fallbackData;
-                        } else if( e is AuthException) {
-                          AuthService.deleteAuthenticationCredentials().then((_) {
+                          NotificationPopup.popupErrorMessage(
+                            context: context,
+                            message:
+                                (context.mounted)
+                                    ? AppLocalizations.of(
+                                      context,
+                                    )!.credentialFetchTimeout
+                                    : "Timeout Error",
+                          );
+                          return e.fallbackData;
+                        } else if (e is AuthException) {
+                          AuthService.deleteAuthenticationCredentials().then((
+                            _,
+                          ) {
                             if (context.mounted) {
                               context.push("/login");
-                            }else {
+                            } else {
                               throw MissingBuildContextException();
                             }
-                          },);
+                          });
                           return null;
                         }
                       } else {
@@ -179,25 +181,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     }),
                     FolderList.getFromAPIFull().catchError((e) {
                       if (context.mounted) {
-                        if( e is FolderListTimeout) {
-                        NotificationPopup.popupErrorMessage(
-                          context: context,
-                          message:
-                              (context.mounted)
-                                  ? AppLocalizations.of(
-                                    context,
-                                  )!.folderFetchTimeout
-                                  : "Timeout Error",
-                        );
-                        return e.fallbackData;
-                        } else if( e is AuthException) {
-                          AuthService.deleteAuthenticationCredentials().then((_) {
+                        if (e is FolderListTimeout) {
+                          NotificationPopup.popupErrorMessage(
+                            context: context,
+                            message:
+                                (context.mounted)
+                                    ? AppLocalizations.of(
+                                      context,
+                                    )!.folderFetchTimeout
+                                    : "Timeout Error",
+                          );
+                          return e.fallbackData;
+                        } else if (e is AuthException) {
+                          AuthService.deleteAuthenticationCredentials().then((
+                            _,
+                          ) {
                             if (context.mounted) {
                               context.push("/login");
-                            }else {
+                            } else {
                               throw MissingBuildContextException();
                             }
-                          },);
+                          });
                           return null;
                         }
                       } else {
