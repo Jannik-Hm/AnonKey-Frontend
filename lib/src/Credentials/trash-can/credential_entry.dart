@@ -5,9 +5,12 @@ import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
 import 'package:anonkey_frontend/src/Credentials/list-entry/logo.dart';
 import 'package:anonkey_frontend/src/Widgets/clickable_tile.dart';
+import 'package:anonkey_frontend/src/exception/auth_exception.dart';
+import 'package:anonkey_frontend/src/exception/missing_build_context_exception.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 
 class CredentialTrashEntry extends StatefulWidget {
   final Credential credential;
@@ -48,28 +51,33 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         );
         return true;
       } else {
-        if (context.mounted) {
-          // ignore: use_build_context_synchronously
+        if (mounted) {
           NotificationPopup.apiError(context: context);
         }
       }
     } on ApiException catch (e) {
-      if (context.mounted) {
+      if (mounted) {
         NotificationPopup.apiError(
-          // ignore: use_build_context_synchronously
           context: context,
           apiResponseMessage: e.message,
         );
       }
     } on AnonKeyServerOffline catch (e) {
-      if (context.mounted) {
+      if (mounted) {
         NotificationPopup.popupErrorMessage(
-          // ignore: use_build_context_synchronously
           context: context,
           message: e.message ?? "Timeout Error",
         );
       }
-    }
+    } on AuthException catch (_) {
+        await AuthService.deleteAuthenticationCredentials();
+        if(mounted) {
+          context.push("/login");
+          return false;
+        } else {
+          throw MissingBuildContextException();
+        }
+      }
     return false;
   }
 
@@ -93,28 +101,33 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         );
         return true;
       } else {
-        if (context.mounted) {
-          // ignore: use_build_context_synchronously
+        if (mounted) {
           NotificationPopup.apiError(context: context);
         }
       }
     } on ApiException catch (e) {
-      if (context.mounted) {
+      if (mounted) {
         NotificationPopup.apiError(
-          // ignore: use_build_context_synchronously
           context: context,
           apiResponseMessage: e.message,
         );
       }
     } on AnonKeyServerOffline catch (e) {
-      if (context.mounted) {
+      if (mounted) {
         NotificationPopup.popupErrorMessage(
-          // ignore: use_build_context_synchronously
           context: context,
           message: e.message ?? "Timeout Error",
         );
       }
-    }
+    } on AuthException catch (_) {
+        await AuthService.deleteAuthenticationCredentials();
+        if(mounted) {
+          context.push("/login");
+          return false;
+        } else {
+          throw MissingBuildContextException();
+        }
+      }
     return false;
   }
 

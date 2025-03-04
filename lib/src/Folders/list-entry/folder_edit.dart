@@ -7,10 +7,13 @@ import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Widgets/icon_picker.dart';
+import 'package:anonkey_frontend/src/exception/auth_exception.dart';
+import 'package:anonkey_frontend/src/exception/missing_build_context_exception.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:go_router/go_router.dart';
 
 class FolderEditWidget extends StatefulWidget {
   final Folder? folder;
@@ -144,6 +147,14 @@ class _FolderEditWidget extends State<FolderEditWidget> {
             message: e.message ?? "Timeout Error",
           );
         }
+      } on AuthException catch (_) {
+        await AuthService.deleteAuthenticationCredentials();
+        if(context.mounted) {
+          context.push("/login");
+          return false;
+        } else {
+          throw MissingBuildContextException();
+        }
       }
       return false;
     }
@@ -191,6 +202,14 @@ class _FolderEditWidget extends State<FolderEditWidget> {
             message: e.message ?? "Timeout Error",
           );
           return false;
+        }
+      } on AuthException catch (_) {
+        await AuthService.deleteAuthenticationCredentials();
+        if(context.mounted) {
+          context.push("/login");
+          return false;
+        } else {
+          throw MissingBuildContextException();
         }
       }
       return true;

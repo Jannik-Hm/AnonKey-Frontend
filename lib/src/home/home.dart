@@ -7,11 +7,14 @@ import 'package:anonkey_frontend/src/Widgets/clickable_tile.dart';
 import 'package:anonkey_frontend/src/Widgets/home_all_credentials_display.dart';
 import 'package:anonkey_frontend/src/Widgets/home_folders_display.dart';
 import 'package:anonkey_frontend/src/Widgets/refresh_button.dart';
+import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/exception/missing_build_context_exception.dart';
+import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:anonkey_frontend/src/settings/settings_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 
 import '../settings/settings_view.dart';
 
@@ -38,33 +41,55 @@ class _HomeScreenState extends State<HomeScreen> {
     _initializeSettings();
     combinedData = Future.wait([
       CredentialList.getFromAPIFull().catchError((e) {
-        if (mounted) {
-          NotificationPopup.popupErrorMessage(
-            context: context,
-            message:
-                (context.mounted)
-                    ? AppLocalizations.of(context)!.credentialFetchTimeout
-                    : "Timeout Error",
-          );
-        } else {
-          throw MissingBuildContextException();
+          if (mounted) {
+        if( e is CredentialListTimeout ) {
+            NotificationPopup.popupErrorMessage(
+              context: context,
+              message:
+                  (context.mounted)
+                      ? AppLocalizations.of(context)!.credentialFetchTimeout
+                      : "Timeout Error",
+            );
+          return e.fallbackData;
+        } else if( e is AuthException) {
+          AuthService.deleteAuthenticationCredentials().then((_) {
+            if (mounted) {
+              context.push("/login");
+            }else {
+              throw MissingBuildContextException();
+            }
+          },);
+          return null;
         }
-        return (e as CredentialListTimeout).fallbackData;
-      }, test: (error) => error is CredentialListTimeout),
+          } else {
+            throw MissingBuildContextException();
+          }
+      }),
       FolderList.getFromAPIFull().catchError((e) {
         if (mounted) {
-          NotificationPopup.popupErrorMessage(
-            context: context,
-            message:
-                (context.mounted)
-                    ? AppLocalizations.of(context)!.folderFetchTimeout
-                    : "Timeout Error",
-          );
+          if(e is FolderListTimeout) {
+            NotificationPopup.popupErrorMessage(
+              context: context,
+              message:
+                  (context.mounted)
+                      ? AppLocalizations.of(context)!.folderFetchTimeout
+                      : "Timeout Error",
+            );
+          } else if( e is AuthException) {
+          AuthService.deleteAuthenticationCredentials().then((_) {
+            if (mounted) {
+              context.push("/login");
+            }else {
+              throw MissingBuildContextException();
+            }
+          },);
+          return null;
+        }
         } else {
           throw MissingBuildContextException();
         }
         return (e as FolderListTimeout).fallbackData;
-      }, test: (error) => error is FolderListTimeout),
+      }),
     ]).then((results) {
       return CombinedListData(
         credentials: results[0] as CredentialList,
@@ -127,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   combinedData = Future.wait([
                     data.credentials!.updateFromAPIFull().catchError((e) {
                       if (context.mounted) {
+                        if (e is CredentialListTimeout) {
                         NotificationPopup.popupErrorMessage(
                           context: context,
                           message:
@@ -136,13 +162,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                   )!.credentialFetchTimeout
                                   : "Timeout Error",
                         );
+                        return e.fallbackData;
+                        } else if( e is AuthException) {
+                          AuthService.deleteAuthenticationCredentials().then((_) {
+                            if (context.mounted) {
+                              context.push("/login");
+                            }else {
+                              throw MissingBuildContextException();
+                            }
+                          },);
+                          return null;
+                        }
                       } else {
                         throw MissingBuildContextException();
                       }
-                      return (e as CredentialListTimeout).fallbackData;
-                    }, test: (error) => error is CredentialListTimeout),
+                    }),
                     FolderList.getFromAPIFull().catchError((e) {
                       if (context.mounted) {
+                        if( e is FolderListTimeout) {
                         NotificationPopup.popupErrorMessage(
                           context: context,
                           message:
@@ -152,11 +189,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                   )!.folderFetchTimeout
                                   : "Timeout Error",
                         );
+                        return e.fallbackData;
+                        } else if( e is AuthException) {
+                          AuthService.deleteAuthenticationCredentials().then((_) {
+                            if (context.mounted) {
+                              context.push("/login");
+                            }else {
+                              throw MissingBuildContextException();
+                            }
+                          },);
+                          return null;
+                        }
                       } else {
                         throw MissingBuildContextException();
                       }
-                      return (e as FolderListTimeout).fallbackData;
-                    }, test: (error) => error is FolderListTimeout),
+                    }),
                   ]).then((results) {
                     return CombinedListData(
                       credentials: results[0] as CredentialList,
