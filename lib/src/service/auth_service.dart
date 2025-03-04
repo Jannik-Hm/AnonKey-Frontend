@@ -313,6 +313,7 @@ class AuthService {
         .onError((error, stackTrace) {
           singleton.deleteAuthenticationCredentialsSingleton();
           storage.deleteAll();
+          throw AuthException("Could not renew Refresh Token");
         });
   }
 
