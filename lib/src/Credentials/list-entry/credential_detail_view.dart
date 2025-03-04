@@ -201,7 +201,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         }
       } on AuthException catch (_) {
         await AuthService.deleteAuthenticationCredentials();
-        if(context.mounted) {
+        if (context.mounted) {
           GoRouter.of(context).clearStackAndNavigate("/login");
           return false;
         } else {
@@ -258,7 +258,7 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         }
       } on AuthException catch (_) {
         await AuthService.deleteAuthenticationCredentials();
-        if(context.mounted) {
+        if (context.mounted) {
           GoRouter.of(context).clearStackAndNavigate("/login");
           return false;
         } else {

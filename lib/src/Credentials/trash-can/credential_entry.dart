@@ -121,14 +121,14 @@ class _CredentialTrashEntry extends State<CredentialTrashEntry> {
         );
       }
     } on AuthException catch (_) {
-        await AuthService.deleteAuthenticationCredentials();
-        if(mounted) {
-          GoRouter.of(context).clearStackAndNavigate("/login");
-          return false;
-        } else {
-          throw MissingBuildContextException();
-        }
+      await AuthService.deleteAuthenticationCredentials();
+      if (mounted) {
+        GoRouter.of(context).clearStackAndNavigate("/login");
+        return false;
+      } else {
+        throw MissingBuildContextException();
       }
+    }
     return false;
   }
 

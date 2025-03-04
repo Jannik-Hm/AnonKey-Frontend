@@ -62,12 +62,16 @@ class UserService {
         await ApiBaseData.apiCallWrapper(
               authenticationApi.authenticationLogoutPutWithHttpInfo(),
               logMessage:
-                  (context.mounted) ? AppLocalizations.of(context)!.logout : null,
+                  (context.mounted)
+                      ? AppLocalizations.of(context)!.logout
+                      : null,
             )
             .then((value) async {})
             .catchError((onError) => throw Exception(onError.toString()));
       }
-    } on AuthException catch (_) {} // still want to do the following when tokens are invalid
+    } on AuthException catch (
+      _
+    ) {} // still want to do the following when tokens are invalid
 
     await AuthService.deleteAuthenticationCredentials();
     if (!context.mounted) return;

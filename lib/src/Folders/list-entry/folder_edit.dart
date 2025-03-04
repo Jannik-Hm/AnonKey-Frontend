@@ -150,7 +150,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
         }
       } on AuthException catch (_) {
         await AuthService.deleteAuthenticationCredentials();
-        if(context.mounted) {
+        if (context.mounted) {
           GoRouter.of(context).clearStackAndNavigate("/login");
           return false;
         } else {
@@ -206,7 +206,7 @@ class _FolderEditWidget extends State<FolderEditWidget> {
         }
       } on AuthException catch (_) {
         await AuthService.deleteAuthenticationCredentials();
-        if(context.mounted) {
+        if (context.mounted) {
           GoRouter.of(context).clearStackAndNavigate("/login");
           return false;
         } else {
