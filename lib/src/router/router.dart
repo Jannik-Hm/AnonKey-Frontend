@@ -78,8 +78,7 @@ class AppRouter {
       redirect: (BuildContext context, GoRouterState state) async {
         AuthenticationCredentialsSingleton singleton;
         try {
-          singleton =
-              await AuthService.getAuthenticationCredentials();
+          singleton = await AuthService.getAuthenticationCredentials();
         } on AuthException catch (_) {
           // hit when Token validation failed -> logout and login from user required
           await AuthService.deleteAuthenticationCredentials();
