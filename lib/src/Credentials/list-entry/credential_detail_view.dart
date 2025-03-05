@@ -1,14 +1,20 @@
+import 'dart:async';
+
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
 import 'package:anonkey_frontend/src/Widgets/folder_dropdown.dart';
+import 'package:anonkey_frontend/src/exception/auth_exception.dart';
+import 'package:anonkey_frontend/src/exception/missing_build_context_exception.dart';
+import 'package:anonkey_frontend/src/router/clear_and_navigate.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 
 /// Widget for Editing and Displaying Credential Data
 ///
@@ -61,21 +67,32 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
     _enabled = (widget.credential == null);
     _obscurePassword = !(widget.credential == null);
     _credential = widget.credential;
-    newFolderUUID = (_credential == null) ? (widget.currentFolderUuid ?? "") : (_credential?.folderUuid ?? "");
+    newFolderUUID =
+        (_credential == null)
+            ? (widget.currentFolderUuid ?? "")
+            : (_credential?.folderUuid ?? "");
   }
 
   @override
   Widget build(BuildContext context) {
     //final uuid;
-    final displayName = TextEditingController(text: _credential?.getClearDisplayName());
+    final displayName = TextEditingController(
+      text: _credential?.getClearDisplayName(),
+    );
 
-    final password = TextEditingController(text: _credential?.getClearPassword());
+    final password = TextEditingController(
+      text: _credential?.getClearPassword(),
+    );
     //final passwordSalt;
 
-    final username = TextEditingController(text: _credential?.getClearUsername());
+    final username = TextEditingController(
+      text: _credential?.getClearUsername(),
+    );
     //final usernameSalt;
 
-    final websiteUrl = TextEditingController(text: _credential?.getClearWebsiteUrl());
+    final websiteUrl = TextEditingController(
+      text: _credential?.getClearWebsiteUrl(),
+    );
 
     final note = TextEditingController(text: _credential?.getClearNote());
 
@@ -99,16 +116,19 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
 
     Future<bool> save() async {
       Credential temp;
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? url = prefs.getString('url');
-      Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
+      String? url = await ApiBaseData.getURL(); // Get Backend URL
+      AuthenticationCredentialsSingleton authdata =
+          await AuthService.getAuthenticationCredentials();
       try {
-        if (url != null) {
-          ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+        if (url != null && authdata.accessToken != null) {
+          ApiClient apiClient = RequestUtility.getApiWithAuth(
+            authdata.accessToken!.token,
+            url,
+          );
           CredentialsApi api = CredentialsApi(apiClient);
           if (_credential != null) {
-            temp = await _credential!.updateFromLocal(
-              masterPassword: authdata["password"]!,
+            temp = await _credential!.clone().updateFromLocal(
+              masterPassword: authdata.encryptionKDF!,
               clearWebsiteUrl: websiteUrl.text,
               clearUsername: username.text,
               clearPassword: password.text,
@@ -116,13 +136,25 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               clearNote: note.text,
               folderUuid: newFolderUUID,
             );
-            await api.credentialsUpdatePut(temp.updateAPICredentialRequestBody());
+            await ApiBaseData.apiCallWrapper(
+              api.credentialsUpdatePut(temp.updateAPICredentialRequestBody()),
+              logMessage:
+                  (context.mounted)
+                      ? AppLocalizations.of(context)!.credentialUpdateTimeout
+                      : null,
+            );
           } else {
             UUIDApi uuidApi = UUIDApi(apiClient);
-            String? uuid = await uuidApi.uuidNewGet();
+            String? uuid = await ApiBaseData.apiCallWrapper(
+              uuidApi.uuidNewGet(),
+              logMessage:
+                  (context.mounted)
+                      ? AppLocalizations.of(context)!.getUUIDTimeout
+                      : null,
+            );
             temp = await Credential.newEntry(
               uuid: uuid!,
-              masterPassword: authdata["password"]!,
+              masterPassword: authdata.encryptionKDF!,
               clearWebsiteUrl: websiteUrl.text,
               clearUsername: username.text,
               clearPassword: password.text,
@@ -131,10 +163,16 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               folderUuid: newFolderUUID,
               createdTimeStamp: DateTime.now().microsecondsSinceEpoch ~/ 1000,
             );
-            await api.credentialsCreatePost(
-              CredentialsCreateRequestBody(
-                credential: temp.createAPICredential(),
+            await ApiBaseData.apiCallWrapper(
+              api.credentialsCreatePost(
+                CredentialsCreateRequestBody(
+                  credential: temp.createAPICredential(),
+                ),
               ),
+              logMessage:
+                  (context.mounted)
+                      ? AppLocalizations.of(context)!.credentialCreateTimeout
+                      : null,
             );
           }
           setState(() {
@@ -146,43 +184,91 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
           if (context.mounted) {
             NotificationPopup.apiError(context: context);
           }
-          return false;
         }
       } on ApiException catch (e) {
         if (context.mounted) {
-          NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+          NotificationPopup.apiError(
+            context: context,
+            apiResponseMessage: e.message,
+          );
         }
-        return false;
+      } on AnonKeyServerOffline catch (e) {
+        if (context.mounted) {
+          NotificationPopup.popupErrorMessage(
+            context: context,
+            message: e.message ?? "Timeout Error",
+          );
+        }
+      } on AuthException catch (_) {
+        await AuthService.deleteAuthenticationCredentials();
+        if (context.mounted) {
+          GoRouter.of(context).clearStackAndNavigate("/login");
+          return false;
+        } else {
+          throw MissingBuildContextException();
+        }
       }
+      return false;
     }
 
     Future<bool> delete() async {
       try {
         if (_credential != null) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          String? url = prefs.getString('url');
-          Map<String, String> authdata = await AuthService.getAuthenticationCredentials();
-          if (url != null) {
-            ApiClient apiClient = RequestUtility.getApiWithAuth(authdata["token"]!, url);
+          String? url = await ApiBaseData.getURL(); // Get Backend URL
+          AuthenticationCredentialsSingleton authdata =
+              await AuthService.getAuthenticationCredentials();
+          if (url != null && authdata.accessToken != null) {
+            ApiClient apiClient = RequestUtility.getApiWithAuth(
+              authdata.accessToken!.token,
+              url,
+            );
             CredentialsApi api = CredentialsApi(apiClient);
-            await api.credentialsSoftDeletePut(_credential!.uuid);
+            await ApiBaseData.apiCallWrapper(
+              api.credentialsSoftDeletePut(_credential!.uuid),
+              logMessage:
+                  (context.mounted)
+                      ? AppLocalizations.of(
+                        context,
+                      )!.credentialSoftDeleteTimeout
+                      : null,
+            );
           }
-          if (widget.onSoftDeleteCallback != null) widget.onSoftDeleteCallback!(_credential!.uuid);
+          if (widget.onSoftDeleteCallback != null) {
+            widget.onSoftDeleteCallback!(_credential!.uuid);
+          }
           return true;
         } else {
           if (context.mounted) {
             NotificationPopup.apiError(context: context);
           }
-          return false;
         }
       } on ApiException catch (e) {
         if (context.mounted) {
-          NotificationPopup.apiError(context: context, apiResponseMessage: e.message);
+          NotificationPopup.apiError(
+            context: context,
+            apiResponseMessage: e.message,
+          );
         }
-        return false;
+      } on AnonKeyServerOffline catch (e) {
+        if (context.mounted) {
+          NotificationPopup.popupErrorMessage(
+            context: context,
+            message: e.message ?? "Timeout Error",
+          );
+        }
+      } on AuthException catch (_) {
+        await AuthService.deleteAuthenticationCredentials();
+        if (context.mounted) {
+          GoRouter.of(context).clearStackAndNavigate("/login");
+          return false;
+        } else {
+          throw MissingBuildContextException();
+        }
       }
+      return false;
     }
 
+    /// Popup to confirm deletion
     showDeleteConfirmDialog(Credential credential) {
       return showDialog(
         context: context,
@@ -190,9 +276,18 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
           return AlertDialog(
             // Retrieve the text the that user has entered by using the
             // TextEditingController.
-            title: Text(AppLocalizations.of(context)!.confirmCredentialSoftDeleteTitle(credential.getClearDisplayName())),
+            title: Text(
+              AppLocalizations.of(context)!.confirmCredentialSoftDeleteTitle(
+                credential.getClearDisplayName(),
+              ),
+            ),
             //content: Text('Are you sure you want to move Credential "${credential.getClearDisplayName()}" into the deleted Folder?'),
-            content: Text(AppLocalizations.of(context)!.confirmCredentialSoftDeleteText(credential.getClearDisplayName())),
+            content: Text(
+              AppLocalizations.of(context)!.confirmCredentialSoftDeleteText(
+                credential.getClearDisplayName(),
+              ),
+            ),
+            backgroundColor: Theme.of(context).colorScheme.secondary,
             actions: [
               Row(
                 children: [
@@ -201,26 +296,28 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      style: TextButton.styleFrom(backgroundColor: Colors.green, foregroundColor: Colors.white),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                      ),
                       child: Text(AppLocalizations.of(context)!.abort),
                     ),
                   ),
-                  const SizedBox(
-                    width: 20.0,
-                  ),
+                  const SizedBox(width: 20.0),
                   Expanded(
                     child: TextButton(
                       onPressed: () {
-                        delete().then(
-                          (value) {
-                            if (value && context.mounted) {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                            }
-                          },
-                        );
+                        delete().then((value) {
+                          if (value && context.mounted) {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          }
+                        });
                       },
-                      style: TextButton.styleFrom(backgroundColor: Colors.red, foregroundColor: Colors.white),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                      ),
                       child: Text(AppLocalizations.of(context)!.confirm),
                     ),
                   ),
@@ -238,44 +335,59 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         title: Text(_credential?.getClearDisplayName() ?? ""),
         actions: [
-          if (!_enabled) IconButton(onPressed: () => enableFields(), icon: Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary)),
-          if (_enabled)
+          if (!_enabled)
             IconButton(
-                onPressed: () => {
-                      save().then(
-                        (value) {
-                          if (value) {
-                            disableFields();
-                          }
-                        },
-                      )
-                    },
-                icon: Icon(
-                  Icons.save,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                )),
-          if (_enabled)
-            IconButton(
-                onPressed: () => disableFields(),
-                icon: Icon(
-                  Icons.cancel,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                )),
-          const SizedBox(
-            width: 8.0,
-          ),
-        ],
-      ),
-      floatingActionButton: (_credential != null)
-          ? FloatingActionButton(
-              onPressed: () => showDeleteConfirmDialog(_credential!),
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              child: Icon(
-                Icons.delete,
+              onPressed:
+                  () => ApiBaseData.callFuncIfServerReachable(
+                    enableFields,
+                    context: context,
+                  ),
+              icon: Icon(
+                Icons.edit,
                 color: Theme.of(context).colorScheme.onPrimary,
               ),
-            )
-          : null,
+            ),
+          if (_enabled)
+            IconButton(
+              onPressed:
+                  () => {
+                    save().then((value) {
+                      if (value) {
+                        disableFields();
+                      }
+                    }),
+                  },
+              icon: Icon(
+                Icons.save,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+          if (_enabled)
+            IconButton(
+              onPressed: () => disableFields(),
+              icon: Icon(
+                Icons.cancel,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+          const SizedBox(width: 8.0),
+        ],
+      ),
+      floatingActionButton:
+          (_credential != null)
+              ? FloatingActionButton(
+                onPressed:
+                    () => ApiBaseData.callFuncIfServerReachable(
+                      () => showDeleteConfirmDialog(_credential!),
+                      context: context,
+                    ),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                child: Icon(
+                  Icons.delete,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              )
+              : null,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         child: Column(
@@ -330,7 +442,10 @@ class _CredentialDetailWidget extends State<CredentialDetailWidget> {
               key: UniqueKey(),
               folders: widget.availableFolders,
               enabled: _enabled,
-              currentFolderUuid: (_credential == null) ? (widget.currentFolderUuid ?? "") : (_credential?.folderUuid ?? ""),
+              currentFolderUuid:
+                  (_credential == null)
+                      ? (widget.currentFolderUuid ?? "")
+                      : (_credential?.folderUuid ?? ""),
               onChangeCallback: (value) {
                 newFolderUUID = value ?? "";
               },

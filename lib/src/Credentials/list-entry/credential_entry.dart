@@ -62,19 +62,21 @@ class _CredentialEntry extends State<CredentialEntry> {
     //Credential.newEntry(clearPassword: "12345678", clearDisplayName: "Test", folderUuid: "123", masterPassword: "SuperSicher", clearUsername: "test", uuid: "balabadasda", clearWebsiteUrl: "google.de", clearNote: "", createdTimeStamp: 0);
     ThemeData theme = Theme.of(context);
     return ClickableTile(
-      onTap: () => {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => CredentialDetailWidget(
-              credential: _credential,
-              onSaveCallback: widget.onSaveCallback,
-              onSoftDeleteCallback: widget.onSoftDeleteCallback,
-              availableFolders: widget.availableFolders,
+      onTap:
+          () => {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (_) => CredentialDetailWidget(
+                      credential: _credential,
+                      onSaveCallback: widget.onSaveCallback,
+                      onSoftDeleteCallback: widget.onSoftDeleteCallback,
+                      availableFolders: widget.availableFolders,
+                    ),
+              ),
             ),
-          ),
-        )
-      },
+          },
       leading: SizedBox(
         width: 40.0,
         child: ConstrainedBox(
@@ -85,26 +87,27 @@ class _CredentialEntry extends State<CredentialEntry> {
       ),
       title: Text(
         _credential.getClearDisplayName(),
-        style: TextStyle(
-          color: theme.colorScheme.onTertiary,
-          fontSize: 20.0,
-        ),
+        style: TextStyle(color: theme.colorScheme.onTertiary, fontSize: 20.0),
       ),
       subTitle: Text(
         _credential.getClearUsername(),
-        style: TextStyle(
-          color: theme.colorScheme.onTertiary,
-          fontSize: 15.0,
-        ),
+        style: TextStyle(color: theme.colorScheme.onTertiary, fontSize: 15.0),
       ),
       trailing: Wrap(
         spacing: 8.0,
         children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
+              backgroundColor:
+                  Theme.of(context)
+                      .colorScheme
+                      .primary, // Set the primary color from ColorScheme
             ),
-            onPressed: () => copyToClipboard(message: AppLocalizations.of(context)!.copiedUsername, value: _credential.getClearUsername()),
+            onPressed:
+                () => copyToClipboard(
+                  message: AppLocalizations.of(context)!.copiedUsername,
+                  value: _credential.getClearUsername(),
+                ),
             /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: _credential.username));
                 if (context.mounted) {
@@ -123,9 +126,16 @@ class _CredentialEntry extends State<CredentialEntry> {
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary, // Set the primary color from ColorScheme
+              backgroundColor:
+                  Theme.of(context)
+                      .colorScheme
+                      .primary, // Set the primary color from ColorScheme
             ),
-            onPressed: () => copyToClipboard(message: AppLocalizations.of(context)!.copiedPassword, value: _credential.getClearPassword()),
+            onPressed:
+                () => copyToClipboard(
+                  message: AppLocalizations.of(context)!.copiedPassword,
+                  value: _credential.getClearPassword(),
+                ),
             /* onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: _credential.password));
                 if (context.mounted) {

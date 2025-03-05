@@ -33,7 +33,12 @@ class _DropDownButton extends State<DropDownButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 20.0, top: 5.0, right: 20.0, bottom: 5.0),
+      padding: const EdgeInsets.only(
+        left: 20.0,
+        top: 5.0,
+        right: 20.0,
+        bottom: 5.0,
+      ),
       //width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(25)),
@@ -42,23 +47,23 @@ class _DropDownButton extends State<DropDownButton> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          DropdownButton(
-            onChanged: (value) {
-              if (_enabled) {
+          IgnorePointer(
+            ignoring: !_enabled,
+            child: DropdownButton(
+              onChanged: (value) {
                 setState(() {
                   selectedValue = value;
                 });
-                if(widget.onChangeCallback != null) widget.onChangeCallback!(value);
-              } else {
-                null;
-              }
-            },
-            dropdownColor: Theme.of(context).colorScheme.secondary,
-            enableFeedback: true,
-            iconEnabledColor: Theme.of(context).colorScheme.onSecondary,
-            value: selectedValue,
-            borderRadius: BorderRadius.circular(15),
-            items: widget.items,
+                if (widget.onChangeCallback != null)
+                  widget.onChangeCallback!(value);
+              },
+              dropdownColor: Theme.of(context).colorScheme.secondary,
+              enableFeedback: true,
+              iconEnabledColor: Theme.of(context).colorScheme.onSecondary,
+              value: selectedValue,
+              borderRadius: BorderRadius.circular(15),
+              items: widget.items,
+            ),
           ),
         ],
       ),

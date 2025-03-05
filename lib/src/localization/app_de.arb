@@ -218,5 +218,53 @@
   "biometricNotAvailable": "Biometrische Authentifizierung nicht verfügbar",
   "@biometricNotAvailable": {
     "description": "Biometric not available notification"
+  },
+  "credentialFetchTimeout": "Timeout Fehler: Aktualisierung der Passwörter fehlgeschlagen, nutze stattdessen lokale Daten.",
+  "@credentialFetchTimeout": {
+    "description": ""
+  },
+  "credentialCreateTimeout": "Timeout Fehler: Erstellung des Passworteintrages fehlgeschlagen.",
+  "@credentialCreateTimeout": {
+    "description": ""
+  },
+  "credentialUpdateTimeout": "Timeout Fehler: Aktualisierung des Passworteintrages fehlgeschlagen.",
+  "@credentialUpdateTimeout": {
+    "description": ""
+  },
+  "credentialSoftDeleteTimeout": "Timeout Fehler: Verschieben des Passworteintrages in den Papierkorb fehlgeschlagen.",
+  "@credentialSoftDeleteTimeout": {
+    "description": ""
+  },
+  "credentialRestoreTimeout": "Timeout Fehler: Wiederherstellen des Passworteintrages fehlgeschlagen.",
+  "@credentialRestoreTimeout": {
+    "description": ""
+  },
+  "credentialFinalDeleteTimeout": "Timeout Fehler: Löschen des Passworteintrages fehlgeschlagen.",
+  "@credentialFinalDeleteTimeout": {
+    "description": ""
+  },
+  "getUUIDTimeout": "Timeout Fehler: Erhalt einer neuen UUID fehlgeschlagen.",
+  "@getUUIDTimeout": {
+    "description": ""
+  },
+  "folderFetchTimeout": "Timeout Fehler: Aktualisierung der Ordner fehlgeschlagen, nutze stattdessen lokale Daten.",
+  "@folderFetchTimeout": {
+    "description": ""
+  },
+  "folderCreateTimeout": "Timeout Fehler: Erstellung des Ordners fehlgeschlagen.",
+  "@folderCreateTimeout": {
+    "description": ""
+  },
+  "folderUpdateTimeout": "Timeout Fehler: Aktualisieren des Ordners fehlgeschlagen.",
+  "@folderUpdateTimeout": {
+    "description": ""
+  },
+  "folderDeleteTimeout": "Timeout Fehler: Löschen des Ordners fehlgeschlagen.",
+  "@folderDeleteTimeout": {
+    "description": ""
+  },
+  "offlineDisabledFeature": "Diese Funktion ist deaktiviert, da du offline zu sein scheinst. Bitte aktualisiere, um diese Funktion wieder zu aktivieren.",
+  "@offlineDisabledFeature": {
+    "description": ""
   }
 }

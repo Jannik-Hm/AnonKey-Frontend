@@ -7,10 +7,7 @@ import 'settings/settings_controller.dart';
 
 /// The Widget that configures your application.
 class MyApp extends StatelessWidget {
-  const MyApp({
-    super.key,
-    required this.settingsController,
-  });
+  const MyApp({super.key, required this.settingsController});
 
   final SettingsController settingsController;
 
@@ -50,8 +47,8 @@ class MyApp extends StatelessWidget {
           //
           // The appTitle is defined in .arb files found in the localization
           // directory.
-          onGenerateTitle: (BuildContext context) =>
-              AppLocalizations.of(context)!.appTitle,
+          onGenerateTitle:
+              (BuildContext context) => AppLocalizations.of(context)!.appTitle,
 
           // Define the routes for your application. The "/" route is the home
 
@@ -59,53 +56,60 @@ class MyApp extends StatelessWidget {
           // preferred ThemeMode (light, dark, or system default) from the
           // SettingsController to display the correct theme.
           theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue.shade600,
-            surface: Colors.grey.shade50,
-            secondary: Colors.grey.shade200,
-            onSecondary: Colors.grey.shade700,
-            tertiary: Colors.grey.shade100,
-            onTertiary: Colors.grey.shade800,
-          ),
-          navigationBarTheme: NavigationBarThemeData(
-                labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
-                  (Set<WidgetState> states) =>
-                      states.contains(WidgetState.selected)
-                          ? const TextStyle(color: Colors.black)
-                          : const TextStyle(color: Colors.black),
-                ),
-                iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
-                  (Set<WidgetState> states) =>
-                      states.contains(WidgetState.selected)
-                          ? IconThemeData(color: Theme.of(context).colorScheme.onPrimary)
-                          : const IconThemeData(color: Colors.black),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue.shade600,
+              surface: Colors.grey.shade50,
+              secondary: Colors.grey.shade200,
+              onSecondary: Colors.grey.shade700,
+              tertiary: Colors.grey.shade100,
+              onTertiary: Colors.grey.shade800,
+            ),
+            navigationBarTheme: NavigationBarThemeData(
+              labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
+                (Set<WidgetState> states) =>
+                    states.contains(WidgetState.selected)
+                        ? const TextStyle(color: Colors.black)
+                        : const TextStyle(color: Colors.black),
+              ),
+              iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
+                (Set<WidgetState> states) =>
+                    states.contains(WidgetState.selected)
+                        ? IconThemeData(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        )
+                        : const IconThemeData(color: Colors.black),
               ),
             ),
           ),
           darkTheme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.blue.shade800,
-                surface: Colors.grey.shade900,
-                onSurface: Colors.white,
-                onPrimary: Colors.grey.shade100,
-                onSecondary: Colors.grey.shade100,
-                tertiary: Colors.grey.shade800,
-                onTertiary: Colors.grey.shade100,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue.shade800,
+              surface: Colors.grey.shade900,
+              onSurface: Colors.white,
+              onPrimary: Colors.grey.shade100,
+              onSecondary: Colors.grey.shade100,
+              tertiary: Colors.grey.shade800,
+              onTertiary: Colors.grey.shade100,
+            ),
+            navigationBarTheme: NavigationBarThemeData(
+              labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
+                (Set<WidgetState> states) =>
+                    states.contains(WidgetState.selected)
+                        ? TextStyle(
+                          color: Theme.of(context).colorScheme.onTertiary,
+                        )
+                        : const TextStyle(color: Colors.black),
               ),
-              navigationBarTheme: NavigationBarThemeData(
-                labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
-                  (Set<WidgetState> states) =>
-                      states.contains(WidgetState.selected)
-                          ? TextStyle(color: Theme.of(context).colorScheme.onTertiary)
-                          : const TextStyle(color: Colors.black),
-                ),
-                iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
-                  (Set<WidgetState> states) =>
-                      states.contains(WidgetState.selected)
-                          ? IconThemeData(color: Theme.of(context).colorScheme.onPrimary)
-                          : const IconThemeData(color: Colors.black),
-                ),
-              )),
+              iconTheme: WidgetStateProperty.resolveWith<IconThemeData>(
+                (Set<WidgetState> states) =>
+                    states.contains(WidgetState.selected)
+                        ? IconThemeData(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        )
+                        : const IconThemeData(color: Colors.black),
+              ),
+            ),
+          ),
           themeMode: settingsController.themeMode,
 
           // Define a function to handle named routes in order to support

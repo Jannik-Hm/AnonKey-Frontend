@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-// @dart=2.12
+// @dart=2.18
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -38,6 +38,11 @@ part 'api/users_api.dart';
 part 'model/authentication_change_password_request_body.dart';
 part 'model/authentication_login_request_body.dart';
 part 'model/authentication_login_response_body.dart';
+part 'model/authentication_login_token.dart';
+part 'model/authentication_refresh_access_token.dart';
+part 'model/authentication_refresh_access_token_response_body.dart';
+part 'model/authentication_refresh_refresh_token.dart';
+part 'model/authentication_refresh_refresh_token_response_body.dart';
 part 'model/credentials_create_credential.dart';
 part 'model/credentials_create_request_body.dart';
 part 'model/credentials_get_all_credential.dart';
@@ -61,6 +66,7 @@ part 'model/folders_update_request_body.dart';
 part 'model/folders_update_response_body.dart';
 part 'model/users_create_request_body.dart';
 part 'model/users_create_response_body.dart';
+part 'model/users_create_response_token.dart';
 part 'model/users_get_response_body.dart';
 part 'model/users_get_user.dart';
 part 'model/users_update_request_body.dart';

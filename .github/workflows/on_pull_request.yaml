@@ -1,0 +1,58 @@
+name: PR Checks
+
+on:
+  pull_request
+
+jobs:
+  Format:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      # Step 2: Setup Dart
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      # Step 3: Run dart format
+      - name: Format Dart code
+        run: dart format lib test
+
+      # Step 4: Commit and push changes
+      - name: Commit and push changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: "Applied Formatting"
+          add: 'lib'
+          default_author: github_actions
+          push: true
+
+  Test:
+    needs: Format
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      # Step 2: Setup Dart
+      - name: Setup Dart
+        uses: subosito/flutter-action@v2
+        with:
+          channel: master
+          cache: true
+
+      - name: Get Dependencies
+        run: flutter pub get
+      # Step 3: Run flutter test
+      - name: Run flutter test
+        run: flutter test --pub -r expanded

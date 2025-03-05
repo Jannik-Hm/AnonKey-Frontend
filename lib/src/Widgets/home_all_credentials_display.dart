@@ -8,16 +8,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class HomeCredentialsDisplayWidget extends StatefulWidget {
   final CombinedListData combinedData;
 
-  const HomeCredentialsDisplayWidget({
-    super.key,
-    required this.combinedData,
-  });
+  const HomeCredentialsDisplayWidget({super.key, required this.combinedData});
 
   @override
   State<StatefulWidget> createState() => _HomeCredentialsDisplayWidget();
 }
 
-class _HomeCredentialsDisplayWidget extends State<HomeCredentialsDisplayWidget> {
+class _HomeCredentialsDisplayWidget
+    extends State<HomeCredentialsDisplayWidget> {
   late CombinedListData _combinedData;
 
   @override
@@ -30,7 +28,9 @@ class _HomeCredentialsDisplayWidget extends State<HomeCredentialsDisplayWidget> 
   }
 
   void addToCredentials(Credential credential) {
-    setState(() {_combinedData.credentials!.add(credential);});
+    setState(() {
+      _combinedData.credentials!.add(credential);
+    });
   }
 
   @override
@@ -46,7 +46,8 @@ class _HomeCredentialsDisplayWidget extends State<HomeCredentialsDisplayWidget> 
               style: theme.textTheme.headlineMedium,
             ),
             CreateCredentialWidget(
-              availableFolders: _combinedData.folders?.byIDList.values.toList() ?? [],
+              availableFolders:
+                  _combinedData.folders?.byIDList.values.toList() ?? [],
               credentials: _combinedData.credentials!,
               addToCredentials: addToCredentials,
             ),

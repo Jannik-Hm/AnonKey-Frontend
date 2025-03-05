@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-// @dart=2.12
+// @dart=2.18
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -41,6 +41,20 @@ void main() {
     //
     //Future<CredentialsGetResponseBody> credentialsGetGet(String credentialUuid) async
     test('test credentialsGetGet', () async {
+      // TODO
+    });
+
+    // SoftDeletes an existing credential object.
+    //
+    //Future credentialsSoftDeletePut(String credentialUuid) async
+    test('test credentialsSoftDeletePut', () async {
+      // TODO
+    });
+
+    // SoftUndeletes an existing credential object.
+    //
+    //Future credentialsSoftUndeletePut(String credentialUuid) async
+    test('test credentialsSoftUndeletePut', () async {
       // TODO
     });
 

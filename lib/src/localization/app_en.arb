@@ -218,5 +218,53 @@
   "biometricAuthentication": "Biometric Authentication",
   "@biometricAuthentication": {
     "description": "Biometric authentication title"
+  },
+  "credentialFetchTimeout": "Timeout Error: Credential fetch failed, using local data instead.",
+  "@credentialFetchTimeout": {
+    "description": ""
+  },
+  "credentialCreateTimeout": "Timeout Error: Credential creation failed.",
+  "@credentialCreateTimeout": {
+    "description": ""
+  },
+  "credentialUpdateTimeout": "Timeout Error: Credential update failed.",
+  "@credentialUpdateTimeout": {
+    "description": ""
+  },
+  "credentialSoftDeleteTimeout": "Timeout Error: Credential soft deletion failed.",
+  "@credentialSoftDeleteTimeout": {
+    "description": ""
+  },
+  "credentialRestoreTimeout": "Timeout Error: Credential restore failed.",
+  "@credentialRestoreTimeout": {
+    "description": ""
+  },
+  "credentialFinalDeleteTimeout": "Timeout Error: Credential deletion failed.",
+  "@credentialFinalDeleteTimeout": {
+    "description": ""
+  },
+  "getUUIDTimeout": "Timeout Error: Getting new UUID failed.",
+  "@getUUIDTimeout": {
+    "description": ""
+  },
+  "folderFetchTimeout": "Timeout Error: Folder fetch failed, using local data instead.",
+  "@folderFetchTimeout": {
+    "description": ""
+  },
+  "folderCreateTimeout": "Timeout Error: Folder creation failed.",
+  "@folderCreateTimeout": {
+    "description": ""
+  },
+  "folderUpdateTimeout": "Timeout Error: Folder update failed.",
+  "@folderUpdateTimeout": {
+    "description": ""
+  },
+  "folderDeleteTimeout": "Timeout Error: Folder deletion failed.",
+  "@folderDeleteTimeout": {
+    "description": ""
+  },
+  "offlineDisabledFeature": "This option is disabled as you seem to be offline. Refresh to enable this feature again.",
+  "@offlineDisabledFeature": {
+    "description": ""
   }
 }

@@ -1,15 +1,15 @@
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
+import 'package:anonkey_frontend/src/Widgets/button_with_throbber.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
+import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../service/auth_service.dart';
 
 class RegisterControllerState extends State<RegisterView> {
   final url = TextEditingController();
@@ -34,9 +34,10 @@ class RegisterControllerState extends State<RegisterView> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Image(
-                  image: AssetImage('assets/images/Logo.png'),
-                  width: 200,
-                  height: 200),
+                image: AssetImage('assets/images/Logo.png'),
+                width: 200,
+                height: 200,
+              ),
               const SizedBox(height: 16),
               Text(
                 AppLocalizations.of(context)!.register,
@@ -54,9 +55,16 @@ class RegisterControllerState extends State<RegisterView> {
                         label: AppLocalizations.of(context)!.url,
                         obscureText: false,
                         focus: _urlFocus,
-                        validator: (kDebugMode)
-                            ? null
-                            : ValidationBuilder().url().build(),
+                        validator:
+                            (kDebugMode)
+                                ? null
+                                : ValidationBuilder().url().add((value) {
+                                  if (value != null &&
+                                      !value.startsWith('https://')) {
+                                    return 'Only HTTPS URLs are allowed';
+                                  }
+                                  return null;
+                                }).build(),
                         onEnterPressed: _usernameFocus.requestFocus,
                       ),
                     ),
@@ -68,11 +76,12 @@ class RegisterControllerState extends State<RegisterView> {
                         label: AppLocalizations.of(context)!.username,
                         obscureText: false,
                         focus: _usernameFocus,
-                        validator: ValidationBuilder()
-                            .required()
-                            .minLength(5)
-                            .maxLength(128)
-                            .build(),
+                        validator:
+                            ValidationBuilder()
+                                .required()
+                                .minLength(5)
+                                .maxLength(128)
+                                .build(),
                         onEnterPressed: _displayName.requestFocus,
                       ),
                     ),
@@ -105,12 +114,16 @@ class RegisterControllerState extends State<RegisterView> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextButton(
-                style: TextButton.styleFrom(
+              FractionallySizedBox(
+                widthFactor: 0.6,
+                child: ButtonWithThrobber(
+                  style: TextButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Theme.of(context).colorScheme.onPrimary),
-                onPressed: () => _register(),
-                child: const Text('Fly me to the moon'),
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  onPressedAsync: () => _register(),
+                  text: AppLocalizations.of(context)!.register,
+                ),
               ),
               TextButton(
                 onPressed: () => context.replaceNamed("login"),
@@ -127,7 +140,11 @@ class RegisterControllerState extends State<RegisterView> {
     try {
       if (_loginFormKey.currentState!.validate()) {
         bool isRegistered = await AuthService.register(
-            username.text, password.text, displayName.text, url.text);
+          username.text,
+          password.text,
+          displayName.text,
+          url.text,
+        );
         if (isRegistered) {
           final SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('url', url.text);
@@ -138,7 +155,9 @@ class RegisterControllerState extends State<RegisterView> {
     } on ApiException catch (e) {
       if (context.mounted) {
         NotificationPopup.apiError(
-            context: context, apiResponseMessage: e.message);
+          context: context,
+          apiResponseMessage: e.message,
+        );
       }
     }
   }

@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-// @dart=2.12
+// @dart=2.18
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -30,10 +30,17 @@ void main() {
       // TODO
     });
 
-    // Invalidates an access token for user logout.
+    // Logs out the authenticated user.
     //
-    //Future authenticationLogoutDelete() async
-    test('test authenticationLogoutDelete', () async {
+    //Future authenticationLogoutPut() async
+    test('test authenticationLogoutPut', () async {
+      // TODO
+    });
+
+    // Creates a new access token based on a refresh token.
+    //
+    //Future<AuthenticationRefreshAccessTokenResponseBody> authenticationRefreshAccessTokenPost() async
+    test('test authenticationRefreshAccessTokenPost', () async {
       // TODO
     });
   });

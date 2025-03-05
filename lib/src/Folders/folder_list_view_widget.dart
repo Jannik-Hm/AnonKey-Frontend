@@ -8,10 +8,7 @@ class FolderListWidgetData {
   final FolderList folders;
   final CredentialList credentials;
 
-  FolderListWidgetData({
-    required this.folders,
-    required this.credentials,
-  });
+  FolderListWidgetData({required this.folders, required this.credentials});
 }
 
 class FolderListWidget extends StatefulWidget {
@@ -52,7 +49,8 @@ class _FolderListWidget extends State<FolderListWidget> {
       },
       onSaveCallback: ({required folderData}) {
         setState(() {
-          widget.folders.updateFromLocalObject(folder: folderData);
+          folders.updateFromLocalObject(folder: folderData);
+          folderList = folders.byIDList.values.toList();
         });
       },
     );
@@ -70,7 +68,7 @@ class _FolderListWidget extends State<FolderListWidget> {
   Widget build(BuildContext context) {
     folderList.sort((x, y) => x.displayName.compareTo(y.displayName));
     return /* Expanded(
-      child: */ Column(children: folderList.map(_fromList).toList())//,
+      child: */ Column(children: folderList.map(_fromList).toList()) //,
     //)
     ;
   }

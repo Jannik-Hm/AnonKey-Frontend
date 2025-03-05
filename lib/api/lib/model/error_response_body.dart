@@ -1,7 +1,7 @@
 //
 // AUTO-GENERATED FILE, DO NOT MODIFY!
 //
-// @dart=2.12
+// @dart=2.18
 
 // ignore_for_file: unused_element, unused_import
 // ignore_for_file: always_put_required_named_parameters_first
@@ -15,7 +15,6 @@ class ErrorResponseBody {
   ErrorResponseBody({
     this.message,
     this.detail,
-    this.internalCode,
   });
 
   /// The short message describing the error.
@@ -24,33 +23,21 @@ class ErrorResponseBody {
   /// A detailed explanation detailing the error.
   String? detail;
 
-  /// The error code for error correction purposes.
-  ///
-  /// Please note: This property should have been non-nullable! Since the specification file
-  /// does not include a default value (using the "default:" property), however, the generated
-  /// source code must fall back to having a nullable type.
-  /// Consider adding a "default:" property in the specification file to hide this note.
-  ///
-  int? internalCode;
-
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is ErrorResponseBody &&
           other.message == message &&
-          other.detail == detail &&
-          other.internalCode == internalCode;
+          other.detail == detail;
 
   @override
   int get hashCode =>
       // ignore: unnecessary_parenthesis
       (message == null ? 0 : message!.hashCode) +
-      (detail == null ? 0 : detail!.hashCode) +
-      (internalCode == null ? 0 : internalCode!.hashCode);
+      (detail == null ? 0 : detail!.hashCode);
 
   @override
-  String toString() =>
-      'ErrorResponseBody[message=$message, detail=$detail, internalCode=$internalCode]';
+  String toString() => 'ErrorResponseBody[message=$message, detail=$detail]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -63,11 +50,6 @@ class ErrorResponseBody {
       json[r'detail'] = this.detail;
     } else {
       json[r'detail'] = null;
-    }
-    if (this.internalCode != null) {
-      json[r'internalCode'] = this.internalCode;
-    } else {
-      json[r'internalCode'] = null;
     }
     return json;
   }
@@ -95,7 +77,6 @@ class ErrorResponseBody {
       return ErrorResponseBody(
         message: mapValueOfType<String>(json, r'message'),
         detail: mapValueOfType<String>(json, r'detail'),
-        internalCode: mapValueOfType<int>(json, r'internalCode'),
       );
     }
     return null;

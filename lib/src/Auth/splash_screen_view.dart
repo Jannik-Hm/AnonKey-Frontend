@@ -1,11 +1,12 @@
+import 'package:anonkey_frontend/Utility/auth_utils.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
+import 'package:anonkey_frontend/src/Widgets/button_with_throbber.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:anonkey_frontend/src/service/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:go_router/go_router.dart';
@@ -37,7 +38,12 @@ class _SplashScreenViewState extends State<SplashScreenView> {
 
   Future<void> _checkBiometricAvailability() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool canCheckBiometrics = await auth.canCheckBiometrics;
+    bool canCheckBiometrics;
+    try {
+      canCheckBiometrics = await auth.canCheckBiometrics;
+    } catch (e) {
+      canCheckBiometrics = false;
+    }
     bool isBiometric = prefs.getBool('isBiometricEnabled') ?? false;
     setState(() {
       _isBiometricAvailable = isBiometric && canCheckBiometrics;
@@ -57,60 +63,62 @@ class _SplashScreenViewState extends State<SplashScreenView> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Image(
-                image: AssetImage('assets/images/Logo.png'),
-                width: 200,
-                height: 200),
+              image: AssetImage('assets/images/Logo.png'),
+              width: 200,
+              height: 200,
+            ),
             const SizedBox(height: 16),
             Form(
-                key: _loginFormKey,
-                child: Column(
-                  children: [
-                    FractionallySizedBox(
-                      widthFactor: 0.6,
-                      child: EntryInput(
-                        controller: password,
-                        label: AppLocalizations.of(context)!.password,
-                        obscureText: true,
-                        focus: _passwordFocus,
-                        validator: ValidationBuilder().required().build(),
-                        onEnterPressed: () => _loginWithoutUsername(context),
-                      ),
+              key: _loginFormKey,
+              child: Column(
+                children: [
+                  FractionallySizedBox(
+                    widthFactor: 0.6,
+                    child: EntryInput(
+                      controller: password,
+                      label: AppLocalizations.of(context)!.password,
+                      obscureText: true,
+                      focus: _passwordFocus,
+                      validator: ValidationBuilder().required().build(),
+                      onEnterPressed: () => _loginWithoutUsername(context),
                     ),
-                    const SizedBox(height: 16),
-                  ],
-                )),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
             const SizedBox(height: 16),
             if (_isBiometricAvailable)
-              ElevatedButton.icon(
-                onPressed: () => _loginWithBiometrics(context),
+              ButtonWithThrobber(
+                onPressedAsync: () => _loginWithBiometrics(context),
                 icon: const Icon(Icons.fingerprint),
-                label: Text(AppLocalizations.of(context)!.loginWithBiometrics),
+                text: AppLocalizations.of(context)!.loginWithBiometrics,
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   backgroundColor: Theme.of(context).colorScheme.primary,
                 ),
               ),
             const SizedBox(height: 16),
-            TextButton(
+            ButtonWithThrobber(
               style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Theme.of(context).colorScheme.onPrimary,
               ),
-              onPressed: () => _loginWithoutUsername(context),
-              child: const Text('Fly me to the moon'),
+              onPressedAsync: () => _loginWithoutUsername(context),
+              text: AppLocalizations.of(context)!.login,
             ),
             const SizedBox(height: 20),
-            if(notFirstTry)
-            ElevatedButton.icon(
-              key: UniqueKey(),
-              onPressed: () => UserService.logout(context),
-              icon: const Icon(Icons.logout),
-              label: Text(AppLocalizations.of(context)!.logout),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                backgroundColor: Theme.of(context).colorScheme.primary,
+            if (notFirstTry)
+              ButtonWithThrobber(
+                key: UniqueKey(),
+                onPressed: () => UserService.logout(context),
+                icon: const Icon(Icons.logout),
+                text: AppLocalizations.of(context)!.logout,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                ),
               ),
-            ),
           ],
         ),
       ),
@@ -119,13 +127,9 @@ class _SplashScreenViewState extends State<SplashScreenView> {
 
   Future<void> _loginWithoutUsername(BuildContext context) async {
     if (_loginFormKey.currentState!.validate()) {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
       try {
-        final Map<String, String> credentials =
-            await AuthService.getAuthenticationCredentials();
-        bool req = await AuthService.login(credentials["username"]!,
-            password.text, prefs.getString("url") ?? "");
-        if (req) {
+        var bool = await AuthService.loginWithoutUserName(password.text);
+        if (bool) {
           if (context.mounted) {
             if (context.canPop()) {
               context.pop(true);
@@ -139,75 +143,49 @@ class _SplashScreenViewState extends State<SplashScreenView> {
           });
           if (context.mounted) {
             NotificationPopup.popupErrorMessage(
-                context: context, message: "Login failed");
+              context: context,
+              message: "Login failed",
+            );
           }
         }
-      } on NoCredentialException {
+      } on NoTokensFoundException {
         if (context.mounted) {
           context.goNamed("login");
         }
       } on ApiException catch (e) {
         if (context.mounted) {
           NotificationPopup.apiError(
-              context: context, apiResponseMessage: e.message);
+            context: context,
+            apiResponseMessage: e.message,
+          );
         }
       }
     }
   }
 
   Future<void> _loginWithBiometrics(BuildContext context) async {
-    try {
-      bool canCheckBiometrics = await auth.canCheckBiometrics;
-      if (!canCheckBiometrics) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content:
-                  Text(AppLocalizations.of(context)!.biometricNotAvailable)),
-        );
-        return;
-      }
-
-      bool authenticated = await auth.authenticate(
-        localizedReason: AppLocalizations.of(context)!.loginWithBiometrics,
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-        ),
-      );
-
-      if (authenticated) {
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        final Map<String, String> credentials =
-            await AuthService.getAuthenticationCredentials();
-        bool req = await AuthService.login(credentials["username"]!,
-            credentials["password"]!, prefs.getString("url") ?? "");
-        if (req) {
-          if (context.mounted) {
-            if (context.canPop()) {
-              context.pop(true);
-            } else {
-              context.goNamed("home");
-            }
-          }
-        } else {
-          setState(() {
-            notFirstTry = true;
-          });
-          if (context.mounted) {
-            NotificationPopup.popupErrorMessage(
-                context: context, message: "Login failed");
+    var success = await AuthUtils.biometricRender(context);
+    if (success) {
+      var loginSucess = await AuthService.loginWithBiometrics();
+      if (loginSucess) {
+        if (context.mounted) {
+          if (context.canPop()) {
+            context.pop(true);
+          } else {
+            context.goNamed("home");
           }
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(AppLocalizations.of(context)!.biometricFailed)),
-        );
+        setState(() {
+          notFirstTry = true;
+        });
+        if (context.mounted) {
+          NotificationPopup.popupErrorMessage(
+            context: context,
+            message: "Login failed",
+          );
+        }
       }
-    } on PlatformException catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(AppLocalizations.of(context)!.biometricNotAvailable)),
-      );
     }
   }
 }

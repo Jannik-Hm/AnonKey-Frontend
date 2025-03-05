@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
 import 'package:anonkey_frontend/src/Credentials/list-entry/credential_detail_view.dart';
 import 'package:anonkey_frontend/src/Folders/folder_data.dart';
@@ -26,7 +27,7 @@ class _CreateCredentialWidget extends State<CreateCredentialWidget> {
   Future<void> onSaveCallback(Credential credential) async {
     widget.addToCredentials(credential);
     if (context.mounted) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(); // Close create Window
     }
   }
 
@@ -39,23 +40,22 @@ class _CreateCredentialWidget extends State<CreateCredentialWidget> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () => {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => CredentialDetailWidget(
-              credential: null,
-              onSaveCallback: onSaveCallback,
-              availableFolders: widget.availableFolders,
-              currentFolderUuid: widget.currentFolderUuid,
-            ),
-          ),
-        )
-      },
-      icon: Icon(
-        Icons.add,
-        color: Theme.of(context).colorScheme.onSurface,
-      ),
+      onPressed:
+          () => ApiBaseData.callFuncIfServerReachable(() {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (_) => CredentialDetailWidget(
+                      credential: null,
+                      onSaveCallback: onSaveCallback,
+                      availableFolders: widget.availableFolders,
+                      currentFolderUuid: widget.currentFolderUuid,
+                    ),
+              ),
+            );
+          }, context: context),
+      icon: Icon(Icons.add, color: Theme.of(context).colorScheme.onSurface),
     );
   }
 }

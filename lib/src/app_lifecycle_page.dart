@@ -1,13 +1,9 @@
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 
 class AppLifecyclePage extends StatefulWidget {
-  const AppLifecyclePage({
-    required this.child,
-    super.key,
-  });
+  const AppLifecyclePage({required this.child, super.key});
 
   final Widget child;
 
@@ -37,28 +33,25 @@ class _AppLifecyclePageState extends State<AppLifecyclePage>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    const FlutterSecureStorage storage = FlutterSecureStorage();
-    String? skipSplashScreen = await storage.read(key: "skipSplashScreen");
-
-    if (skipSplashScreen == "false") {
+    AuthenticationCredentialsSingleton authdata =
+        await AuthService.getAuthenticationCredentials();
+    if (!authdata.skipSplashScreen) {
       setState(() {
         _notification = state;
       });
       if (state == AppLifecycleState.resumed) {
         if (!isSplash && context.mounted) {
           isSplash = true;
-          context.push("/splash").then(
-            (didPop) {
-              if (didPop as bool) {
-                isSplash = false;
-              }
-            },
-          );
+          context.push("/splash").then((didPop) {
+            if (didPop != null && didPop as bool) {
+              isSplash = false;
+            }
+          });
         }
       }
       if (state == AppLifecycleState.paused ||
           state == AppLifecycleState.inactive) {
-        await AuthService.softLogout();
+        AuthService.softLogout();
       }
     }
   }

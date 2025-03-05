@@ -1,6 +1,7 @@
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
+import 'package:anonkey_frontend/src/Widgets/button_with_throbber.dart';
 import 'package:anonkey_frontend/src/Widgets/entry_input.dart';
 import 'package:anonkey_frontend/src/service/auth_service.dart';
 import 'package:flutter/foundation.dart';
@@ -21,6 +22,8 @@ class LoginController extends State<LoginView> {
   final _usernameFocus = FocusNode();
   final _passwordFocus = FocusNode();
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,9 +38,10 @@ class LoginController extends State<LoginView> {
                 child: Column(
                   children: [
                     const Image(
-                        image: AssetImage('assets/images/Logo.png'),
-                        width: 200,
-                        height: 200),
+                      image: AssetImage('assets/images/Logo.png'),
+                      width: 200,
+                      height: 200,
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       AppLocalizations.of(context)!.login,
@@ -51,9 +55,16 @@ class LoginController extends State<LoginView> {
                         label: AppLocalizations.of(context)!.url,
                         obscureText: false,
                         focus: _urlFocus,
-                        validator: (kDebugMode)
-                            ? null
-                            : ValidationBuilder().url().build(),
+                        validator:
+                            (kDebugMode)
+                                ? null
+                                : ValidationBuilder().url().add((value) {
+                                  if (value != null &&
+                                      !value.startsWith('https://')) {
+                                    return 'Only HTTPS URLs are allowed';
+                                  }
+                                  return null;
+                                }).build(),
                         onEnterPressed: () => _usernameFocus.requestFocus(),
                       ),
                     ),
@@ -85,12 +96,16 @@ class LoginController extends State<LoginView> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextButton(
-                style: TextButton.styleFrom(
+              FractionallySizedBox(
+                widthFactor: 0.6,
+                child: ButtonWithThrobber(
+                  style: TextButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Theme.of(context).colorScheme.onPrimary),
-                onPressed: () => _showDialog(),
-                child: const Text('Fly me to the moon'),
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  onPressedAsync: () => _showDialog(),
+                  text: AppLocalizations.of(context)!.login,
+                ),
               ),
               TextButton(
                 onPressed: () => context.replaceNamed("register"),
@@ -103,15 +118,21 @@ class LoginController extends State<LoginView> {
     );
   }
 
-  _showDialog() async {
+  Future<void> _showDialog() async {
     if (_loginFormKey.currentState!.validate()) {
       try {
-        bool test =
-            await AuthService.login(username.text, password.text, url.text);
+        bool test = await AuthService.login(
+          username.text,
+          password.text,
+          url.text,
+        );
 
         if (test) {
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('url', url.text);
+          await prefs.setString(
+            'url',
+            url.text,
+          ); // Ensure the preferences are saved
           if (!mounted) return;
           context.goNamed("home");
         } else {
@@ -119,10 +140,9 @@ class LoginController extends State<LoginView> {
           return showDialog(
             context: context,
             builder: (context) {
-              return const AlertDialog(
-                // Retrieve the text the that user has entered by using the
-                // TextEditingController.
+              return AlertDialog(
                 content: Text('Login failed'),
+                backgroundColor: Theme.of(context).colorScheme.secondary,
               );
             },
           );
@@ -130,10 +150,11 @@ class LoginController extends State<LoginView> {
       } on ApiException catch (e) {
         if (context.mounted) {
           NotificationPopup.apiError(
-              context: context, apiResponseMessage: e.message);
+            context: context,
+            apiResponseMessage: e.message,
+          );
         }
       }
     }
   }
-// Todo implement login function
 }
