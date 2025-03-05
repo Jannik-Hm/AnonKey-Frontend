@@ -43,6 +43,7 @@ class _FolderListWidget extends State<FolderListWidget> {
       onDeleteCallback: ({required bool recursive, required String uuid}) {
         setState(() {
           folders.remove(uuid);
+          folders.saveToDisk();
           folderList = folders.byIDList.values.toList();
           widget.onDeleteCallback(recursive);
         });

@@ -24,6 +24,7 @@ class _FolderView extends State<FolderView> {
   void addToCredentials(Credential credential) {
     setState(() {
       data.credentials.add(credential);
+      data.credentials.saveToDisk();
     });
   }
 
