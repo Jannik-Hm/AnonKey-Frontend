@@ -34,6 +34,7 @@ class _HomeFoldersDisplayWidget extends State<HomeFoldersDisplayWidget> {
   void addFolderToList(Folder folder) {
     setState(() {
       _combinedData.folders!.add(folder);
+      _combinedData.folders!.saveToDisk();
     });
   }
 

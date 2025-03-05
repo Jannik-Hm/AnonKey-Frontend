@@ -30,6 +30,7 @@ class _CredentialTrashListWidget extends State<CredentialTrashListWidget> {
     setState(() {
       credentials.remove(credential.uuid);
       credentialList = credentials.deletedList.values.toList();
+      credentials.saveToDisk();
     });
   }
 

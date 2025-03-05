@@ -30,6 +30,7 @@ class _HomeCredentialsDisplayWidget
   void addToCredentials(Credential credential) {
     setState(() {
       _combinedData.credentials!.add(credential);
+      _combinedData.credentials!.saveToDisk();
     });
   }
 

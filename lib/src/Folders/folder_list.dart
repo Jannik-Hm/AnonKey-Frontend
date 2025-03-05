@@ -28,7 +28,6 @@ class FolderList {
   void add(Folder folder) {
     byIDList[folder.uuid!] = folder;
     byNameList[folder.displayName] = folder;
-    saveToDisk();
   }
 
   /// remove Folder with ID [folderUUID] from this FolderList
@@ -37,7 +36,6 @@ class FolderList {
     if (temp != null) {
       byIDList.remove(folderUUID);
       byNameList.remove(temp.displayName);
-      saveToDisk();
     }
   }
 
