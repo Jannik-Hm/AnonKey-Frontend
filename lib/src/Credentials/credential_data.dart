@@ -388,15 +388,15 @@ class Credential {
   }) async {
     this.folderUuid = folderUuid;
     late encrypt.Key kdfKey;
-    if (this._encryptedWebsiteUrl != encryptedWebsiteUrl &&
+    if (this._encryptedWebsiteUrl != encryptedWebsiteUrl ||
             this._websiteUrlSalt != websiteUrlSalt ||
-        this._encryptedUsername != encryptedUsername &&
+        this._encryptedUsername != encryptedUsername ||
             this._usernameSalt != usernameSalt ||
-        this._encryptedPassword != encryptedPassword &&
+        this._encryptedPassword != encryptedPassword ||
             this._passwordSalt != passwordSalt ||
-        this._encryptedDisplayName != encryptedDisplayName &&
+        this._encryptedDisplayName != encryptedDisplayName ||
             this._displayNameSalt != displayNameSalt ||
-        this._encryptedNote != encryptedNote && this._noteSalt != noteSalt) {
+        this._encryptedNote != encryptedNote || this._noteSalt != noteSalt) {
       kdfKey = await Cryptography.getKDFKey(
         masterPassword: masterPassword,
         salt: uuid,
@@ -404,7 +404,7 @@ class Credential {
       );
     }
     //
-    if (this._encryptedWebsiteUrl != encryptedWebsiteUrl &&
+    if (this._encryptedWebsiteUrl != encryptedWebsiteUrl ||
         this._websiteUrlSalt != websiteUrlSalt) {
       this._clearWebsiteUrl = await Cryptography.getClearStringWithKey(
         kdfKey: kdfKey,
@@ -415,7 +415,7 @@ class Credential {
       this._websiteUrlSalt = websiteUrlSalt;
     }
     //
-    if (this._encryptedUsername != encryptedUsername &&
+    if (this._encryptedUsername != encryptedUsername ||
         this._usernameSalt != usernameSalt) {
       this._clearUsername = await Cryptography.getClearStringWithKey(
         kdfKey: kdfKey,
@@ -426,7 +426,7 @@ class Credential {
       this._usernameSalt = usernameSalt;
     }
     //
-    if (this._encryptedPassword != encryptedPassword &&
+    if (this._encryptedPassword != encryptedPassword ||
         this._passwordSalt != passwordSalt) {
       this._clearPassword = await Cryptography.getClearStringWithKey(
         kdfKey: kdfKey,
@@ -437,7 +437,7 @@ class Credential {
       this._passwordSalt = passwordSalt;
     }
     //
-    if (this._encryptedDisplayName != encryptedDisplayName &&
+    if (this._encryptedDisplayName != encryptedDisplayName ||
         this._displayNameSalt != displayNameSalt) {
       this._clearDisplayName = await Cryptography.getClearStringWithKey(
         kdfKey: kdfKey,
@@ -448,7 +448,7 @@ class Credential {
       this._displayNameSalt = displayNameSalt;
     }
     //
-    if (this._encryptedNote != encryptedNote && this._noteSalt != noteSalt) {
+    if (this._encryptedNote != encryptedNote || this._noteSalt != noteSalt) {
       this._clearNote = await Cryptography.getClearStringWithKey(
         kdfKey: kdfKey,
         encryptedString: encryptedNote,
