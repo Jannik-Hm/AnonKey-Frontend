@@ -389,14 +389,15 @@ class Credential {
     this.folderUuid = folderUuid;
     late encrypt.Key kdfKey;
     if (this._encryptedWebsiteUrl != encryptedWebsiteUrl ||
-            this._websiteUrlSalt != websiteUrlSalt ||
+        this._websiteUrlSalt != websiteUrlSalt ||
         this._encryptedUsername != encryptedUsername ||
-            this._usernameSalt != usernameSalt ||
+        this._usernameSalt != usernameSalt ||
         this._encryptedPassword != encryptedPassword ||
-            this._passwordSalt != passwordSalt ||
+        this._passwordSalt != passwordSalt ||
         this._encryptedDisplayName != encryptedDisplayName ||
-            this._displayNameSalt != displayNameSalt ||
-        this._encryptedNote != encryptedNote || this._noteSalt != noteSalt) {
+        this._displayNameSalt != displayNameSalt ||
+        this._encryptedNote != encryptedNote ||
+        this._noteSalt != noteSalt) {
       kdfKey = await Cryptography.getKDFKey(
         masterPassword: masterPassword,
         salt: uuid,
