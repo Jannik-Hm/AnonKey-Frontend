@@ -86,7 +86,6 @@ class FolderList {
     await Disk.saveToDisk(filePath: "vault.json", data: "");
   }
 
-
   /// Function to get new FolderList from `All` API endpoint response
   static FolderList getFromAPI({
     required api.FoldersGetAllResponseBody folders,
