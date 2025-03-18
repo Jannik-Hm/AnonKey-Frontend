@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/cryptography.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:anonkey_frontend/src/router/clear_and_navigate.dart';
@@ -29,8 +30,16 @@ class UserService {
     ApiClient apiClient = RequestUtility.getApiWithAuth(token, url);
     UsersApi usersApi = UsersApi(apiClient);
 
+    String? username =
+        (await AuthService.getAuthenticationCredentials()).username;
+
+    String encryptionKDF = await Cryptography.getKDFBase64(
+      masterPassword: password,
+      salt: "${username}_encryption",
+    );
+
     try {
-      if (await AuthService.getEncryptionKDF() != password) {
+      if (await AuthService.getEncryptionKDF() != encryptionKDF) {
         throw Exception("No credentials found");
       }
     } catch (e) {
