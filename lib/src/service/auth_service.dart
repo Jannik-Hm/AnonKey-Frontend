@@ -6,6 +6,8 @@ import 'package:anonkey_frontend/Utility/auth_utils.dart';
 import 'package:anonkey_frontend/Utility/cryptography.dart';
 import 'package:anonkey_frontend/Utility/request_utility.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
+import 'package:anonkey_frontend/src/Credentials/credential_list.dart';
+import 'package:anonkey_frontend/src/Folders/folder_list.dart';
 import 'package:anonkey_frontend/src/exception/auth_exception.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -521,6 +523,9 @@ class AuthService {
       await storage.delete(key: "encryptionKDF");
     }
     await storage.deleteAll();
+
+    await CredentialList.removeFromDisk();
+    await FolderList.removeFromDisk();
   }
 
   /// softLogout is used to indicate that the user has logged out without deleting the authentication data.

@@ -94,8 +94,12 @@ class CredentialList {
 
   /// Function to read encrypted CredentialList from App Document Directory
   static Future<CredentialList> readFromDisk() async {
-    String json = await Disk.readFromDisk("vault.json") ?? "[]";
-    return await fromJson(jsonDecode(json));
+    try {
+      String json = await Disk.readFromDisk("vault.json") ?? "[]";
+      return await fromJson(jsonDecode(json));
+    } catch (e) {
+      return CredentialList._();
+    }
   }
 
   /// Function to serialize CredentialList to store in App Storage
@@ -105,6 +109,10 @@ class CredentialList {
   Future<void> saveToDisk() async {
     String json = jsonEncode(toJson());
     await Disk.saveToDisk(filePath: "vault.json", data: json);
+  }
+
+  static Future<void> removeFromDisk() async {
+    await Disk.saveToDisk(filePath: "vault.json", data: "");
   }
 
   /// Function to get new CredentialList from `All` API endpoint response
