@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Auth/login_view.dart';
@@ -128,11 +129,8 @@ class LoginController extends State<LoginView> {
         );
 
         if (test) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setString(
-            'url',
-            url.text,
-          ); // Ensure the preferences are saved
+          await ApiBaseData.setURL(url.text);
+          // Ensure the preferences are saved
           if (!mounted) return;
           context.goNamed("home");
         } else {
