@@ -1,3 +1,4 @@
+import 'package:anonkey_frontend/Utility/api_base_data.dart';
 import 'package:anonkey_frontend/Utility/notification_popup.dart';
 import 'package:anonkey_frontend/api/lib/api.dart';
 import 'package:anonkey_frontend/src/Auth/register_view.dart';
@@ -146,8 +147,7 @@ class RegisterControllerState extends State<RegisterView> {
           url.text,
         );
         if (isRegistered) {
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('url', url.text);
+          await ApiBaseData.setURL(url.text);
           if (!mounted) return;
           context.goNamed('home');
         }
