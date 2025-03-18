@@ -30,7 +30,8 @@ class UserService {
     ApiClient apiClient = RequestUtility.getApiWithAuth(token, url);
     UsersApi usersApi = UsersApi(apiClient);
 
-    String? username = (await AuthService.getAuthenticationCredentials()).username;
+    String? username =
+        (await AuthService.getAuthenticationCredentials()).username;
 
     String encryptionKDF = await Cryptography.getKDFBase64(
       masterPassword: password,
